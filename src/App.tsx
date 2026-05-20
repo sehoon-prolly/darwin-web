@@ -8,6 +8,7 @@ import DebugPanel from "./components/DebugPanel";
 import FinalManuscriptPanel from "./components/FinalManuscriptPanel";
 import OpeningScreen from "./components/OpeningScreen";
 import { chapterMap, chapters } from "./data/chapters";
+import { gameElements } from "./data/elements";
 import { endings } from "./data/endings";
 import type { Chapter, Choice, GameState, MiniGameResult, Scene } from "./types/game";
 import { clearGameState, loadGameState, saveGameState } from "./utils/storage";
@@ -39,6 +40,10 @@ function findScene(chapter: Chapter, sceneId: string): Scene {
 
 export default function App() {
   const [hasOpenedGame, setHasOpenedGame] = useState(false);
+  const [gainedElementToast, setGainedElementToast] = useState<{
+    id: number;
+    text: string;
+  } | null>(null);
   const [gameState, setGameState] = useState<GameState>(() => {
     return loadGameState() ?? initialState;
   });
@@ -58,6 +63,18 @@ export default function App() {
   useEffect(() => {
     saveGameState(gameState);
   }, [gameState]);
+
+  useEffect(() => {
+    if (!gainedElementToast) {
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      setGainedElementToast(null);
+    }, 1800);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [gainedElementToast]);
 
   useEffect(() => {
     if (!isFinalChapter || gameState.selectedFinalElements.length > 0) {
@@ -158,7 +175,28 @@ export default function App() {
     moveTo(scene.nextSceneId, scene.nextChapterId);
   }
 
+  function announceGainedElements(elementIds?: string[]) {
+    if (!elementIds?.length) {
+      return;
+    }
+
+    const labels = elementIds
+      .map((elementId) => gameElements[elementId]?.label)
+      .filter(Boolean);
+
+    if (labels.length === 0) {
+      return;
+    }
+
+    setGainedElementToast({
+      id: Date.now(),
+      text: `획득 요소 : ${labels.join(", ")}를 획득했습니다.`,
+    });
+  }
+
   function handleChoice(choice: Choice) {
+    announceGainedElements(choice.gainedElements);
+
     setGameState((currentState) => {
       const acquiredElements = uniqueElements([
         ...currentState.acquiredElements,
@@ -228,6 +266,8 @@ export default function App() {
   }
 
   function handleMiniGameComplete(result: MiniGameResult) {
+    announceGainedElements(result.gainedElements);
+
     setGameState((currentState) => {
       const acquiredElements = uniqueElements([
         ...currentState.acquiredElements,
@@ -315,6 +355,8 @@ export default function App() {
   }
 
   function handleAddDebugElement(elementId: string) {
+    announceGainedElements([elementId]);
+
     setGameState((currentState) => {
       const acquiredElements = uniqueElements([
         ...currentState.acquiredElements,
@@ -371,6 +413,13 @@ export default function App() {
           onAddElement={handleAddDebugElement}
           onClearElements={handleClearElements}
         />
+      }
+      elementToast={
+        gainedElementToast ? (
+          <div className="element-toast" key={gainedElementToast.id}>
+            {gainedElementToast.text}
+          </div>
+        ) : null
       }
     />
   );

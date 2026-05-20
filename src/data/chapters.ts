@@ -21,7 +21,7 @@ export const chapters: Chapter[] = [
         speakerName: "나",
         dialogueText:
           "잠깐, 이 공고는 뭐지? 비글호에서 자연사 표본을 기록할 조수를 찾는다고 적혀 있다.",
-        backgroundImage: "/assets/backgrounds/london-notice-photo.png",
+        backgroundImage: "/assets/backgrounds/wall-paper.png",
         leftCharacterImage: "/assets/characters/player-original.png",
         rightCharacterImage: "/assets/characters/darwin-original.png",
         nextSceneId: "apply_choice",
@@ -39,8 +39,6 @@ export const chapters: Chapter[] = [
             id: "apply_beagle",
             label: "비글호 탑승 지원",
             nextChapterId: "chapter7",
-            gainedElements: ["voyage_start"],
-            effect: "요소 획득: 항해의 시작",
           },
           {
             id: "decline_beagle",

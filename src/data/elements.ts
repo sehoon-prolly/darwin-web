@@ -1,12 +1,6 @@
 import type { GameElement } from "../types/game";
 
 export const gameElements: Record<string, GameElement> = {
-  voyage_start: {
-    id: "voyage_start",
-    label: "항해의 시작",
-    category: "science",
-    description: "비글호 조수직에 지원해 다윈의 항해에 동행하기로 했다.",
-  },
   classification_need: {
     id: "classification_need",
     label: "분류의 필요성",

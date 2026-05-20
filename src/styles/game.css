@@ -297,19 +297,18 @@ button:not(:disabled) {
 .character-slot {
   position: absolute;
   z-index: 2;
-  bottom: 20%;
+  bottom: 0;
   width: 25%;
-  height: 63%;
+  height: 83%;
   display: grid;
   place-items: end center;
   background-repeat: no-repeat;
   background-position: bottom center;
   background-size: contain;
   pointer-events: none;
-  outline: 4px dashed rgba(255, 248, 218, 0.78);
-  outline-offset: -8px;
-  background-color: rgba(21, 47, 47, 0.12);
-  border-radius: 18px 18px 0 0;
+  outline: none;
+  background-color: transparent;
+  border-radius: 0;
 }
 
 .character-slot.left {
@@ -359,6 +358,28 @@ button:not(:disabled) {
 
 .character-slot.has-image {
   background-size: auto 100%;
+}
+
+.element-toast {
+  position: absolute;
+  z-index: 20;
+  top: 50%;
+  left: 50%;
+  max-width: min(720px, 78vw);
+  padding: 18px 28px;
+  border: 3px solid rgba(255, 255, 255, 0.58);
+  border-radius: 16px;
+  color: #fff8e6;
+  background: linear-gradient(180deg, rgba(18, 18, 18, 0.78), rgba(35, 31, 29, 0.7));
+  box-shadow:
+    0 18px 38px rgba(0, 0, 0, 0.34),
+    0 0 28px rgba(255, 255, 255, 0.2);
+  font-size: clamp(20px, 2.4vw, 34px);
+  font-weight: 950;
+  text-align: center;
+  transform: translate(-50%, -50%);
+  backdrop-filter: blur(3px);
+  pointer-events: none;
 }
 
 .center-play-area {

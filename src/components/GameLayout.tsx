@@ -8,6 +8,7 @@ type GameLayoutProps = {
   dialogueBox: ReactNode;
   inventory: ReactNode;
   debugPanel: ReactNode;
+  elementToast?: ReactNode;
   onNewGame: () => void;
   backgroundImage?: string;
 };
@@ -18,6 +19,7 @@ export default function GameLayout({
   dialogueBox,
   inventory,
   debugPanel,
+  elementToast,
   onNewGame,
   backgroundImage,
 }: GameLayoutProps) {
@@ -35,6 +37,7 @@ export default function GameLayout({
         {dialogueBox}
         {inventory}
         {debugPanel}
+        {elementToast}
       </section>
     </main>
   );
