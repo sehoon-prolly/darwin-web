@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <rect width="1280" height="720" fill="#ffffff"/>
+  <rect x="20" y="20" width="1240" height="680" fill="none" stroke="#111111" stroke-width="6" stroke-dasharray="18 14"/>
+  <line x1="0" y1="455" x2="1280" y2="455" stroke="#111111" stroke-width="6"/>
+  <path d="M90 455c120-190 245-220 360 0z" fill="#ffffff" stroke="#111111" stroke-width="7"/>
+  <path d="M850 455c120-190 245-220 360 0z" fill="#ffffff" stroke="#111111" stroke-width="7"/>
+  <g fill="#ffffff" stroke="#111111" stroke-width="6">
+    <rect x="360" y="160" width="150" height="180" rx="18"/>
+    <rect x="565" y="150" width="150" height="180" rx="18"/>
+    <rect x="770" y="160" width="150" height="180" rx="18"/>
+  </g>
+  <text x="435" y="260" fill="#111111" font-family="Arial, sans-serif" font-size="26" font-weight="800" text-anchor="middle">부리</text>
+  <text x="640" y="250" fill="#111111" font-family="Arial, sans-serif" font-size="26" font-weight="800" text-anchor="middle">먹이</text>
+  <text x="845" y="260" fill="#111111" font-family="Arial, sans-serif" font-size="26" font-weight="800" text-anchor="middle">연결</text>
+  <text x="640" y="94" fill="#111111" font-family="Arial, sans-serif" font-size="44" font-weight="800" text-anchor="middle">핀치새 미니게임 placeholder</text>
+</svg>

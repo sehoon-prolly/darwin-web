@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="420" height="720" viewBox="0 0 420 720">
+  <rect width="420" height="720" fill="none"/>
+  <ellipse cx="210" cy="690" rx="160" ry="24" fill="#ffffff" stroke="#111111" stroke-width="6"/>
+  <path d="M88 690c19-188 50-304 122-304s103 116 122 304z" fill="#ffffff" stroke="#111111" stroke-width="10"/>
+  <circle cx="210" cy="257" r="78" fill="#ffffff" stroke="#111111" stroke-width="10"/>
+  <path d="M132 242c7-61 40-96 88-98 54-2 87 40 91 102-74-25-121-24-179-4z" fill="#ffffff" stroke="#111111" stroke-width="9"/>
+  <path d="M157 325c15 36 32 51 53 51s38-15 53-51" fill="none" stroke="#111111" stroke-width="10" stroke-linecap="round"/>
+  <path d="M143 324c18 73 38 116 67 116s49-43 67-116" fill="none" stroke="#111111" stroke-width="5"/>
+  <path d="M172 267h18M230 267h18" fill="none" stroke="#111111" stroke-width="8" stroke-linecap="round"/>
+  <text x="210" y="548" fill="#111111" font-family="Arial, sans-serif" font-size="38" font-weight="800" text-anchor="middle">서재 다윈</text>
+</svg>

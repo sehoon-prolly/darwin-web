@@ -1,0 +1,377 @@
+import { useEffect, useMemo, useState } from "react";
+import GameLayout from "./components/GameLayout";
+import SceneView from "./components/SceneView";
+import DialogueBox from "./components/DialogueBox";
+import ElementInventory from "./components/ElementInventory";
+import MiniGameRenderer from "./components/MiniGameRenderer";
+import DebugPanel from "./components/DebugPanel";
+import FinalManuscriptPanel from "./components/FinalManuscriptPanel";
+import OpeningScreen from "./components/OpeningScreen";
+import { chapterMap, chapters } from "./data/chapters";
+import { endings } from "./data/endings";
+import type { Chapter, Choice, GameState, MiniGameResult, Scene } from "./types/game";
+import { clearGameState, loadGameState, saveGameState } from "./utils/storage";
+import { judgeEnding } from "./utils/endingJudge";
+
+const firstChapter = chapters[0];
+
+const initialState: GameState = {
+  currentChapterId: firstChapter.id,
+  currentSceneId: firstChapter.scenes[0].id,
+  acquiredElements: [],
+  selectedChoices: [],
+  selectedFinalElements: [],
+  currentEnding: null,
+  isMiniGameActive: false,
+};
+
+function getFirstScene(chapter: Chapter): Scene {
+  return chapter.scenes[0];
+}
+
+function uniqueElements(elements: string[]) {
+  return Array.from(new Set(elements));
+}
+
+function findScene(chapter: Chapter, sceneId: string): Scene {
+  return chapter.scenes.find((scene) => scene.id === sceneId) ?? getFirstScene(chapter);
+}
+
+export default function App() {
+  const [hasOpenedGame, setHasOpenedGame] = useState(false);
+  const [gameState, setGameState] = useState<GameState>(() => {
+    return loadGameState() ?? initialState;
+  });
+
+  const chapter = chapterMap[gameState.currentChapterId] ?? firstChapter;
+  const scene = findScene(chapter, gameState.currentSceneId);
+  const ending = gameState.currentEnding
+    ? endings[gameState.currentEnding]
+    : null;
+
+  const isFinalChapter = chapter.id === "chapter9";
+  const shouldShowMiniGame =
+    gameState.isMiniGameActive &&
+    scene.miniGameType &&
+    scene.miniGameType !== "none";
+
+  useEffect(() => {
+    saveGameState(gameState);
+  }, [gameState]);
+
+  useEffect(() => {
+    if (!isFinalChapter || gameState.selectedFinalElements.length > 0) {
+      return;
+    }
+
+    setGameState((currentState) => ({
+      ...currentState,
+      selectedFinalElements: currentState.acquiredElements,
+    }));
+  }, [
+    isFinalChapter,
+    gameState.selectedFinalElements.length,
+    gameState.acquiredElements,
+  ]);
+
+  const sceneOverlay = useMemo(() => {
+    if (ending) {
+      return (
+        <section className="ending-panel">
+          <p>Ending</p>
+          <h2>{ending.title}</h2>
+          <strong>{ending.description}</strong>
+          <button type="button" onClick={handleNewGame}>
+            처음부터 다시 하기
+          </button>
+        </section>
+      );
+    }
+
+    if (shouldShowMiniGame) {
+      return (
+        <MiniGameRenderer
+          miniGameType={scene.miniGameType}
+          onComplete={handleMiniGameComplete}
+        />
+      );
+    }
+
+    if (isFinalChapter) {
+      return (
+        <FinalManuscriptPanel
+          acquiredElements={gameState.acquiredElements}
+          selectedFinalElements={gameState.selectedFinalElements}
+          onToggleElement={handleToggleFinalElement}
+          onSelectAll={handleSelectAllFinalElements}
+          onClearSelection={handleClearFinalSelection}
+          onSubmit={handleSubmitFinalManuscript}
+        />
+      );
+    }
+
+    return null;
+  }, [
+    ending,
+    gameState.acquiredElements,
+    gameState.selectedFinalElements,
+    isFinalChapter,
+    scene.miniGameType,
+    shouldShowMiniGame,
+  ]);
+
+  function moveTo(nextSceneId?: string, nextChapterId?: string) {
+    setGameState((currentState) => {
+      if (nextChapterId) {
+        const nextChapter = chapterMap[nextChapterId] ?? firstChapter;
+        const nextScene = getFirstScene(nextChapter);
+
+        return {
+          ...currentState,
+          currentChapterId: nextChapter.id,
+          currentSceneId: nextScene.id,
+          isMiniGameActive:
+            Boolean(nextScene.miniGameType) && nextScene.miniGameType !== "none",
+          selectedFinalElements:
+            nextChapter.id === "chapter9"
+              ? currentState.acquiredElements
+              : currentState.selectedFinalElements,
+        };
+      }
+
+      if (nextSceneId) {
+        const nextScene = findScene(chapter, nextSceneId);
+
+        return {
+          ...currentState,
+          currentSceneId: nextScene.id,
+          isMiniGameActive:
+            Boolean(nextScene.miniGameType) && nextScene.miniGameType !== "none",
+        };
+      }
+
+      return currentState;
+    });
+  }
+
+  function handleNext() {
+    moveTo(scene.nextSceneId, scene.nextChapterId);
+  }
+
+  function handleChoice(choice: Choice) {
+    setGameState((currentState) => {
+      const acquiredElements = uniqueElements([
+        ...currentState.acquiredElements,
+        ...(choice.gainedElements ?? []),
+      ]);
+
+      if (choice.endingId) {
+        return {
+          ...currentState,
+          selectedChoices: uniqueElements([
+            ...currentState.selectedChoices,
+            choice.id,
+          ]),
+          acquiredElements,
+          currentEnding: choice.endingId,
+          isMiniGameActive: false,
+        };
+      }
+
+      if (choice.nextChapterId) {
+        const nextChapter = chapterMap[choice.nextChapterId] ?? firstChapter;
+        const nextScene = getFirstScene(nextChapter);
+
+        return {
+          ...currentState,
+          currentChapterId: nextChapter.id,
+          currentSceneId: nextScene.id,
+          acquiredElements,
+          selectedChoices: uniqueElements([
+            ...currentState.selectedChoices,
+            choice.id,
+          ]),
+          selectedFinalElements:
+            nextChapter.id === "chapter9"
+              ? acquiredElements
+              : currentState.selectedFinalElements,
+          isMiniGameActive:
+            Boolean(nextScene.miniGameType) && nextScene.miniGameType !== "none",
+        };
+      }
+
+      if (choice.nextSceneId) {
+        const nextScene = findScene(chapter, choice.nextSceneId);
+
+        return {
+          ...currentState,
+          currentSceneId: nextScene.id,
+          acquiredElements,
+          selectedChoices: uniqueElements([
+            ...currentState.selectedChoices,
+            choice.id,
+          ]),
+          isMiniGameActive:
+            Boolean(nextScene.miniGameType) && nextScene.miniGameType !== "none",
+        };
+      }
+
+      return {
+        ...currentState,
+        acquiredElements,
+        selectedChoices: uniqueElements([
+          ...currentState.selectedChoices,
+          choice.id,
+        ]),
+      };
+    });
+  }
+
+  function handleMiniGameComplete(result: MiniGameResult) {
+    setGameState((currentState) => {
+      const acquiredElements = uniqueElements([
+        ...currentState.acquiredElements,
+        ...result.gainedElements,
+      ]);
+
+      const nextChapter = scene.nextChapterId
+        ? chapterMap[scene.nextChapterId]
+        : null;
+
+      if (nextChapter) {
+        const nextScene = getFirstScene(nextChapter);
+
+        return {
+          ...currentState,
+          currentChapterId: nextChapter.id,
+          currentSceneId: nextScene.id,
+          acquiredElements,
+          selectedFinalElements:
+            nextChapter.id === "chapter9"
+              ? acquiredElements
+              : currentState.selectedFinalElements,
+          isMiniGameActive:
+            Boolean(nextScene.miniGameType) && nextScene.miniGameType !== "none",
+        };
+      }
+
+      if (scene.nextSceneId) {
+        const nextScene = findScene(chapter, scene.nextSceneId);
+
+        return {
+          ...currentState,
+          currentSceneId: nextScene.id,
+          acquiredElements,
+          isMiniGameActive:
+            Boolean(nextScene.miniGameType) && nextScene.miniGameType !== "none",
+        };
+      }
+
+      return {
+        ...currentState,
+        acquiredElements,
+        isMiniGameActive: false,
+      };
+    });
+  }
+
+  function handleToggleFinalElement(elementId: string) {
+    setGameState((currentState) => {
+      const isSelected = currentState.selectedFinalElements.includes(elementId);
+
+      return {
+        ...currentState,
+        selectedFinalElements: isSelected
+          ? currentState.selectedFinalElements.filter((id) => id !== elementId)
+          : [...currentState.selectedFinalElements, elementId],
+      };
+    });
+  }
+
+  function handleSelectAllFinalElements() {
+    setGameState((currentState) => ({
+      ...currentState,
+      selectedFinalElements: currentState.acquiredElements,
+    }));
+  }
+
+  function handleClearFinalSelection() {
+    setGameState((currentState) => ({
+      ...currentState,
+      selectedFinalElements: [],
+    }));
+  }
+
+  function handleSubmitFinalManuscript() {
+    setGameState((currentState) => {
+      const finalEnding = judgeEnding(currentState.selectedFinalElements);
+
+      return {
+        ...currentState,
+        currentEnding: finalEnding.id,
+        isMiniGameActive: false,
+      };
+    });
+  }
+
+  function handleAddDebugElement(elementId: string) {
+    setGameState((currentState) => {
+      const acquiredElements = uniqueElements([
+        ...currentState.acquiredElements,
+        elementId,
+      ]);
+
+      return {
+        ...currentState,
+        acquiredElements,
+        selectedFinalElements: isFinalChapter
+          ? uniqueElements([...currentState.selectedFinalElements, elementId])
+          : currentState.selectedFinalElements,
+      };
+    });
+  }
+
+  function handleClearElements() {
+    setGameState((currentState) => ({
+      ...currentState,
+      acquiredElements: [],
+      selectedFinalElements: [],
+    }));
+  }
+
+  function handleNewGame() {
+    clearGameState();
+    setGameState(initialState);
+    setHasOpenedGame(false);
+  }
+
+  if (!hasOpenedGame) {
+    return <OpeningScreen onStart={() => setHasOpenedGame(true)} />;
+  }
+
+  return (
+    <GameLayout
+      chapter={chapter}
+      onNewGame={handleNewGame}
+      backgroundImage={scene.backgroundImage}
+      sceneView={<SceneView scene={scene}>{sceneOverlay}</SceneView>}
+      dialogueBox={
+        ending ? null : (
+          <DialogueBox
+            scene={scene}
+            isMiniGameActive={Boolean(shouldShowMiniGame)}
+            onNext={handleNext}
+            onChoice={handleChoice}
+          />
+        )
+      }
+      inventory={<ElementInventory acquiredElements={gameState.acquiredElements} />}
+      debugPanel={
+        <DebugPanel
+          onAddElement={handleAddDebugElement}
+          onClearElements={handleClearElements}
+        />
+      }
+    />
+  );
+}

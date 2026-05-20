@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <rect width="1280" height="720" fill="#ffffff"/>
+  <rect x="20" y="20" width="1240" height="680" fill="none" stroke="#111111" stroke-width="6" stroke-dasharray="18 14"/>
+  <line x1="0" y1="430" x2="1280" y2="430" stroke="#111111" stroke-width="6"/>
+  <path d="M80 438c140-206 280-238 418 0z" fill="#ffffff" stroke="#111111" stroke-width="7"/>
+  <path d="M768 442c145-218 294-240 430 0z" fill="#ffffff" stroke="#111111" stroke-width="7"/>
+  <rect x="402" y="255" width="480" height="260" rx="20" fill="#ffffff" stroke="#111111" stroke-width="8"/>
+  <ellipse cx="505" cy="340" rx="58" ry="34" fill="#ffffff" stroke="#111111" stroke-width="6"/><path d="M551 337l54-20-35 48z" fill="#ffffff" stroke="#111111" stroke-width="6"/>
+  <ellipse cx="642" cy="365" rx="62" ry="35" fill="#ffffff" stroke="#111111" stroke-width="6"/><path d="M696 359l60-18-42 49z" fill="#ffffff" stroke="#111111" stroke-width="6"/>
+  <ellipse cx="770" cy="335" rx="56" ry="32" fill="#ffffff" stroke="#111111" stroke-width="6"/><path d="M815 330l48-28-25 53z" fill="#ffffff" stroke="#111111" stroke-width="6"/>
+  <text x="640" y="98" fill="#111111" font-family="Arial, sans-serif" font-size="44" font-weight="800" text-anchor="middle">갈라파고스 표본 placeholder</text>
+</svg>
