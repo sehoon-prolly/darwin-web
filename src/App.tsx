@@ -16,8 +16,12 @@ import { clearGameState, loadGameState, saveGameState } from "./utils/storage";
 import { judgeEnding } from "./utils/endingJudge";
 
 const firstChapter = chapters[0];
-const CHAPTER_FADE_MS = 1000;
-const CHAPTER_SWAP_DELAY_MS = 80;
+const CHAPTER_FADE_MS = 800;
+const CHAPTER_SWAP_DELAY_MS = 0;
+const ELEMENT_TOAST_DURATION_MS = 1800;
+const CHOICE_OVERLAY_AFTER_TOAST_DELAY_MS = 300;
+const CHOICE_OVERLAY_DELAY_MS =
+  ELEMENT_TOAST_DURATION_MS + CHOICE_OVERLAY_AFTER_TOAST_DELAY_MS;
 
 const initialState: GameState = {
   currentChapterId: firstChapter.id,
@@ -52,6 +56,7 @@ export default function App() {
   const [isPaperZoomOpen, setIsPaperZoomOpen] = useState(false);
   const [hasReadRequiredPoster, setHasReadRequiredPoster] = useState(false);
   const chapterTransitionTimeouts = useRef<number[]>([]);
+  const choiceOverlayDelayTimeout = useRef<number | null>(null);
   const [gameState, setGameState] = useState<GameState>(() => {
     return loadGameState() ?? initialState;
   });
@@ -67,7 +72,10 @@ export default function App() {
     gameState.isMiniGameActive &&
     scene.miniGameType &&
     scene.miniGameType !== "none";
-  const hasChoiceOverlay = Boolean(scene.choices?.length && !ending);
+  const [isChoiceOverlayDelayed, setIsChoiceOverlayDelayed] = useState(false);
+  const hasChoiceOverlay = Boolean(
+    scene.choices?.length && !ending && !isChoiceOverlayDelayed,
+  );
   const isNoticeSceneLocked =
     scene.id === "assistant_notice" && !hasReadRequiredPoster;
 
@@ -78,6 +86,7 @@ export default function App() {
   useEffect(() => {
     return () => {
       clearChapterTransitionTimeouts();
+      clearChoiceOverlayDelayTimeout();
     };
   }, []);
 
@@ -95,7 +104,7 @@ export default function App() {
 
     const timeoutId = window.setTimeout(() => {
       setGainedElementToast(null);
-    }, 1800);
+    }, ELEMENT_TOAST_DURATION_MS);
 
     return () => window.clearTimeout(timeoutId);
   }, [gainedElementToast]);
@@ -248,6 +257,24 @@ export default function App() {
       id: Date.now(),
       text: `획득 요소 : ${labels.join(", ")}를 획득했습니다.`,
     });
+    delayChoiceOverlay();
+  }
+
+  function clearChoiceOverlayDelayTimeout() {
+    if (choiceOverlayDelayTimeout.current !== null) {
+      window.clearTimeout(choiceOverlayDelayTimeout.current);
+      choiceOverlayDelayTimeout.current = null;
+    }
+  }
+
+  function delayChoiceOverlay() {
+    clearChoiceOverlayDelayTimeout();
+    setIsChoiceOverlayDelayed(true);
+
+    choiceOverlayDelayTimeout.current = window.setTimeout(() => {
+      setIsChoiceOverlayDelayed(false);
+      choiceOverlayDelayTimeout.current = null;
+    }, CHOICE_OVERLAY_DELAY_MS);
   }
 
   function handleChoice(choice: Choice) {
@@ -454,8 +481,10 @@ export default function App() {
 
   function handleNewGame() {
     clearChapterTransitionTimeouts();
+    clearChoiceOverlayDelayTimeout();
     setIsChapterTransitionActive(false);
     setIsPaperZoomOpen(false);
+    setIsChoiceOverlayDelayed(false);
     setHasReadRequiredPoster(false);
     clearGameState();
     setGameState(initialState);
