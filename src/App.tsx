@@ -157,6 +157,8 @@ export default function App() {
     gameState.acquiredElements,
     gameState.selectedFinalElements,
     isFinalChapter,
+    scene.id,
+    scene.choices,
     scene.miniGameType,
     shouldShowMiniGame,
   ]);
