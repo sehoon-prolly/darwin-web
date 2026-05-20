@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import GameLayout from "./components/GameLayout";
 import SceneView from "./components/SceneView";
 import DialogueBox from "./components/DialogueBox";
@@ -15,6 +15,8 @@ import { clearGameState, loadGameState, saveGameState } from "./utils/storage";
 import { judgeEnding } from "./utils/endingJudge";
 
 const firstChapter = chapters[0];
+const CHAPTER_FADE_MS = 1500;
+const CHAPTER_SWAP_DELAY_MS = 80;
 
 const initialState: GameState = {
   currentChapterId: firstChapter.id,
@@ -44,6 +46,9 @@ export default function App() {
     id: number;
     text: string;
   } | null>(null);
+  const [isChapterTransitionActive, setIsChapterTransitionActive] =
+    useState(false);
+  const chapterTransitionTimeouts = useRef<number[]>([]);
   const [gameState, setGameState] = useState<GameState>(() => {
     return loadGameState() ?? initialState;
   });
@@ -63,6 +68,12 @@ export default function App() {
   useEffect(() => {
     saveGameState(gameState);
   }, [gameState]);
+
+  useEffect(() => {
+    return () => {
+      clearChapterTransitionTimeouts();
+    };
+  }, []);
 
   useEffect(() => {
     if (!gainedElementToast) {
@@ -138,24 +149,29 @@ export default function App() {
   ]);
 
   function moveTo(nextSceneId?: string, nextChapterId?: string) {
+    if (nextChapterId) {
+      runChapterTransition(() => {
+        setGameState((currentState) => {
+          const nextChapter = chapterMap[nextChapterId] ?? firstChapter;
+          const nextScene = getFirstScene(nextChapter);
+
+          return {
+            ...currentState,
+            currentChapterId: nextChapter.id,
+            currentSceneId: nextScene.id,
+            isMiniGameActive:
+              Boolean(nextScene.miniGameType) && nextScene.miniGameType !== "none",
+            selectedFinalElements:
+              nextChapter.id === "chapter9"
+                ? currentState.acquiredElements
+                : currentState.selectedFinalElements,
+          };
+        });
+      });
+      return;
+    }
+
     setGameState((currentState) => {
-      if (nextChapterId) {
-        const nextChapter = chapterMap[nextChapterId] ?? firstChapter;
-        const nextScene = getFirstScene(nextChapter);
-
-        return {
-          ...currentState,
-          currentChapterId: nextChapter.id,
-          currentSceneId: nextScene.id,
-          isMiniGameActive:
-            Boolean(nextScene.miniGameType) && nextScene.miniGameType !== "none",
-          selectedFinalElements:
-            nextChapter.id === "chapter9"
-              ? currentState.acquiredElements
-              : currentState.selectedFinalElements,
-        };
-      }
-
       if (nextSceneId) {
         const nextScene = findScene(chapter, nextSceneId);
 
@@ -169,6 +185,31 @@ export default function App() {
 
       return currentState;
     });
+  }
+
+  function clearChapterTransitionTimeouts() {
+    chapterTransitionTimeouts.current.forEach((timeoutId) =>
+      window.clearTimeout(timeoutId),
+    );
+    chapterTransitionTimeouts.current = [];
+  }
+
+  function runChapterTransition(updateChapter: () => void) {
+    clearChapterTransitionTimeouts();
+    setIsChapterTransitionActive(true);
+
+    const swapTimeoutId = window.setTimeout(() => {
+      updateChapter();
+
+      const fadeInTimeoutId = window.setTimeout(() => {
+        setIsChapterTransitionActive(false);
+        chapterTransitionTimeouts.current = [];
+      }, CHAPTER_SWAP_DELAY_MS);
+
+      chapterTransitionTimeouts.current.push(fadeInTimeoutId);
+    }, CHAPTER_FADE_MS);
+
+    chapterTransitionTimeouts.current.push(swapTimeoutId);
   }
 
   function handleNext() {
@@ -197,6 +238,37 @@ export default function App() {
   function handleChoice(choice: Choice) {
     announceGainedElements(choice.gainedElements);
 
+    if (choice.nextChapterId) {
+      runChapterTransition(() => {
+        setGameState((currentState) => {
+          const acquiredElements = uniqueElements([
+            ...currentState.acquiredElements,
+            ...(choice.gainedElements ?? []),
+          ]);
+          const nextChapter = chapterMap[choice.nextChapterId ?? ""] ?? firstChapter;
+          const nextScene = getFirstScene(nextChapter);
+
+          return {
+            ...currentState,
+            currentChapterId: nextChapter.id,
+            currentSceneId: nextScene.id,
+            acquiredElements,
+            selectedChoices: uniqueElements([
+              ...currentState.selectedChoices,
+              choice.id,
+            ]),
+            selectedFinalElements:
+              nextChapter.id === "chapter9"
+                ? acquiredElements
+                : currentState.selectedFinalElements,
+            isMiniGameActive:
+              Boolean(nextScene.miniGameType) && nextScene.miniGameType !== "none",
+          };
+        });
+      });
+      return;
+    }
+
     setGameState((currentState) => {
       const acquiredElements = uniqueElements([
         ...currentState.acquiredElements,
@@ -213,28 +285,6 @@ export default function App() {
           acquiredElements,
           currentEnding: choice.endingId,
           isMiniGameActive: false,
-        };
-      }
-
-      if (choice.nextChapterId) {
-        const nextChapter = chapterMap[choice.nextChapterId] ?? firstChapter;
-        const nextScene = getFirstScene(nextChapter);
-
-        return {
-          ...currentState,
-          currentChapterId: nextChapter.id,
-          currentSceneId: nextScene.id,
-          acquiredElements,
-          selectedChoices: uniqueElements([
-            ...currentState.selectedChoices,
-            choice.id,
-          ]),
-          selectedFinalElements:
-            nextChapter.id === "chapter9"
-              ? acquiredElements
-              : currentState.selectedFinalElements,
-          isMiniGameActive:
-            Boolean(nextScene.miniGameType) && nextScene.miniGameType !== "none",
         };
       }
 
@@ -268,32 +318,38 @@ export default function App() {
   function handleMiniGameComplete(result: MiniGameResult) {
     announceGainedElements(result.gainedElements);
 
+    if (scene.nextChapterId) {
+      runChapterTransition(() => {
+        setGameState((currentState) => {
+          const acquiredElements = uniqueElements([
+            ...currentState.acquiredElements,
+            ...result.gainedElements,
+          ]);
+          const nextChapter = chapterMap[scene.nextChapterId ?? ""] ?? firstChapter;
+          const nextScene = getFirstScene(nextChapter);
+
+          return {
+            ...currentState,
+            currentChapterId: nextChapter.id,
+            currentSceneId: nextScene.id,
+            acquiredElements,
+            selectedFinalElements:
+              nextChapter.id === "chapter9"
+                ? acquiredElements
+                : currentState.selectedFinalElements,
+            isMiniGameActive:
+              Boolean(nextScene.miniGameType) && nextScene.miniGameType !== "none",
+          };
+        });
+      });
+      return;
+    }
+
     setGameState((currentState) => {
       const acquiredElements = uniqueElements([
         ...currentState.acquiredElements,
         ...result.gainedElements,
       ]);
-
-      const nextChapter = scene.nextChapterId
-        ? chapterMap[scene.nextChapterId]
-        : null;
-
-      if (nextChapter) {
-        const nextScene = getFirstScene(nextChapter);
-
-        return {
-          ...currentState,
-          currentChapterId: nextChapter.id,
-          currentSceneId: nextScene.id,
-          acquiredElements,
-          selectedFinalElements:
-            nextChapter.id === "chapter9"
-              ? acquiredElements
-              : currentState.selectedFinalElements,
-          isMiniGameActive:
-            Boolean(nextScene.miniGameType) && nextScene.miniGameType !== "none",
-        };
-      }
 
       if (scene.nextSceneId) {
         const nextScene = findScene(chapter, scene.nextSceneId);
@@ -382,6 +438,8 @@ export default function App() {
   }
 
   function handleNewGame() {
+    clearChapterTransitionTimeouts();
+    setIsChapterTransitionActive(false);
     clearGameState();
     setGameState(initialState);
     setHasOpenedGame(false);
@@ -408,6 +466,7 @@ export default function App() {
         )
       }
       inventory={<ElementInventory acquiredElements={gameState.acquiredElements} />}
+      isChapterTransitionActive={isChapterTransitionActive}
       debugPanel={
         <DebugPanel
           onAddElement={handleAddDebugElement}

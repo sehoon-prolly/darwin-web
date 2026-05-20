@@ -29,6 +29,7 @@ export default function SceneView({ scene, children }: SceneViewProps) {
       <div className="map-grid" />
       <div className="scene-prop prop-label">Specimen Log</div>
       <div
+        key={`left-${scene.id}-${scene.leftCharacterImage ?? "empty"}`}
         className={`character-slot left ${scene.leftCharacterImage ? "has-image" : ""}`}
         style={characterStyle(scene.leftCharacterImage)}
         aria-label="왼쪽 캐릭터 영역"
@@ -39,6 +40,7 @@ export default function SceneView({ scene, children }: SceneViewProps) {
         </span>
       </div>
       <div
+        key={`right-${scene.id}-${scene.rightCharacterImage ?? "empty"}`}
         className={`character-slot right ${scene.rightCharacterImage ? "has-image" : ""}`}
         style={characterStyle(scene.rightCharacterImage)}
         aria-label="오른쪽 캐릭터 영역"

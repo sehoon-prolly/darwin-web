@@ -358,6 +358,7 @@ button:not(:disabled) {
 
 .character-slot.has-image {
   background-size: auto 100%;
+  animation: character-brightness-in 850ms ease both;
 }
 
 .element-toast {
@@ -380,6 +381,37 @@ button:not(:disabled) {
   transform: translate(-50%, -50%);
   backdrop-filter: blur(3px);
   pointer-events: none;
+}
+
+.chapter-transition-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  background: #050505;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1500ms ease;
+}
+
+.chapter-transition-overlay.is-active {
+  opacity: 1;
+}
+
+@keyframes character-brightness-in {
+  0% {
+    opacity: 0;
+    filter: brightness(2.8) contrast(1.18);
+  }
+
+  45% {
+    opacity: 1;
+    filter: brightness(1.75) contrast(1.08);
+  }
+
+  100% {
+    opacity: 1;
+    filter: brightness(1) contrast(1);
+  }
 }
 
 .center-play-area {

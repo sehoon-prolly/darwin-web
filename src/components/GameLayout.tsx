@@ -9,6 +9,7 @@ type GameLayoutProps = {
   inventory: ReactNode;
   debugPanel: ReactNode;
   elementToast?: ReactNode;
+  isChapterTransitionActive?: boolean;
   onNewGame: () => void;
   backgroundImage?: string;
 };
@@ -20,6 +21,7 @@ export default function GameLayout({
   inventory,
   debugPanel,
   elementToast,
+  isChapterTransitionActive = false,
   onNewGame,
   backgroundImage,
 }: GameLayoutProps) {
@@ -38,6 +40,11 @@ export default function GameLayout({
         {inventory}
         {debugPanel}
         {elementToast}
+        <div
+          className={`chapter-transition-overlay ${
+            isChapterTransitionActive ? "is-active" : ""
+          }`}
+        />
       </section>
     </main>
   );
