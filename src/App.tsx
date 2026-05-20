@@ -3,6 +3,7 @@ import GameLayout from "./components/GameLayout";
 import SceneView from "./components/SceneView";
 import DialogueBox from "./components/DialogueBox";
 import ElementInventory from "./components/ElementInventory";
+import ChoiceButton from "./components/ChoiceButton";
 import MiniGameRenderer from "./components/MiniGameRenderer";
 import DebugPanel from "./components/DebugPanel";
 import FinalManuscriptPanel from "./components/FinalManuscriptPanel";
@@ -122,6 +123,18 @@ export default function App() {
           miniGameType={scene.miniGameType}
           onComplete={handleMiniGameComplete}
         />
+      );
+    }
+
+    if (scene.choices?.length) {
+      return (
+        <section className="choice-panel">
+          <div className="choice-list">
+            {scene.choices.map((choice) => (
+              <ChoiceButton key={choice.id} choice={choice} onSelect={handleChoice} />
+            ))}
+          </div>
+        </section>
       );
     }
 
@@ -461,7 +474,6 @@ export default function App() {
             scene={scene}
             isMiniGameActive={Boolean(shouldShowMiniGame)}
             onNext={handleNext}
-            onChoice={handleChoice}
           />
         )
       }

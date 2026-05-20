@@ -1,18 +1,15 @@
-import type { Choice, Scene } from "../types/game";
-import ChoiceButton from "./ChoiceButton";
+import type { Scene } from "../types/game";
 
 type DialogueBoxProps = {
   scene: Scene;
   isMiniGameActive: boolean;
   onNext: () => void;
-  onChoice: (choice: Choice) => void;
 };
 
 export default function DialogueBox({
   scene,
   isMiniGameActive,
   onNext,
-  onChoice,
 }: DialogueBoxProps) {
   const hasChoices = Boolean(scene.choices?.length);
   const canMoveNext = Boolean(scene.nextSceneId || scene.nextChapterId);
@@ -42,13 +39,6 @@ export default function DialogueBox({
       <div className="speaker-tab">{scene.speakerName}</div>
       <p>{scene.dialogueText}</p>
 
-      {hasChoices ? (
-        <div className="choice-list">
-          {scene.choices?.map((choice) => (
-            <ChoiceButton key={choice.id} choice={choice} onSelect={onChoice} />
-          ))}
-        </div>
-      ) : null}
     </section>
   );
 }

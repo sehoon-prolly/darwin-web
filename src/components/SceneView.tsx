@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import type { CSSProperties, ReactNode } from "react";
 import type { Scene } from "../types/game";
 
@@ -16,12 +17,58 @@ function characterStyle(imagePath?: string): CSSProperties | undefined {
   };
 }
 
+function shouldPlayCharacterEntrance(
+  currentImage?: string,
+  previousImage?: string,
+) {
+  return Boolean(currentImage && currentImage !== previousImage);
+}
+
 export default function SceneView({ scene, children }: SceneViewProps) {
+  const previousCharacterImages = useRef<{
+    left?: string;
+    right?: string;
+  }>({});
+  const [enteringCharacters, setEnteringCharacters] = useState({
+    left: false,
+    right: false,
+  });
+
   const sceneStyle: CSSProperties = scene.backgroundImage
     ? {
         backgroundImage: `linear-gradient(180deg, rgba(249, 239, 204, 0.16), rgba(54, 96, 94, 0.18)), url("${scene.backgroundImage}")`,
       }
     : {};
+
+  useEffect(() => {
+    const nextEnteringCharacters = {
+      left: shouldPlayCharacterEntrance(
+        scene.leftCharacterImage,
+        previousCharacterImages.current.left,
+      ),
+      right: shouldPlayCharacterEntrance(
+        scene.rightCharacterImage,
+        previousCharacterImages.current.right,
+      ),
+    };
+
+    previousCharacterImages.current = {
+      left: scene.leftCharacterImage,
+      right: scene.rightCharacterImage,
+    };
+
+    setEnteringCharacters(nextEnteringCharacters);
+
+    if (!nextEnteringCharacters.left && !nextEnteringCharacters.right) {
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      setEnteringCharacters({ left: false, right: false });
+    }, 850);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [scene.leftCharacterImage, scene.rightCharacterImage]);
 
   return (
     <section className="scene-view" style={sceneStyle}>
@@ -29,8 +76,9 @@ export default function SceneView({ scene, children }: SceneViewProps) {
       <div className="map-grid" />
       <div className="scene-prop prop-label">Specimen Log</div>
       <div
-        key={`left-${scene.id}-${scene.leftCharacterImage ?? "empty"}`}
-        className={`character-slot left ${scene.leftCharacterImage ? "has-image" : ""}`}
+        className={`character-slot left ${scene.leftCharacterImage ? "has-image" : ""} ${
+          enteringCharacters.left ? "is-entering" : ""
+        }`}
         style={characterStyle(scene.leftCharacterImage)}
         aria-label="왼쪽 캐릭터 영역"
       >
@@ -40,8 +88,9 @@ export default function SceneView({ scene, children }: SceneViewProps) {
         </span>
       </div>
       <div
-        key={`right-${scene.id}-${scene.rightCharacterImage ?? "empty"}`}
-        className={`character-slot right ${scene.rightCharacterImage ? "has-image" : ""}`}
+        className={`character-slot right ${scene.rightCharacterImage ? "has-image" : ""} ${
+          enteringCharacters.right ? "is-entering" : ""
+        }`}
         style={characterStyle(scene.rightCharacterImage)}
         aria-label="오른쪽 캐릭터 영역"
       >
