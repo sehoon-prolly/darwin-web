@@ -5,6 +5,7 @@ import type { Scene } from "../types/game";
 type SceneViewProps = {
   scene: Scene;
   children?: ReactNode;
+  onNoticePosterClick?: (posterId: string) => void;
 };
 
 function characterStyle(imagePath?: string): CSSProperties | undefined {
@@ -24,7 +25,11 @@ function shouldPlayCharacterEntrance(
   return Boolean(currentImage && currentImage !== previousImage);
 }
 
-export default function SceneView({ scene, children }: SceneViewProps) {
+export default function SceneView({
+  scene,
+  children,
+  onNoticePosterClick,
+}: SceneViewProps) {
   const previousCharacterImages = useRef<{
     left?: string;
     right?: string;
@@ -75,6 +80,21 @@ export default function SceneView({ scene, children }: SceneViewProps) {
       <div className="scene-region-label background-label">중앙 배경 이미지 영역</div>
       <div className="map-grid" />
       <div className="scene-prop prop-label">Specimen Log</div>
+      {scene.id === "assistant_notice" ? (
+        <div className="notice-poster-hotspots" aria-label="벽보 클릭 영역">
+          {["top-left", "top-right", "bottom-left", "bottom-right"].map(
+            (posterId) => (
+              <button
+                className={`notice-poster-hotspot ${posterId}`}
+                key={posterId}
+                type="button"
+                aria-label={`${posterId} 벽보 확대해서 보기`}
+                onClick={() => onNoticePosterClick?.(posterId)}
+              />
+            ),
+          )}
+        </div>
+      ) : null}
       <div
         className={`character-slot left ${scene.leftCharacterImage ? "has-image" : ""} ${
           enteringCharacters.left ? "is-entering" : ""

@@ -3,17 +3,20 @@ import type { Scene } from "../types/game";
 type DialogueBoxProps = {
   scene: Scene;
   isMiniGameActive: boolean;
+  isNextLocked?: boolean;
   onNext: () => void;
 };
 
 export default function DialogueBox({
   scene,
   isMiniGameActive,
+  isNextLocked = false,
   onNext,
 }: DialogueBoxProps) {
   const hasChoices = Boolean(scene.choices?.length);
   const canMoveNext = Boolean(scene.nextSceneId || scene.nextChapterId);
-  const canClickToNext = !hasChoices && canMoveNext && !isMiniGameActive;
+  const canClickToNext =
+    !hasChoices && canMoveNext && !isMiniGameActive && !isNextLocked;
 
   const handleDialogueClick = () => {
     if (canClickToNext) {
@@ -38,6 +41,11 @@ export default function DialogueBox({
     >
       <div className="speaker-tab">{scene.speakerName}</div>
       <p>{scene.dialogueText}</p>
+      {isNextLocked ? (
+        <small className="dialogue-lock-hint">
+          벽보를 눌러 내용을 확인해보자.
+        </small>
+      ) : null}
 
     </section>
   );

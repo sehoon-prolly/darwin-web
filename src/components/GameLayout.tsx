@@ -9,7 +9,11 @@ type GameLayoutProps = {
   inventory: ReactNode;
   debugPanel: ReactNode;
   elementToast?: ReactNode;
+  choiceOverlay?: ReactNode;
+  isChoiceOverlayOpen?: boolean;
   isChapterTransitionActive?: boolean;
+  paperZoomOverlay?: ReactNode;
+  isPaperZoomOpen?: boolean;
   onNewGame: () => void;
   backgroundImage?: string;
 };
@@ -21,7 +25,11 @@ export default function GameLayout({
   inventory,
   debugPanel,
   elementToast,
+  choiceOverlay,
+  isChoiceOverlayOpen = false,
   isChapterTransitionActive = false,
+  paperZoomOverlay,
+  isPaperZoomOpen = false,
   onNewGame,
   backgroundImage,
 }: GameLayoutProps) {
@@ -33,13 +41,20 @@ export default function GameLayout({
 
   return (
     <main className="app-shell" style={shellStyle}>
-      <section className="game-frame" aria-label="비글호의 조수 게임 화면">
+      <section
+        className={`game-frame ${isPaperZoomOpen ? "is-paper-zoom-open" : ""} ${
+          isChoiceOverlayOpen ? "is-choice-overlay-open" : ""
+        }`}
+        aria-label="비글호의 조수 게임 화면"
+      >
         <ChapterHUD chapter={chapter} onNewGame={onNewGame} />
         {sceneView}
         {dialogueBox}
         {inventory}
         {debugPanel}
         {elementToast}
+        {choiceOverlay}
+        {paperZoomOverlay}
         <div
           className={`chapter-transition-overlay ${
             isChapterTransitionActive ? "is-active" : ""

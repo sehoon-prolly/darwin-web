@@ -16,7 +16,7 @@ import { clearGameState, loadGameState, saveGameState } from "./utils/storage";
 import { judgeEnding } from "./utils/endingJudge";
 
 const firstChapter = chapters[0];
-const CHAPTER_FADE_MS = 1500;
+const CHAPTER_FADE_MS = 1000;
 const CHAPTER_SWAP_DELAY_MS = 80;
 
 const initialState: GameState = {
@@ -49,6 +49,8 @@ export default function App() {
   } | null>(null);
   const [isChapterTransitionActive, setIsChapterTransitionActive] =
     useState(false);
+  const [isPaperZoomOpen, setIsPaperZoomOpen] = useState(false);
+  const [hasReadRequiredPoster, setHasReadRequiredPoster] = useState(false);
   const chapterTransitionTimeouts = useRef<number[]>([]);
   const [gameState, setGameState] = useState<GameState>(() => {
     return loadGameState() ?? initialState;
@@ -65,6 +67,9 @@ export default function App() {
     gameState.isMiniGameActive &&
     scene.miniGameType &&
     scene.miniGameType !== "none";
+  const hasChoiceOverlay = Boolean(scene.choices?.length && !ending);
+  const isNoticeSceneLocked =
+    scene.id === "assistant_notice" && !hasReadRequiredPoster;
 
   useEffect(() => {
     saveGameState(gameState);
@@ -75,6 +80,13 @@ export default function App() {
       clearChapterTransitionTimeouts();
     };
   }, []);
+
+  useEffect(() => {
+    setIsPaperZoomOpen(false);
+    if (gameState.currentSceneId !== "assistant_notice") {
+      setHasReadRequiredPoster(false);
+    }
+  }, [gameState.currentSceneId]);
 
   useEffect(() => {
     if (!gainedElementToast) {
@@ -123,18 +135,6 @@ export default function App() {
           miniGameType={scene.miniGameType}
           onComplete={handleMiniGameComplete}
         />
-      );
-    }
-
-    if (scene.choices?.length) {
-      return (
-        <section className="choice-panel">
-          <div className="choice-list">
-            {scene.choices.map((choice) => (
-              <ChoiceButton key={choice.id} choice={choice} onSelect={handleChoice} />
-            ))}
-          </div>
-        </section>
       );
     }
 
@@ -455,6 +455,8 @@ export default function App() {
   function handleNewGame() {
     clearChapterTransitionTimeouts();
     setIsChapterTransitionActive(false);
+    setIsPaperZoomOpen(false);
+    setHasReadRequiredPoster(false);
     clearGameState();
     setGameState(initialState);
     setHasOpenedGame(false);
@@ -469,18 +471,63 @@ export default function App() {
       chapter={chapter}
       onNewGame={handleNewGame}
       backgroundImage={scene.backgroundImage}
-      sceneView={<SceneView scene={scene}>{sceneOverlay}</SceneView>}
+      sceneView={
+        <SceneView
+          scene={scene}
+          onNoticePosterClick={(posterId) => {
+            if (posterId === "bottom-left") {
+              setHasReadRequiredPoster(true);
+            }
+
+            setIsPaperZoomOpen(true);
+          }}
+        >
+          {sceneOverlay}
+        </SceneView>
+      }
       dialogueBox={
         ending ? null : (
           <DialogueBox
             scene={scene}
             isMiniGameActive={Boolean(shouldShowMiniGame)}
+            isNextLocked={isNoticeSceneLocked}
             onNext={handleNext}
           />
         )
       }
       inventory={<ElementInventory acquiredElements={gameState.acquiredElements} />}
       isChapterTransitionActive={isChapterTransitionActive}
+      isChoiceOverlayOpen={hasChoiceOverlay}
+      choiceOverlay={
+        hasChoiceOverlay ? (
+          <div className="choice-overlay">
+            <section className="choice-panel">
+              <div className="choice-list">
+                {scene.choices?.map((choice) => (
+                  <ChoiceButton
+                    key={choice.id}
+                    choice={choice}
+                    onSelect={handleChoice}
+                  />
+                ))}
+              </div>
+            </section>
+          </div>
+        ) : null
+      }
+      isPaperZoomOpen={isPaperZoomOpen}
+      paperZoomOverlay={
+        isPaperZoomOpen ? (
+          <button
+            className="paper-zoom-overlay"
+            type="button"
+            aria-label="벽보 확대 닫기"
+            onClick={() => setIsPaperZoomOpen(false)}
+          >
+            <img src="/assets/backgrounds/paper-zoomin.png" alt="확대된 벽보" />
+          </button>
+        ) : null
+      }
       debugPanel={
         <DebugPanel
           onAddElement={handleAddDebugElement}

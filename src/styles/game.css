@@ -131,6 +131,24 @@ button:not(:disabled) {
   box-shadow: var(--shadow);
 }
 
+.game-frame.is-paper-zoom-open > .chapter-hud,
+.game-frame.is-paper-zoom-open > .scene-view,
+.game-frame.is-paper-zoom-open > .dialogue-box,
+.game-frame.is-paper-zoom-open > .element-inventory,
+.game-frame.is-paper-zoom-open > .debug-panel,
+.game-frame.is-paper-zoom-open > .element-toast {
+  filter: blur(6px);
+}
+
+.game-frame.is-choice-overlay-open > .chapter-hud,
+.game-frame.is-choice-overlay-open > .scene-view,
+.game-frame.is-choice-overlay-open > .dialogue-box,
+.game-frame.is-choice-overlay-open > .element-inventory,
+.game-frame.is-choice-overlay-open > .debug-panel,
+.game-frame.is-choice-overlay-open > .element-toast {
+  filter: blur(5px);
+}
+
 .chapter-hud {
   position: relative;
   z-index: 5;
@@ -234,6 +252,53 @@ button:not(:disabled) {
   color: #4c3324;
   background: rgba(255, 245, 208, 0.62);
   box-shadow: 0 8px 18px rgba(35, 30, 22, 0.16);
+}
+
+.notice-poster-hotspots {
+  position: absolute;
+  z-index: 7;
+  top: 13%;
+  right: 12%;
+  width: 43%;
+  height: 66%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 4%;
+}
+
+.notice-poster-hotspot {
+  border: 0;
+  background: transparent;
+}
+
+.dialogue-lock-hint {
+  display: block;
+  margin-top: 10px;
+  color: rgba(255, 248, 230, 0.76);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.paper-zoom-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 28;
+  display: grid;
+  place-items: center;
+  border: 0;
+  padding: 0;
+  background: rgba(0, 0, 0, 0.32);
+}
+
+.paper-zoom-overlay img {
+  width: min(76vw, 920px);
+  max-height: 82vh;
+  object-fit: contain;
+  border-radius: 10px;
+  box-shadow:
+    0 22px 54px rgba(0, 0, 0, 0.44),
+    0 0 0 3px rgba(255, 255, 255, 0.42);
 }
 
 .scene-dummy-card {
@@ -393,7 +458,7 @@ button:not(:disabled) {
   background: #050505;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 1500ms ease;
+  transition: opacity 1000ms ease;
 }
 
 .chapter-transition-overlay.is-active {
@@ -523,6 +588,16 @@ button:not(:disabled) {
   cursor: default;
 }
 
+.choice-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 18;
+  display: grid;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.18);
+  pointer-events: none;
+}
+
 .choice-panel {
   width: min(620px, 72vw);
   padding: 22px;
@@ -531,10 +606,10 @@ button:not(:disabled) {
   background:
     linear-gradient(180deg, rgba(18, 18, 18, 0.74), rgba(35, 31, 29, 0.66)),
     repeating-linear-gradient(0deg, transparent 0 22px, rgba(255, 255, 255, 0.06) 22px 23px);
-  outline: 3px dashed rgba(255, 255, 255, 0.44);
-  outline-offset: -10px;
+  outline: none;
   box-shadow: 0 18px 38px rgba(24, 32, 30, 0.32);
   backdrop-filter: blur(3px);
+  pointer-events: auto;
 }
 
 .choice-list {
@@ -552,11 +627,11 @@ button:not(:disabled) {
   justify-content: center;
   gap: 3px;
   padding: 8px 12px;
-  border: 2px solid #6e6048;
+  border: 2px solid rgba(255, 255, 255, 0.72);
   border-radius: 14px;
-  color: #2a3432;
-  background: linear-gradient(180deg, #fff3cc, #e5c985);
-  box-shadow: 0 4px 0 rgba(91, 66, 37, 0.26);
+  color: #fff8e6;
+  background: transparent;
+  box-shadow: none;
   font-weight: 900;
   text-align: left;
   transition:
@@ -567,23 +642,22 @@ button:not(:disabled) {
 }
 
 .choice-button small {
-  color: #5f4a2d;
+  color: rgba(255, 248, 230, 0.78);
   font-size: 11px;
   font-weight: 800;
 }
 
 .choice-button:hover {
   transform: translateY(-2px);
-  background: linear-gradient(180deg, #fff7db, #f0d78f);
-  filter: brightness(1.04);
+  background: rgba(255, 255, 255, 0.08);
+  filter: none;
   box-shadow:
-    0 5px 0 rgba(91, 66, 37, 0.22),
-    0 0 18px rgba(255, 220, 132, 0.72);
+    0 0 18px rgba(255, 255, 255, 0.28);
 }
 
 .choice-button:active {
   transform: translateY(1px);
-  box-shadow: 0 2px 0 rgba(91, 66, 37, 0.24);
+  box-shadow: none;
 }
 
 .element-inventory {
