@@ -24,6 +24,12 @@ const CHOICE_OVERLAY_DELAY_MS =
   ELEMENT_TOAST_DURATION_MS + CHOICE_OVERLAY_AFTER_TOAST_DELAY_MS;
 const POST_TOAST_NAVIGATION_DELAY_MS = CHOICE_OVERLAY_DELAY_MS;
 const NOTICE_POSTER_SCENE_ID = "chapter0-scene2";
+const NOTICE_POSTER_ZOOM_IMAGES: Record<string, string> = {
+  "top-left": "/assets/backgrounds/notices/ch0-notice-top-left.png",
+  "top-right": "/assets/backgrounds/notices/ch0-notice-top-right.png",
+  "bottom-left": "/assets/backgrounds/notices/ch0-notice-bottom-left.png",
+  "bottom-right": "/assets/backgrounds/notices/ch0-notice-bottom-right.png",
+};
 
 const initialState: GameState = {
   currentChapterId: firstChapter.id,
@@ -56,6 +62,9 @@ export default function App() {
   const [isChapterTransitionActive, setIsChapterTransitionActive] =
     useState(false);
   const [isPaperZoomOpen, setIsPaperZoomOpen] = useState(false);
+  const [selectedNoticePosterId, setSelectedNoticePosterId] = useState<
+    string | null
+  >(null);
   const [hasReadRequiredPoster, setHasReadRequiredPoster] = useState(false);
   const [isProgressionPending, setIsProgressionPending] = useState(false);
   const chapterTransitionTimeouts = useRef<number[]>([]);
@@ -90,6 +99,9 @@ export default function App() {
   );
   const isNoticeSceneLocked =
     scene.id === NOTICE_POSTER_SCENE_ID && !hasReadRequiredPoster;
+  const selectedNoticePosterZoomImage = selectedNoticePosterId
+    ? NOTICE_POSTER_ZOOM_IMAGES[selectedNoticePosterId]
+    : null;
 
   useEffect(() => {
     saveGameState(gameState);
@@ -106,6 +118,7 @@ export default function App() {
 
   useEffect(() => {
     setIsPaperZoomOpen(false);
+    setSelectedNoticePosterId(null);
     if (gameState.currentSceneId !== NOTICE_POSTER_SCENE_ID) {
       setHasReadRequiredPoster(false);
     }
@@ -659,6 +672,7 @@ export default function App() {
     clearGameState();
     setGameState(initialState);
     setHasOpenedGame(false);
+    setSelectedNoticePosterId(null);
   }
 
   if (!hasOpenedGame) {
@@ -678,6 +692,7 @@ export default function App() {
               setHasReadRequiredPoster(true);
             }
 
+            setSelectedNoticePosterId(posterId);
             setIsPaperZoomOpen(true);
           }}
         >
@@ -714,14 +729,17 @@ export default function App() {
       }
       isPaperZoomOpen={isPaperZoomOpen}
       paperZoomOverlay={
-        isPaperZoomOpen ? (
+        isPaperZoomOpen && selectedNoticePosterZoomImage ? (
           <button
             className="paper-zoom-overlay"
             type="button"
             aria-label="벽보 확대 닫기"
-            onClick={() => setIsPaperZoomOpen(false)}
+            onClick={() => {
+              setIsPaperZoomOpen(false);
+              setSelectedNoticePosterId(null);
+            }}
           >
-            <img src="/assets/backgrounds/paper-zoomin.png" alt="확대된 벽보" />
+            <img src={selectedNoticePosterZoomImage} alt="확대된 벽보" />
           </button>
         ) : null
       }

@@ -257,14 +257,15 @@ button:not(:disabled) {
 .notice-poster-hotspots {
   position: absolute;
   z-index: 7;
-  top: 13%;
-  right: 12%;
-  width: 43%;
-  height: 66%;
+  top: 4%;
+  right: 9%;
+  width: 49%;
+  height: 92%;
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr;
-  gap: 4%;
+  column-gap: 8%;
+  row-gap: 4%;
 }
 
 .notice-poster-hotspot {
