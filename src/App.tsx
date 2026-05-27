@@ -18,13 +18,12 @@ import { judgeEnding } from "./utils/endingJudge";
 const firstChapter = chapters[0];
 const CHAPTER_FADE_MS = 800;
 const CHAPTER_SWAP_DELAY_MS = 0;
-const TOAST_AFTER_CHAPTER_TRANSITION_DELAY_MS = 300;
-const CHAPTER_TRANSITION_TOTAL_MS =
-  CHAPTER_FADE_MS + CHAPTER_SWAP_DELAY_MS + CHAPTER_FADE_MS;
 const ELEMENT_TOAST_DURATION_MS = 1800;
 const CHOICE_OVERLAY_AFTER_TOAST_DELAY_MS = 300;
 const CHOICE_OVERLAY_DELAY_MS =
   ELEMENT_TOAST_DURATION_MS + CHOICE_OVERLAY_AFTER_TOAST_DELAY_MS;
+const POST_TOAST_NAVIGATION_DELAY_MS = CHOICE_OVERLAY_DELAY_MS;
+const NOTICE_POSTER_SCENE_ID = "chapter0-scene2";
 
 const initialState: GameState = {
   currentChapterId: firstChapter.id,
@@ -58,9 +57,11 @@ export default function App() {
     useState(false);
   const [isPaperZoomOpen, setIsPaperZoomOpen] = useState(false);
   const [hasReadRequiredPoster, setHasReadRequiredPoster] = useState(false);
+  const [isProgressionPending, setIsProgressionPending] = useState(false);
   const chapterTransitionTimeouts = useRef<number[]>([]);
   const choiceOverlayDelayTimeout = useRef<number | null>(null);
   const gainedElementToastDelayTimeout = useRef<number | null>(null);
+  const postToastNavigationTimeout = useRef<number | null>(null);
   const [gameState, setGameState] = useState<GameState>(() => {
     return loadGameState() ?? initialState;
   });
@@ -78,10 +79,13 @@ export default function App() {
     scene.miniGameType !== "none";
   const [isChoiceOverlayDelayed, setIsChoiceOverlayDelayed] = useState(false);
   const hasChoiceOverlay = Boolean(
-    scene.choices?.length && !ending && !isChoiceOverlayDelayed,
+    scene.choices?.length &&
+      !ending &&
+      !isChoiceOverlayDelayed &&
+      !isProgressionPending,
   );
   const isNoticeSceneLocked =
-    scene.id === "assistant_notice" && !hasReadRequiredPoster;
+    scene.id === NOTICE_POSTER_SCENE_ID && !hasReadRequiredPoster;
 
   useEffect(() => {
     saveGameState(gameState);
@@ -92,12 +96,13 @@ export default function App() {
       clearChapterTransitionTimeouts();
       clearChoiceOverlayDelayTimeout();
       clearGainedElementToastDelayTimeout();
+      clearPostToastNavigationTimeout();
     };
   }, []);
 
   useEffect(() => {
     setIsPaperZoomOpen(false);
-    if (gameState.currentSceneId !== "assistant_notice") {
+    if (gameState.currentSceneId !== NOTICE_POSTER_SCENE_ID) {
       setHasReadRequiredPoster(false);
     }
   }, [gameState.currentSceneId]);
@@ -285,6 +290,23 @@ export default function App() {
     }
   }
 
+  function clearPostToastNavigationTimeout() {
+    if (postToastNavigationTimeout.current !== null) {
+      window.clearTimeout(postToastNavigationTimeout.current);
+      postToastNavigationTimeout.current = null;
+    }
+  }
+
+  function scheduleProgressionAfterToast(startProgression: () => void) {
+    clearPostToastNavigationTimeout();
+    setIsProgressionPending(true);
+
+    postToastNavigationTimeout.current = window.setTimeout(() => {
+      startProgression();
+      postToastNavigationTimeout.current = null;
+    }, POST_TOAST_NAVIGATION_DELAY_MS);
+  }
+
   function clearChoiceOverlayDelayTimeout() {
     if (choiceOverlayDelayTimeout.current !== null) {
       window.clearTimeout(choiceOverlayDelayTimeout.current);
@@ -303,12 +325,82 @@ export default function App() {
   }
 
   function handleChoice(choice: Choice) {
-    if (choice.nextChapterId) {
-      announceGainedElements(
-        choice.gainedElements,
-        CHAPTER_TRANSITION_TOTAL_MS + TOAST_AFTER_CHAPTER_TRANSITION_DELAY_MS,
-      );
+    const shouldWaitForToast = Boolean(
+      choice.gainedElements?.length &&
+        (choice.nextSceneId || choice.nextChapterId || choice.endingId),
+    );
 
+    if (shouldWaitForToast) {
+      announceGainedElements(choice.gainedElements);
+
+      setGameState((currentState) => ({
+        ...currentState,
+        acquiredElements: uniqueElements([
+          ...currentState.acquiredElements,
+          ...(choice.gainedElements ?? []),
+        ]),
+        selectedChoices: uniqueElements([
+          ...currentState.selectedChoices,
+          choice.id,
+        ]),
+      }));
+
+      scheduleProgressionAfterToast(() => {
+        if (choice.endingId) {
+          setGameState((currentState) => ({
+            ...currentState,
+            currentEnding: choice.endingId ?? null,
+            isMiniGameActive: false,
+          }));
+          setIsProgressionPending(false);
+          return;
+        }
+
+        if (choice.nextChapterId) {
+          runChapterTransition(() => {
+            setGameState((currentState) => {
+              const nextChapter =
+                chapterMap[choice.nextChapterId ?? ""] ?? firstChapter;
+              const nextScene = getFirstScene(nextChapter);
+
+              return {
+                ...currentState,
+                currentChapterId: nextChapter.id,
+                currentSceneId: nextScene.id,
+                selectedFinalElements:
+                  nextChapter.id === "chapter9"
+                    ? currentState.acquiredElements
+                    : currentState.selectedFinalElements,
+                isMiniGameActive:
+                  Boolean(nextScene.miniGameType) &&
+                  nextScene.miniGameType !== "none",
+              };
+            });
+            setIsProgressionPending(false);
+          });
+          return;
+        }
+
+        if (choice.nextSceneId) {
+          setGameState((currentState) => {
+            const nextScene = findScene(chapter, choice.nextSceneId ?? "");
+
+            return {
+              ...currentState,
+              currentSceneId: nextScene.id,
+              isMiniGameActive:
+                Boolean(nextScene.miniGameType) &&
+                nextScene.miniGameType !== "none",
+            };
+          });
+        }
+
+        setIsProgressionPending(false);
+      });
+      return;
+    }
+
+    if (choice.nextChapterId) {
       runChapterTransition(() => {
         setGameState((currentState) => {
           const acquiredElements = uniqueElements([
@@ -388,12 +480,48 @@ export default function App() {
   }
 
   function handleMiniGameComplete(result: MiniGameResult) {
-    if (scene.nextChapterId) {
-      announceGainedElements(
-        result.gainedElements,
-        CHAPTER_TRANSITION_TOTAL_MS + TOAST_AFTER_CHAPTER_TRANSITION_DELAY_MS,
-      );
+    const shouldWaitForToast = Boolean(
+      result.gainedElements.length && scene.nextChapterId,
+    );
 
+    if (shouldWaitForToast) {
+      announceGainedElements(result.gainedElements);
+
+      setGameState((currentState) => ({
+        ...currentState,
+        acquiredElements: uniqueElements([
+          ...currentState.acquiredElements,
+          ...result.gainedElements,
+        ]),
+      }));
+
+      scheduleProgressionAfterToast(() => {
+        runChapterTransition(() => {
+          setGameState((currentState) => {
+            const nextChapter =
+              chapterMap[scene.nextChapterId ?? ""] ?? firstChapter;
+            const nextScene = getFirstScene(nextChapter);
+
+            return {
+              ...currentState,
+              currentChapterId: nextChapter.id,
+              currentSceneId: nextScene.id,
+              selectedFinalElements:
+                nextChapter.id === "chapter9"
+                  ? currentState.acquiredElements
+                  : currentState.selectedFinalElements,
+              isMiniGameActive:
+                Boolean(nextScene.miniGameType) &&
+                nextScene.miniGameType !== "none",
+            };
+          });
+          setIsProgressionPending(false);
+        });
+      });
+      return;
+    }
+
+    if (scene.nextChapterId) {
       runChapterTransition(() => {
         setGameState((currentState) => {
           const acquiredElements = uniqueElements([
@@ -518,9 +646,11 @@ export default function App() {
     clearChapterTransitionTimeouts();
     clearChoiceOverlayDelayTimeout();
     clearGainedElementToastDelayTimeout();
+    clearPostToastNavigationTimeout();
     setIsChapterTransitionActive(false);
     setIsPaperZoomOpen(false);
     setIsChoiceOverlayDelayed(false);
+    setIsProgressionPending(false);
     setHasReadRequiredPoster(false);
     clearGameState();
     setGameState(initialState);

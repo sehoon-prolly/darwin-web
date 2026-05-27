@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import type { CSSProperties, ReactNode } from "react";
 import type { Scene } from "../types/game";
 
+const NOTICE_POSTER_SCENE_ID = "chapter0-scene2";
+
 type SceneViewProps = {
   scene: Scene;
   children?: ReactNode;
@@ -80,7 +82,7 @@ export default function SceneView({
       <div className="scene-region-label background-label">중앙 배경 이미지 영역</div>
       <div className="map-grid" />
       <div className="scene-prop prop-label">Specimen Log</div>
-      {scene.id === "assistant_notice" ? (
+      {scene.id === NOTICE_POSTER_SCENE_ID ? (
         <div className="notice-poster-hotspots" aria-label="벽보 클릭 영역">
           {["top-left", "top-right", "bottom-left", "bottom-right"].map(
             (posterId) => (

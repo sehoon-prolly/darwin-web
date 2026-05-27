@@ -5,6 +5,7 @@ const scienceElementIds = new Set([
   "classification_need",
   "environment_adaptation_clue",
   "natural_selection_clue",
+  "common_structure_discovery",
 ]);
 
 const humanElementIds = new Set([

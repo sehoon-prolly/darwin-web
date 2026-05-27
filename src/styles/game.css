@@ -829,6 +829,10 @@ button:not(:disabled) {
   margin-bottom: 14px;
 }
 
+.final-panel-heading {
+  flex-wrap: wrap;
+}
+
 .mini-game-heading p,
 .final-panel-heading p,
 .ending-panel p {
@@ -974,6 +978,26 @@ button:not(:disabled) {
   justify-content: flex-end;
 }
 
+.final-manuscript-meter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-left: auto;
+}
+
+.final-manuscript-meter span {
+  min-height: 30px;
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border: 2px solid rgba(255, 255, 255, 0.38);
+  border-radius: 999px;
+  color: #fff8e6;
+  background: rgba(18, 18, 18, 0.42);
+  font-size: 12px;
+  font-weight: 950;
+}
+
 .final-empty {
   margin: 0 0 14px;
   padding: 14px;
@@ -995,6 +1019,17 @@ button:not(:disabled) {
   grid-template-columns: 24px 1fr;
   gap: 8px;
   padding: 9px 10px;
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease,
+    transform 150ms ease,
+    background 150ms ease;
+}
+
+.final-element-card.is-selected {
+  border-color: rgba(255, 226, 135, 0.7);
+  background: rgba(255, 249, 225, 0.98);
+  box-shadow: 0 0 18px rgba(255, 255, 255, 0.18);
 }
 
 .final-element-card input {
@@ -1013,9 +1048,42 @@ button:not(:disabled) {
 
 .final-element-card small {
   margin-top: 3px;
-  color: rgba(255, 248, 230, 0.74);
+  color: #5c4a35;
   font-size: 11px;
   line-height: 1.34;
+}
+
+.final-category-pill {
+  display: inline-flex;
+  margin-bottom: 5px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  color: #fffdf0;
+  background: #426761;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 950;
+}
+
+.category-pill-science {
+  background: var(--teal);
+}
+
+.category-pill-human {
+  background: var(--leaf);
+}
+
+.category-pill-empire {
+  background: var(--blue);
+}
+
+.category-pill-sexualSelection {
+  color: #2e2d25;
+  background: var(--gold);
+}
+
+.category-pill-negative {
+  background: var(--berry);
 }
 
 .complete-manuscript-button {
