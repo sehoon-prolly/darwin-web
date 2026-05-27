@@ -1,131 +1,111 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import type { MiniGameProps } from "../types/game";
 
-const TOTAL_TIME = 15;
-const SUCCESS_THRESHOLD = 3;
-
-type Tile = {
+type Suspect = {
   id: string;
-  description: string;
-  isMissionary: boolean;
+  label: string;
+  roleHint: string;
+  statement: string;
 };
 
-const ALL_TILES: Tile[] = [
-  { id: "m1", description: "성경과 기도서를 손에 들고 있다", isMissionary: true },
-  { id: "m2", description: "원주민 아이에게 영어를 가르치고 있다", isMissionary: true },
-  { id: "m3", description: "십자가 목걸이를 한 채 설교하고 있다", isMissionary: true },
-  { id: "m4", description: "영국 국왕의 이름으로 집회를 열고 있다", isMissionary: true },
-  { id: "n1", description: "물고기를 손질하며 낯선 사람들을 바라보고 있다", isMissionary: false },
-  { id: "n2", description: "언덕 위에서 낯선 배를 조용히 바라보고 있다", isMissionary: false },
-  { id: "n3", description: "아이들과 함께 언덕을 뛰어다니고 있다", isMissionary: false },
-  { id: "n4", description: "전통 방식으로 음식을 준비하고 있다", isMissionary: false },
-  { id: "n5", description: "부족 말로 노래를 부르고 있다", isMissionary: false },
-  { id: "s1", description: "닻줄을 정리하며 상륙 준비를 하고 있다", isMissionary: false },
-  { id: "s2", description: "갑판에서 망원경으로 해안을 보고 있다", isMissionary: false },
-  { id: "d1", description: "표본 채집 도구를 들고 메모를 하고 있다", isMissionary: false },
+const CORRECT_SUSPECT_ID = "D";
+
+const suspects: Suspect[] = [
+  {
+    id: "A",
+    label: "A",
+    roleHint: "갑판 일을 돕던 사람",
+    statement: "B는 선교사가 아니다.",
+  },
+  {
+    id: "B",
+    label: "B",
+    roleHint: "영국식 물품을 옮기던 사람",
+    statement: "선교사는 C 또는 D 중 한 명이다.",
+  },
+  {
+    id: "C",
+    label: "C",
+    roleHint: "마을 사람들과 통역하던 사람",
+    statement: "A는 선교사가 아니다.",
+  },
+  {
+    id: "D",
+    label: "D",
+    roleHint: "기도문이 적힌 종이를 숨긴 사람",
+    statement: "E가 선교사다.",
+  },
+  {
+    id: "E",
+    label: "E",
+    roleHint: "해안 쪽에서 배를 지켜보던 사람",
+    statement: "D가 선교사다.",
+  },
 ];
 
-function shuffle<T>(arr: T[]): T[] {
-  const result = [...arr];
-  for (let i = result.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [result[i], result[j]] = [result[j], result[i]];
-  }
-  return result;
-}
-
 export default function MissionaryClickGame({ onComplete }: MiniGameProps) {
-  const [tiles] = useState(() => shuffle(ALL_TILES));
-  const [timeLeft, setTimeLeft] = useState(TOTAL_TIME);
-  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-  const [isFinished, setIsFinished] = useState(false);
-  const hasCompleted = useRef(false);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
-  useEffect(() => {
-    if (isFinished) return;
-    const interval = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          setIsFinished(true);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [isFinished]);
+  const handleSubmit = () => {
+    if (!selectedId || isSubmitted) {
+      return;
+    }
 
-  useEffect(() => {
-    if (!isFinished || hasCompleted.current) return;
-    hasCompleted.current = true;
-
-    const correctClicks = [...selectedIds].filter(
-      (id) => ALL_TILES.find((t) => t.id === id)?.isMissionary,
-    ).length;
-
-    const success = correctClicks >= SUCCESS_THRESHOLD;
+    const success = selectedId === CORRECT_SUSPECT_ID;
+    setIsSubmitted(true);
     onComplete({
       success,
       gainedElements: success ? ["imperialism_shadow"] : ["social_context_missing"],
     });
-  }, [isFinished, selectedIds, onComplete]);
-
-  const handleTileClick = (id: string) => {
-    if (isFinished) return;
-    setSelectedIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) {
-        next.delete(id);
-      } else {
-        next.add(id);
-      }
-      return next;
-    });
-  };
-
-  const handleSubmit = () => {
-    setIsFinished(true);
   };
 
   return (
-    <section className="mini-game-card click-game">
-      <div className="mini-game-heading">
+    <section className="mini-game-card logic-game">
+      <div className="logic-game-heading">
         <div>
           <p>Mini Game</p>
-          <h2>선교사를 찾아라</h2>
+          <h2>선교사를 추론하라</h2>
         </div>
-        <div className={`click-timer ${timeLeft <= 5 ? "is-urgent" : ""}`}>
-          {timeLeft}초
-        </div>
+        <div className="logic-answer-count">1명</div>
       </div>
 
-      <p className="click-game-desc">
-        마을 사람들 중 영국에서 온 선교사를 모두 찾아 클릭하세요.
-      </p>
+      <div className="logic-rule-card">
+        <strong>조건</strong>
+        <p>
+          다섯 명 중 영국 선교사는 정확히 한 명이다. 선교사는 자신의 정체를
+          숨기기 위해 거짓말을 하고, 나머지 네 사람은 모두 사실만 말한다.
+        </p>
+      </div>
 
-      <div className="click-tile-grid">
-        {tiles.map((tile) => (
+      <div className="logic-statement-list" aria-label="선교사 추론 명제">
+        {suspects.map((suspect) => (
           <button
-            key={tile.id}
+            className={`logic-statement-card logic-statement-button ${
+              selectedId === suspect.id ? "is-selected" : ""
+            }`}
+            key={suspect.id}
             type="button"
-            className={`click-tile ${selectedIds.has(tile.id) ? "is-selected" : ""}`}
-            onClick={() => handleTileClick(tile.id)}
-            disabled={isFinished}
+            disabled={isSubmitted}
+            onClick={() => setSelectedId(suspect.id)}
           >
-            {tile.description}
+            <div className="logic-speaker">{suspect.label}</div>
+            <div>
+              <span>{suspect.roleHint}</span>
+              <p>{suspect.statement}</p>
+            </div>
           </button>
         ))}
       </div>
 
-      <div className="mini-game-footer">
-        <p>{selectedIds.size}명 선택됨</p>
+      <div className="mini-game-footer logic-game-footer">
         <button
           className="submit-match-button"
           type="button"
-          disabled={isFinished}
+          disabled={!selectedId || isSubmitted}
           onClick={handleSubmit}
         >
-          제출하기
+          답 제출
         </button>
       </div>
     </section>

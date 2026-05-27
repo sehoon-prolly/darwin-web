@@ -1,131 +1,239 @@
 import { useEffect, useRef, useState } from "react";
 import type { MiniGameProps } from "../types/game";
 
-const TOTAL_TIME = 12;
-const SUCCESS_THRESHOLD = 4;
+const HOLE_COUNT = 9;
+const TARGET_SCORE = 5;
+const MAX_LIVES = 3;
+const SPAWN_INTERVAL_MS = 720;
+const POPUP_LIFETIME_MS = 980;
+const TARGET_POPUP_CHANCE = 0.34;
 
-type Cell = {
-  id: string;
-  description: string;
-  isEscaped: boolean;
+type PopupType = "target" | "distractor";
+
+type Popup = {
+  id: number;
+  type: PopupType;
 };
 
-const ALL_CELLS: Cell[] = [
-  { id: "e1", description: "담장을 넘어 숲으로 사라지고 있다", isEscaped: true },
-  { id: "e2", description: "쇠사슬을 끊고 달아나고 있다", isEscaped: true },
-  { id: "e3", description: "파수꾼의 눈을 피해 기어가고 있다", isEscaped: true },
-  { id: "e4", description: "다른 죄수와 함께 어둠 속을 달리고 있다", isEscaped: true },
-  { id: "e5", description: "밧줄을 타고 담장을 내려오고 있다", isEscaped: true },
-  { id: "e6", description: "수용소 울타리에 구멍을 뚫고 있다", isEscaped: true },
-  { id: "c1", description: "독방 안에 홀로 갇혀 있다", isEscaped: false },
-  { id: "c2", description: "교도관의 감시 아래 강제 노동 중이다", isEscaped: false },
-  { id: "c3", description: "무거운 쇠사슬에 묶여 이동하고 있다", isEscaped: false },
-  { id: "c4", description: "수용소 마당에서 대기하고 있다", isEscaped: false },
-  { id: "c5", description: "교도관의 명령에 따라 작업하고 있다", isEscaped: false },
-  { id: "c6", description: "사면을 기다리며 서류를 작성하고 있다", isEscaped: false },
-];
+type HoleState = Popup | null;
 
-function shuffle<T>(arr: T[]): T[] {
-  const result = [...arr];
-  for (let i = result.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [result[i], result[j]] = [result[j], result[i]];
-  }
-  return result;
+function createEmptyHoles() {
+  return Array.from<HoleState>({ length: HOLE_COUNT }).fill(null);
+}
+
+function getRandomItem<T>(items: T[]) {
+  return items[Math.floor(Math.random() * items.length)];
 }
 
 export default function PrisonerClickGame({ onComplete }: MiniGameProps) {
-  const [cells] = useState(() => shuffle(ALL_CELLS));
-  const [timeLeft, setTimeLeft] = useState(TOTAL_TIME);
-  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-  const [isFinished, setIsFinished] = useState(false);
+  const [holes, setHoles] = useState<HoleState[]>(() => createEmptyHoles());
+  const [score, setScore] = useState(0);
+  const [lives, setLives] = useState(MAX_LIVES);
+  const [result, setResult] = useState<boolean | null>(null);
+
+  const popupIdRef = useRef(0);
+  const scoreRef = useRef(0);
+  const livesRef = useRef(MAX_LIVES);
   const hasCompleted = useRef(false);
+  const timeoutRefs = useRef<ReturnType<typeof setTimeout>[]>([]);
 
-  useEffect(() => {
-    if (isFinished) return;
-    const interval = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          setIsFinished(true);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [isFinished]);
+  const clearPopupTimers = () => {
+    timeoutRefs.current.forEach((timer) => clearTimeout(timer));
+    timeoutRefs.current = [];
+  };
 
-  useEffect(() => {
-    if (!isFinished || hasCompleted.current) return;
-    hasCompleted.current = true;
+  const finishGame = (success: boolean) => {
+    setResult((currentResult) => currentResult ?? success);
+  };
 
-    const correctClicks = [...selectedIds].filter(
-      (id) => ALL_CELLS.find((c) => c.id === id)?.isEscaped,
-    ).length;
-
-    const success = correctClicks >= SUCCESS_THRESHOLD;
-    onComplete({
-      success,
-      gainedElements: success ? ["competition_structure"] : ["incomplete_natural_selection"],
-    });
-  }, [isFinished, selectedIds, onComplete]);
-
-  const handleCellClick = (id: string) => {
-    if (isFinished) return;
-    setSelectedIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) {
-        next.delete(id);
-      } else {
-        next.add(id);
+  const removePopup = (holeIndex: number, popupId: number) => {
+    setHoles((currentHoles) => {
+      if (currentHoles[holeIndex]?.id !== popupId) {
+        return currentHoles;
       }
-      return next;
+
+      const nextHoles = [...currentHoles];
+      nextHoles[holeIndex] = null;
+      return nextHoles;
     });
   };
 
-  const handleSubmit = () => {
-    setIsFinished(true);
+  const spawnPopup = () => {
+    const popupId = popupIdRef.current + 1;
+    popupIdRef.current = popupId;
+
+    setHoles((currentHoles) => {
+      const emptyHoleIndexes = currentHoles
+        .map((popup, index) => (popup ? null : index))
+        .filter((index): index is number => index !== null);
+
+      if (emptyHoleIndexes.length === 0) {
+        return currentHoles;
+      }
+
+      const holeIndex = getRandomItem(emptyHoleIndexes);
+      const popupType: PopupType =
+        Math.random() < TARGET_POPUP_CHANCE ? "target" : "distractor";
+      const nextHoles = [...currentHoles];
+      nextHoles[holeIndex] = {
+        id: popupId,
+        type: popupType,
+      };
+
+      const timer = setTimeout(() => {
+        removePopup(holeIndex, popupId);
+      }, POPUP_LIFETIME_MS);
+      timeoutRefs.current.push(timer);
+
+      return nextHoles;
+    });
+  };
+
+  useEffect(() => {
+    if (result !== null) {
+      clearPopupTimers();
+      setHoles(createEmptyHoles());
+      return;
+    }
+
+    const initialTimer = setTimeout(spawnPopup, 260);
+    const interval = setInterval(spawnPopup, SPAWN_INTERVAL_MS);
+
+    return () => {
+      clearTimeout(initialTimer);
+      clearInterval(interval);
+    };
+  }, [result]);
+
+  useEffect(() => {
+    return clearPopupTimers;
+  }, []);
+
+  useEffect(() => {
+    if (result === null || hasCompleted.current) {
+      return;
+    }
+
+    hasCompleted.current = true;
+    onComplete({
+      success: result,
+      gainedElements: result ? ["competition_structure"] : ["incomplete_natural_selection"],
+    });
+  }, [onComplete, result]);
+
+  const handlePopupClick = (holeIndex: number) => {
+    if (result !== null) {
+      return;
+    }
+
+    const popup = holes[holeIndex];
+
+    if (!popup) {
+      return;
+    }
+
+    setHoles((currentHoles) => {
+      const nextHoles = [...currentHoles];
+      nextHoles[holeIndex] = null;
+      return nextHoles;
+    });
+
+    if (popup.type === "target") {
+      const nextScore = scoreRef.current + 1;
+      scoreRef.current = nextScore;
+      setScore(nextScore);
+
+      if (nextScore >= TARGET_SCORE) {
+        finishGame(true);
+      }
+      return;
+    }
+
+    const nextLives = livesRef.current - 1;
+    livesRef.current = nextLives;
+    setLives(nextLives);
+
+    if (nextLives <= 0) {
+      finishGame(false);
+    }
+  };
+
+  const handleRestart = () => {
+    clearPopupTimers();
+    popupIdRef.current = 0;
+    scoreRef.current = 0;
+    livesRef.current = MAX_LIVES;
+    hasCompleted.current = false;
+    setHoles(createEmptyHoles());
+    setScore(0);
+    setLives(MAX_LIVES);
+    setResult(null);
   };
 
   return (
-    <section className="mini-game-card click-game">
-      <div className="mini-game-heading">
-        <div>
+    <section className="mini-game-card whack-game">
+      <div className="whack-hud">
+        <div className="whack-score">
+          <span>Score</span>
+          <strong>
+            {score}/{TARGET_SCORE}
+          </strong>
+        </div>
+
+        <div className="whack-title">
           <p>Mini Game</p>
           <h2>죄수를 잡아라</h2>
         </div>
-        <div className={`click-timer ${timeLeft <= 5 ? "is-urgent" : ""}`}>
-          {timeLeft}초
+
+        <div className="whack-lives" aria-label={`남은 목숨 ${lives}개`}>
+          {Array.from({ length: MAX_LIVES }, (_, index) => (
+            <span
+              className={index < lives ? "is-live" : "is-lost"}
+              key={`life-${index}`}
+              aria-hidden="true"
+            />
+          ))}
         </div>
       </div>
 
-      <p className="click-game-desc">
-        오스트레일리아 유배지에서 탈주를 시도하는 죄수들을 찾아 클릭하세요.
-      </p>
-
-      <div className="click-tile-grid">
-        {cells.map((cell) => (
+      <div className="whack-stage" aria-label="구멍에서 올라오는 캐릭터 클릭 게임">
+        {holes.map((popup, index) => (
           <button
-            key={cell.id}
+            className={`whack-hole ${popup ? `has-popup ${popup.type}` : ""}`}
+            key={`hole-${index}`}
             type="button"
-            className={`click-tile ${selectedIds.has(cell.id) ? "is-selected" : ""}`}
-            onClick={() => handleCellClick(cell.id)}
-            disabled={isFinished}
+            disabled={result !== null}
+            onClick={() => handlePopupClick(index)}
+            aria-label={
+              popup
+                ? popup.type === "target"
+                  ? "대상 죄수"
+                  : "비대상 인물"
+                : "빈 구멍"
+            }
           >
-            {cell.description}
+            <span className="whack-hole-shadow" />
+            {popup ? (
+              <span className={`whack-character ${popup.type}`}>
+                <span className="whack-head">
+                  <span className="whack-eye left" />
+                  <span className="whack-eye right" />
+                </span>
+                <span className="whack-body" />
+              </span>
+            ) : null}
           </button>
         ))}
       </div>
 
-      <div className="mini-game-footer">
-        <p>{selectedIds.size}명 선택됨</p>
+      <div className="mini-game-footer whack-footer">
+        <p>줄무늬 죄수 캐릭터만 클릭하세요. 다른 인물을 누르면 목숨이 줄어듭니다.</p>
         <button
-          className="submit-match-button"
+          className="submit-match-button whack-reset-button"
           type="button"
-          disabled={isFinished}
-          onClick={handleSubmit}
+          onClick={handleRestart}
         >
-          제출하기
+          다시 시작
         </button>
       </div>
     </section>

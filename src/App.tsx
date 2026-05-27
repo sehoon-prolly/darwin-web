@@ -77,6 +77,7 @@ export default function App() {
     gameState.isMiniGameActive &&
     scene.miniGameType &&
     scene.miniGameType !== "none";
+  const shouldHideDialogueBox = Boolean(ending || shouldShowMiniGame);
   const [isChoiceOverlayDelayed, setIsChoiceOverlayDelayed] = useState(false);
   const hasChoiceOverlay = Boolean(
     scene.choices?.length &&
@@ -681,7 +682,7 @@ export default function App() {
         </SceneView>
       }
       dialogueBox={
-        ending ? null : (
+        shouldHideDialogueBox ? null : (
           <DialogueBox
             scene={scene}
             isMiniGameActive={Boolean(shouldShowMiniGame)}
