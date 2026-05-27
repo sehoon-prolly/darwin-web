@@ -364,26 +364,25 @@ export default function BeakFoodMatchingGame({ onComplete }: MiniGameProps) {
               </feMerge>
             </filter>
           </defs>
-          {Object.entries(paths).flatMap(([beakId, path]) =>
-            path.cells.slice(1).map((cell, index) => {
-              const previousCell = path.cells[index];
-              const start = getLinePoint(previousCell);
-              const end = getLinePoint(cell);
-
-              return (
-                <line
-                  className="connection-line"
-                  key={`${beakId}-${index}`}
-                  x1={start.x}
-                  y1={start.y}
-                  x2={end.x}
-                  y2={end.y}
-                  stroke={getPathColor(beakId)}
-                  filter="url(#connection-glow)"
-                />
-              );
-            }),
-          )}
+          {Object.entries(paths).map(([beakId, path]) => {
+            if (path.cells.length < 2) return null;
+            const points = path.cells
+              .map((c) => {
+                const p = getLinePoint(c);
+                return `${p.x},${p.y}`;
+              })
+              .join(" ");
+            return (
+              <polyline
+                className="connection-line"
+                key={beakId}
+                points={points}
+                fill="none"
+                stroke={getPathColor(beakId)}
+                filter="url(#connection-glow)"
+              />
+            );
+          })}
           {Object.entries(paths).map(([beakId, path]) => {
             const lastCell = path.cells[path.cells.length - 1];
             const end = getLinePoint(lastCell);
