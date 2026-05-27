@@ -122,6 +122,24 @@ const chapterConfigs: ChapterConfig[] = [
       "/assets/backgrounds/chapters/ch2-scene2.png",
       "/assets/backgrounds/chapters/ch2-scene3.png",
     ],
+    sceneContent: [
+      {
+        speakerName: "해설",
+        dialogueText:
+          "리우데자네이루 인근 동굴에서 다윈은 서로 다른 동물들의 화석과 골격을 발견했다. 겉모습은 전혀 달랐지만, 뼈의 배치가 묘하게 닮아 있었다.",
+      },
+      {
+        speakerName: "다윈",
+        dialogueText:
+          "고래의 지느러미, 박쥐의 날개, 인간의 팔... 기능도 모양도 다르지만 뼈 구조가 비슷해 보이는군. 이것이 단순한 우연일까, 아니면 어떤 공통된 기원을 가리키는 걸까?",
+      },
+      {
+        speakerName: "해설",
+        dialogueText:
+          "표본들을 직접 비교해보자. 각 동물의 앞다리와 뼈 구조 특성을 올바르게 연결해 공통점을 찾아보아라.",
+        miniGameType: "skeletonMatching",
+      },
+    ],
   },
   {
     id: "chapter3",
@@ -131,6 +149,24 @@ const chapterConfigs: ChapterConfig[] = [
       "/assets/backgrounds/chapters/ch3-scene1.png",
       "/assets/backgrounds/chapters/ch3-scene2.png",
       "/assets/backgrounds/chapters/ch3-scene3.png",
+    ],
+    sceneContent: [
+      {
+        speakerName: "해설",
+        dialogueText:
+          "티에라델푸에고에 도착한 비글호. 피츠로이 선장이 '문명화'시킨 원주민 세 명을 고향 땅으로 돌려보내면서, 영국 선교사들도 함께 이 땅에 발을 들였다.",
+      },
+      {
+        speakerName: "다윈",
+        dialogueText:
+          "선교사들이 이 땅에 자리를 잡으려 한다. 과학 탐사와 함께 이루어지는 이 장면... 이 상황의 배경을 제대로 이해하는 것이 중요할 것 같군.",
+      },
+      {
+        speakerName: "해설",
+        dialogueText:
+          "마을 사람들 사이에서 영국에서 온 선교사들을 찾아보아라. 제한 시간 안에 선교사를 식별해야 한다.",
+        miniGameType: "missionaryClick",
+      },
     ],
   },
   {
@@ -221,6 +257,24 @@ const chapterConfigs: ChapterConfig[] = [
       "/assets/backgrounds/chapters/ch7-scene1.png",
       "/assets/backgrounds/chapters/ch7-scene2.png",
       "/assets/backgrounds/chapters/ch7-scene3.png",
+    ],
+    sceneContent: [
+      {
+        speakerName: "해설",
+        dialogueText:
+          "비글호는 오스트레일리아에 기항했다. 영국은 이곳을 죄수 유배지로 삼아 개척하고 있었다. 광활한 땅과 한정된 자원, 그리고 치열한 생존 경쟁이 펼쳐지는 곳.",
+      },
+      {
+        speakerName: "다윈",
+        dialogueText:
+          "유배된 죄수들이 탈주를 시도하고 있다. 한정된 자원을 두고 벌어지는 경쟁과 투쟁 — 이것이 자연 세계에서 일어나는 일과 과연 다를까?",
+      },
+      {
+        speakerName: "해설",
+        dialogueText:
+          "탈주를 시도하는 죄수들을 찾아내어라. 생존을 위한 경쟁이 어떤 모습인지 직접 눈으로 확인해보자.",
+        miniGameType: "prisonerClick",
+      },
     ],
   },
   {
