@@ -53,6 +53,37 @@ function findScene(chapter: Chapter, sceneId: string): Scene {
   return chapter.scenes.find((scene) => scene.id === sceneId) ?? getFirstScene(chapter);
 }
 
+function getSpeakerCharacterSide(speakerName: string) {
+  if (!speakerName || speakerName === "해설") {
+    return null;
+  }
+
+  if (speakerName.includes("다윈")) {
+    return "right";
+  }
+
+  return "left";
+}
+
+function getAppearedCharacterSides(chapter: Chapter, currentSceneId: string) {
+  const currentSceneIndex = chapter.scenes.findIndex(
+    (chapterScene) => chapterScene.id === currentSceneId,
+  );
+  const scenesSoFar = chapter.scenes.slice(
+    0,
+    currentSceneIndex >= 0 ? currentSceneIndex + 1 : 1,
+  );
+
+  return {
+    left: scenesSoFar.some(
+      (chapterScene) => getSpeakerCharacterSide(chapterScene.speakerName) === "left",
+    ),
+    right: scenesSoFar.some(
+      (chapterScene) => getSpeakerCharacterSide(chapterScene.speakerName) === "right",
+    ),
+  };
+}
+
 export default function App() {
   const [hasOpenedGame, setHasOpenedGame] = useState(false);
   const [gainedElementToast, setGainedElementToast] = useState<{
@@ -77,6 +108,10 @@ export default function App() {
 
   const chapter = chapterMap[gameState.currentChapterId] ?? firstChapter;
   const scene = findScene(chapter, gameState.currentSceneId);
+  const visibleCharacterSides = useMemo(
+    () => getAppearedCharacterSides(chapter, scene.id),
+    [chapter, scene.id],
+  );
   const ending = gameState.currentEnding
     ? endings[gameState.currentEnding]
     : null;
@@ -687,6 +722,7 @@ export default function App() {
       sceneView={
         <SceneView
           scene={scene}
+          visibleCharacterSides={visibleCharacterSides}
           onNoticePosterClick={(posterId) => {
             if (posterId === "bottom-left") {
               setHasReadRequiredPoster(true);

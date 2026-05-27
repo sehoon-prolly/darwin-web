@@ -363,7 +363,7 @@ button:not(:disabled) {
 .character-slot {
   position: absolute;
   z-index: 2;
-  bottom: 0;
+  bottom: -5%;
   width: 25%;
   height: 83%;
   display: grid;
@@ -381,11 +381,11 @@ button:not(:disabled) {
 }
 
 .character-slot.left {
-  left: 2%;
+  left: -4.5%;
 }
 
 .character-slot.right {
-  right: 2%;
+  right: -4.5%;
 }
 
 .character-slot span {
@@ -436,6 +436,12 @@ button:not(:disabled) {
 
 .character-slot.is-speaking {
   opacity: 1;
+  filter: none;
+}
+
+.character-slot.is-hidden {
+  opacity: 0;
+  visibility: hidden;
   filter: none;
 }
 

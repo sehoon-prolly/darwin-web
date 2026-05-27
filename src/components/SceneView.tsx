@@ -7,6 +7,10 @@ const NOTICE_POSTER_SCENE_ID = "chapter0-scene2";
 type SceneViewProps = {
   scene: Scene;
   children?: ReactNode;
+  visibleCharacterSides?: {
+    left: boolean;
+    right: boolean;
+  };
   onNoticePosterClick?: (posterId: string) => void;
 };
 
@@ -23,8 +27,12 @@ function characterStyle(imagePath?: string): CSSProperties | undefined {
 function shouldPlayCharacterEntrance(
   currentImage?: string,
   previousImage?: string,
+  currentVisible = true,
+  previousVisible = true,
 ) {
-  return Boolean(currentImage && currentImage !== previousImage);
+  return Boolean(
+    currentImage && currentVisible && (!previousVisible || currentImage !== previousImage),
+  );
 }
 
 function getSpeakerSide(speakerName: string) {
@@ -42,12 +50,17 @@ function getSpeakerSide(speakerName: string) {
 export default function SceneView({
   scene,
   children,
+  visibleCharacterSides = { left: true, right: true },
   onNoticePosterClick,
 }: SceneViewProps) {
   const previousCharacterImages = useRef<{
     left?: string;
     right?: string;
   }>({});
+  const previousVisibleCharacterSides = useRef({
+    left: visibleCharacterSides.left,
+    right: visibleCharacterSides.right,
+  });
   const [enteringCharacters, setEnteringCharacters] = useState({
     left: false,
     right: false,
@@ -65,10 +78,14 @@ export default function SceneView({
       left: shouldPlayCharacterEntrance(
         scene.leftCharacterImage,
         previousCharacterImages.current.left,
+        visibleCharacterSides.left,
+        previousVisibleCharacterSides.current.left,
       ),
       right: shouldPlayCharacterEntrance(
         scene.rightCharacterImage,
         previousCharacterImages.current.right,
+        visibleCharacterSides.right,
+        previousVisibleCharacterSides.current.right,
       ),
     };
 
@@ -76,6 +93,7 @@ export default function SceneView({
       left: scene.leftCharacterImage,
       right: scene.rightCharacterImage,
     };
+    previousVisibleCharacterSides.current = visibleCharacterSides;
 
     setEnteringCharacters(nextEnteringCharacters);
 
@@ -88,7 +106,11 @@ export default function SceneView({
     }, 850);
 
     return () => window.clearTimeout(timeoutId);
-  }, [scene.leftCharacterImage, scene.rightCharacterImage]);
+  }, [
+    scene.leftCharacterImage,
+    scene.rightCharacterImage,
+    visibleCharacterSides,
+  ]);
 
   return (
     <section className="scene-view" style={sceneStyle}>
@@ -113,8 +135,8 @@ export default function SceneView({
       <div
         className={`character-slot left ${scene.leftCharacterImage ? "has-image" : ""} ${
           enteringCharacters.left ? "is-entering" : ""
-        } ${speakerSide === "left" ? "is-speaking" : ""} ${
-          speakerSide === "right" ? "is-dimmed" : ""
+        } ${visibleCharacterSides.left ? "" : "is-hidden"} ${
+          speakerSide === "left" ? "is-speaking" : "is-dimmed"
         }`}
         style={characterStyle(scene.leftCharacterImage)}
         aria-label="왼쪽 캐릭터 영역"
@@ -127,8 +149,8 @@ export default function SceneView({
       <div
         className={`character-slot right ${scene.rightCharacterImage ? "has-image" : ""} ${
           enteringCharacters.right ? "is-entering" : ""
-        } ${speakerSide === "right" ? "is-speaking" : ""} ${
-          speakerSide === "left" ? "is-dimmed" : ""
+        } ${visibleCharacterSides.right ? "" : "is-hidden"} ${
+          speakerSide === "right" ? "is-speaking" : "is-dimmed"
         }`}
         style={characterStyle(scene.rightCharacterImage)}
         aria-label="오른쪽 캐릭터 영역"
