@@ -452,6 +452,7 @@ export default function BeakFoodMatchingGame({ onComplete }: MiniGameProps) {
                 {endpoint ? (
                   <span className="connection-endpoint" style={getCellStyle(endpoint)}>
                     <span className="connection-dot" />
+                    <span className="connection-ep-label">{endpoint.label}</span>
                   </span>
                 ) : null}
               </button>

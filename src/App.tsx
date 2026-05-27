@@ -18,7 +18,7 @@ import { judgeEnding } from "./utils/endingJudge";
 const firstChapter = chapters[0];
 const CHAPTER_FADE_MS = 800;
 const CHAPTER_SWAP_DELAY_MS = 0;
-const ELEMENT_TOAST_DURATION_MS = 1800;
+const ELEMENT_TOAST_DURATION_MS = 900;
 const CHOICE_OVERLAY_AFTER_TOAST_DELAY_MS = 300;
 const CHOICE_OVERLAY_DELAY_MS =
   ELEMENT_TOAST_DURATION_MS + CHOICE_OVERLAY_AFTER_TOAST_DELAY_MS;
@@ -77,7 +77,10 @@ export default function App() {
     gameState.isMiniGameActive &&
     scene.miniGameType &&
     scene.miniGameType !== "none";
-  const shouldHideDialogueBox = Boolean(ending || shouldShowMiniGame);
+  const isFinalManuscriptOpen = isFinalChapter && !ending;
+  const shouldHideDialogueBox = Boolean(
+    ending || shouldShowMiniGame || isFinalManuscriptOpen,
+  );
   const [isChoiceOverlayDelayed, setIsChoiceOverlayDelayed] = useState(false);
   const hasChoiceOverlay = Boolean(
     scene.choices?.length &&
@@ -697,17 +700,15 @@ export default function App() {
       choiceOverlay={
         hasChoiceOverlay ? (
           <div className="choice-overlay">
-            <section className="choice-panel">
-              <div className="choice-list">
-                {scene.choices?.map((choice) => (
-                  <ChoiceButton
-                    key={choice.id}
-                    choice={choice}
-                    onSelect={handleChoice}
-                  />
-                ))}
-              </div>
-            </section>
+            <div className="choice-list">
+              {scene.choices?.map((choice) => (
+                <ChoiceButton
+                  key={choice.id}
+                  choice={choice}
+                  onSelect={handleChoice}
+                />
+              ))}
+            </div>
           </div>
         ) : null
       }

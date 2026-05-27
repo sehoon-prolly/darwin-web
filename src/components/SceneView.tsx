@@ -27,6 +27,18 @@ function shouldPlayCharacterEntrance(
   return Boolean(currentImage && currentImage !== previousImage);
 }
 
+function getSpeakerSide(speakerName: string) {
+  if (!speakerName || speakerName === "해설") {
+    return null;
+  }
+
+  if (speakerName.includes("다윈")) {
+    return "right";
+  }
+
+  return "left";
+}
+
 export default function SceneView({
   scene,
   children,
@@ -46,6 +58,7 @@ export default function SceneView({
         backgroundImage: `linear-gradient(180deg, rgba(249, 239, 204, 0.16), rgba(54, 96, 94, 0.18)), url("${scene.backgroundImage}")`,
       }
     : {};
+  const speakerSide = getSpeakerSide(scene.speakerName);
 
   useEffect(() => {
     const nextEnteringCharacters = {
@@ -100,6 +113,8 @@ export default function SceneView({
       <div
         className={`character-slot left ${scene.leftCharacterImage ? "has-image" : ""} ${
           enteringCharacters.left ? "is-entering" : ""
+        } ${speakerSide === "left" ? "is-speaking" : ""} ${
+          speakerSide === "right" ? "is-dimmed" : ""
         }`}
         style={characterStyle(scene.leftCharacterImage)}
         aria-label="왼쪽 캐릭터 영역"
@@ -112,6 +127,8 @@ export default function SceneView({
       <div
         className={`character-slot right ${scene.rightCharacterImage ? "has-image" : ""} ${
           enteringCharacters.right ? "is-entering" : ""
+        } ${speakerSide === "right" ? "is-speaking" : ""} ${
+          speakerSide === "left" ? "is-dimmed" : ""
         }`}
         style={characterStyle(scene.rightCharacterImage)}
         aria-label="오른쪽 캐릭터 영역"
