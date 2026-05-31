@@ -265,11 +265,11 @@ export default function App() {
 
   function moveTo(nextSceneId?: string, nextChapterId?: string) {
     if (nextChapterId) {
-      runScreenTransition(() => {
-        setGameState((currentState) => {
-          const nextChapter = chapterMap[nextChapterId] ?? firstChapter;
-          const nextScene = getFirstScene(nextChapter);
+      const nextChapter = chapterMap[nextChapterId] ?? firstChapter;
+      const nextScene = getFirstScene(nextChapter);
 
+      runBackgroundTransitionIfNeeded(nextScene, () => {
+        setGameState((currentState) => {
           return {
             ...currentState,
             currentChapterId: nextChapter.id,
@@ -287,10 +287,10 @@ export default function App() {
     }
 
     if (nextSceneId) {
-      runScreenTransition(() => {
-        setGameState((currentState) => {
-          const nextScene = findScene(chapter, nextSceneId);
+      const nextScene = findScene(chapter, nextSceneId);
 
+      runBackgroundTransitionIfNeeded(nextScene, () => {
+        setGameState((currentState) => {
           return {
             ...currentState,
             currentSceneId: nextScene.id,
@@ -300,6 +300,15 @@ export default function App() {
         });
       });
     }
+  }
+
+  function runBackgroundTransitionIfNeeded(nextScene: Scene, updateScreen: () => void) {
+    if (displayedScene.backgroundImage !== nextScene.backgroundImage) {
+      runScreenTransition(updateScreen);
+      return;
+    }
+
+    updateScreen();
   }
 
   function clearScreenTransitionTimeouts() {
@@ -458,12 +467,12 @@ export default function App() {
         }
 
         if (choice.nextChapterId) {
-          runScreenTransition(() => {
-            setGameState((currentState) => {
-              const nextChapter =
-                chapterMap[choice.nextChapterId ?? ""] ?? firstChapter;
-              const nextScene = getFirstScene(nextChapter);
+          const nextChapter =
+            chapterMap[choice.nextChapterId ?? ""] ?? firstChapter;
+          const nextScene = getFirstScene(nextChapter);
 
+          runBackgroundTransitionIfNeeded(nextScene, () => {
+            setGameState((currentState) => {
               return {
                 ...currentState,
                 currentChapterId: nextChapter.id,
@@ -483,10 +492,10 @@ export default function App() {
         }
 
         if (choice.nextSceneId) {
-          runScreenTransition(() => {
-            setGameState((currentState) => {
-              const nextScene = findScene(chapter, choice.nextSceneId ?? "");
+          const nextScene = findScene(chapter, choice.nextSceneId ?? "");
 
+          runBackgroundTransitionIfNeeded(nextScene, () => {
+            setGameState((currentState) => {
               return {
                 ...currentState,
                 currentSceneId: nextScene.id,
@@ -506,14 +515,15 @@ export default function App() {
     }
 
     if (choice.nextChapterId) {
-      runScreenTransition(() => {
+      const nextChapter = chapterMap[choice.nextChapterId ?? ""] ?? firstChapter;
+      const nextScene = getFirstScene(nextChapter);
+
+      runBackgroundTransitionIfNeeded(nextScene, () => {
         setGameState((currentState) => {
           const acquiredElements = uniqueElements([
             ...currentState.acquiredElements,
             ...(choice.gainedElements ?? []),
           ]);
-          const nextChapter = chapterMap[choice.nextChapterId ?? ""] ?? firstChapter;
-          const nextScene = getFirstScene(nextChapter);
 
           return {
             ...currentState,
@@ -539,13 +549,14 @@ export default function App() {
     announceGainedElements(choice.gainedElements);
 
     if (choice.nextSceneId) {
-      runScreenTransition(() => {
+      const nextScene = findScene(chapter, choice.nextSceneId ?? "");
+
+      runBackgroundTransitionIfNeeded(nextScene, () => {
         setGameState((currentState) => {
           const acquiredElements = uniqueElements([
             ...currentState.acquiredElements,
             ...(choice.gainedElements ?? []),
           ]);
-          const nextScene = findScene(chapter, choice.nextSceneId ?? "");
 
           return {
             ...currentState,
@@ -611,12 +622,11 @@ export default function App() {
       }));
 
       scheduleProgressionAfterToast(() => {
-        runScreenTransition(() => {
-          setGameState((currentState) => {
-            const nextChapter =
-              chapterMap[scene.nextChapterId ?? ""] ?? firstChapter;
-            const nextScene = getFirstScene(nextChapter);
+        const nextChapter = chapterMap[scene.nextChapterId ?? ""] ?? firstChapter;
+        const nextScene = getFirstScene(nextChapter);
 
+        runBackgroundTransitionIfNeeded(nextScene, () => {
+          setGameState((currentState) => {
             return {
               ...currentState,
               currentChapterId: nextChapter.id,
@@ -637,14 +647,15 @@ export default function App() {
     }
 
     if (scene.nextChapterId) {
-      runScreenTransition(() => {
+      const nextChapter = chapterMap[scene.nextChapterId ?? ""] ?? firstChapter;
+      const nextScene = getFirstScene(nextChapter);
+
+      runBackgroundTransitionIfNeeded(nextScene, () => {
         setGameState((currentState) => {
           const acquiredElements = uniqueElements([
             ...currentState.acquiredElements,
             ...result.gainedElements,
           ]);
-          const nextChapter = chapterMap[scene.nextChapterId ?? ""] ?? firstChapter;
-          const nextScene = getFirstScene(nextChapter);
 
           return {
             ...currentState,
@@ -666,13 +677,14 @@ export default function App() {
     announceGainedElements(result.gainedElements);
 
     if (scene.nextSceneId) {
-      runScreenTransition(() => {
+      const nextScene = findScene(chapter, scene.nextSceneId ?? "");
+
+      runBackgroundTransitionIfNeeded(nextScene, () => {
         setGameState((currentState) => {
           const acquiredElements = uniqueElements([
             ...currentState.acquiredElements,
             ...result.gainedElements,
           ]);
-          const nextScene = findScene(chapter, scene.nextSceneId ?? "");
 
           return {
             ...currentState,
