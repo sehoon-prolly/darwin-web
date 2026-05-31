@@ -47,9 +47,11 @@ button:not(:disabled) {
 }
 
 .opening-screen {
+  position: relative;
   min-height: 100vh;
   display: grid;
   place-items: center;
+  overflow: hidden;
   background:
     linear-gradient(rgba(23, 27, 25, 0.18), rgba(23, 27, 25, 0.34)),
     url("/assets/backgrounds/opening-pic.png");
@@ -58,6 +60,8 @@ button:not(:disabled) {
 }
 
 .opening-content {
+  position: relative;
+  z-index: 1;
   display: grid;
   place-items: center;
   gap: 28px;
@@ -486,18 +490,21 @@ button:not(:disabled) {
   animation: element-toast-ring 1200ms ease-out both;
 }
 
-.chapter-transition-overlay {
+.chapter-transition-overlay,
+.opening-transition-overlay {
   position: absolute;
   inset: 0;
   z-index: 30;
   background: #050505;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 800ms ease;
+  transition: opacity 250ms ease;
 }
 
-.chapter-transition-overlay.is-active {
+.chapter-transition-overlay.is-active,
+.opening-transition-overlay.is-active {
   opacity: 1;
+  pointer-events: auto;
 }
 
 @keyframes character-entrance-in {

@@ -16,8 +16,8 @@ import { clearGameState, loadGameState, saveGameState } from "./utils/storage";
 import { judgeEnding } from "./utils/endingJudge";
 
 const firstChapter = chapters[0];
-const CHAPTER_FADE_MS = 800;
-const CHAPTER_SWAP_DELAY_MS = 0;
+const SCREEN_FADE_STEP_MS = 250;
+const SCREEN_SWAP_DELAY_MS = 0;
 const ELEMENT_TOAST_DURATION_MS = 1200;
 const CHOICE_OVERLAY_AFTER_TOAST_DELAY_MS = 300;
 const CHOICE_OVERLAY_DELAY_MS =
@@ -107,6 +107,8 @@ function getAppearedCharacterSides(chapter: Chapter, currentSceneId: string) {
 
 export default function App() {
   const [hasOpenedGame, setHasOpenedGame] = useState(false);
+  const [isOpeningTransitionActive, setIsOpeningTransitionActive] =
+    useState(false);
   const [gainedElementToast, setGainedElementToast] = useState<{
     id: number;
     text: string;
@@ -119,7 +121,7 @@ export default function App() {
   >(null);
   const [readNoticePosterIds, setReadNoticePosterIds] = useState<string[]>([]);
   const [isProgressionPending, setIsProgressionPending] = useState(false);
-  const chapterTransitionTimeouts = useRef<number[]>([]);
+  const screenTransitionTimeouts = useRef<number[]>([]);
   const choiceOverlayDelayTimeout = useRef<number | null>(null);
   const gainedElementToastDelayTimeout = useRef<number | null>(null);
   const postToastNavigationTimeout = useRef<number | null>(null);
@@ -171,7 +173,7 @@ export default function App() {
 
   useEffect(() => {
     return () => {
-      clearChapterTransitionTimeouts();
+      clearScreenTransitionTimeouts();
       clearChoiceOverlayDelayTimeout();
       clearGainedElementToastDelayTimeout();
       clearPostToastNavigationTimeout();
@@ -263,7 +265,7 @@ export default function App() {
 
   function moveTo(nextSceneId?: string, nextChapterId?: string) {
     if (nextChapterId) {
-      runChapterTransition(() => {
+      runScreenTransition(() => {
         setGameState((currentState) => {
           const nextChapter = chapterMap[nextChapterId] ?? firstChapter;
           const nextScene = getFirstScene(nextChapter);
@@ -284,45 +286,65 @@ export default function App() {
       return;
     }
 
-    setGameState((currentState) => {
-      if (nextSceneId) {
-        const nextScene = findScene(chapter, nextSceneId);
+    if (nextSceneId) {
+      runScreenTransition(() => {
+        setGameState((currentState) => {
+          const nextScene = findScene(chapter, nextSceneId);
 
-        return {
-          ...currentState,
-          currentSceneId: nextScene.id,
-          isMiniGameActive:
-            Boolean(nextScene.miniGameType) && nextScene.miniGameType !== "none",
-        };
-      }
-
-      return currentState;
-    });
+          return {
+            ...currentState,
+            currentSceneId: nextScene.id,
+            isMiniGameActive:
+              Boolean(nextScene.miniGameType) && nextScene.miniGameType !== "none",
+          };
+        });
+      });
+    }
   }
 
-  function clearChapterTransitionTimeouts() {
-    chapterTransitionTimeouts.current.forEach((timeoutId) =>
+  function clearScreenTransitionTimeouts() {
+    screenTransitionTimeouts.current.forEach((timeoutId) =>
       window.clearTimeout(timeoutId),
     );
-    chapterTransitionTimeouts.current = [];
+    screenTransitionTimeouts.current = [];
   }
 
-  function runChapterTransition(updateChapter: () => void) {
-    clearChapterTransitionTimeouts();
+  function runScreenTransition(updateScreen: () => void) {
+    clearScreenTransitionTimeouts();
     setIsChapterTransitionActive(true);
 
     const swapTimeoutId = window.setTimeout(() => {
-      updateChapter();
+      updateScreen();
 
       const fadeInTimeoutId = window.setTimeout(() => {
         setIsChapterTransitionActive(false);
-        chapterTransitionTimeouts.current = [];
-      }, CHAPTER_SWAP_DELAY_MS);
+        screenTransitionTimeouts.current = [];
+      }, SCREEN_SWAP_DELAY_MS);
 
-      chapterTransitionTimeouts.current.push(fadeInTimeoutId);
-    }, CHAPTER_FADE_MS);
+      screenTransitionTimeouts.current.push(fadeInTimeoutId);
+    }, SCREEN_FADE_STEP_MS);
 
-    chapterTransitionTimeouts.current.push(swapTimeoutId);
+    screenTransitionTimeouts.current.push(swapTimeoutId);
+  }
+
+  function handleStartGame() {
+    clearScreenTransitionTimeouts();
+    setIsOpeningTransitionActive(true);
+
+    const swapTimeoutId = window.setTimeout(() => {
+      setHasOpenedGame(true);
+      setIsChapterTransitionActive(true);
+
+      const fadeInTimeoutId = window.setTimeout(() => {
+        setIsChapterTransitionActive(false);
+        setIsOpeningTransitionActive(false);
+        screenTransitionTimeouts.current = [];
+      }, SCREEN_SWAP_DELAY_MS);
+
+      screenTransitionTimeouts.current.push(fadeInTimeoutId);
+    }, SCREEN_FADE_STEP_MS);
+
+    screenTransitionTimeouts.current.push(swapTimeoutId);
   }
 
   function handleNext() {
@@ -436,7 +458,7 @@ export default function App() {
         }
 
         if (choice.nextChapterId) {
-          runChapterTransition(() => {
+          runScreenTransition(() => {
             setGameState((currentState) => {
               const nextChapter =
                 chapterMap[choice.nextChapterId ?? ""] ?? firstChapter;
@@ -461,17 +483,21 @@ export default function App() {
         }
 
         if (choice.nextSceneId) {
-          setGameState((currentState) => {
-            const nextScene = findScene(chapter, choice.nextSceneId ?? "");
+          runScreenTransition(() => {
+            setGameState((currentState) => {
+              const nextScene = findScene(chapter, choice.nextSceneId ?? "");
 
-            return {
-              ...currentState,
-              currentSceneId: nextScene.id,
-              isMiniGameActive:
-                Boolean(nextScene.miniGameType) &&
-                nextScene.miniGameType !== "none",
-            };
+              return {
+                ...currentState,
+                currentSceneId: nextScene.id,
+                isMiniGameActive:
+                  Boolean(nextScene.miniGameType) &&
+                  nextScene.miniGameType !== "none",
+              };
+            });
+            setIsProgressionPending(false);
           });
+          return;
         }
 
         setIsProgressionPending(false);
@@ -480,7 +506,7 @@ export default function App() {
     }
 
     if (choice.nextChapterId) {
-      runChapterTransition(() => {
+      runScreenTransition(() => {
         setGameState((currentState) => {
           const acquiredElements = uniqueElements([
             ...currentState.acquiredElements,
@@ -512,6 +538,32 @@ export default function App() {
 
     announceGainedElements(choice.gainedElements);
 
+    if (choice.nextSceneId) {
+      runScreenTransition(() => {
+        setGameState((currentState) => {
+          const acquiredElements = uniqueElements([
+            ...currentState.acquiredElements,
+            ...(choice.gainedElements ?? []),
+          ]);
+          const nextScene = findScene(chapter, choice.nextSceneId ?? "");
+
+          return {
+            ...currentState,
+            currentSceneId: nextScene.id,
+            acquiredElements,
+            selectedChoices: uniqueElements([
+              ...currentState.selectedChoices,
+              choice.id,
+            ]),
+            isMiniGameActive:
+              Boolean(nextScene.miniGameType) &&
+              nextScene.miniGameType !== "none",
+          };
+        });
+      });
+      return;
+    }
+
     setGameState((currentState) => {
       const acquiredElements = uniqueElements([
         ...currentState.acquiredElements,
@@ -528,22 +580,6 @@ export default function App() {
           acquiredElements,
           currentEnding: choice.endingId,
           isMiniGameActive: false,
-        };
-      }
-
-      if (choice.nextSceneId) {
-        const nextScene = findScene(chapter, choice.nextSceneId);
-
-        return {
-          ...currentState,
-          currentSceneId: nextScene.id,
-          acquiredElements,
-          selectedChoices: uniqueElements([
-            ...currentState.selectedChoices,
-            choice.id,
-          ]),
-          isMiniGameActive:
-            Boolean(nextScene.miniGameType) && nextScene.miniGameType !== "none",
         };
       }
 
@@ -575,7 +611,7 @@ export default function App() {
       }));
 
       scheduleProgressionAfterToast(() => {
-        runChapterTransition(() => {
+        runScreenTransition(() => {
           setGameState((currentState) => {
             const nextChapter =
               chapterMap[scene.nextChapterId ?? ""] ?? firstChapter;
@@ -601,7 +637,7 @@ export default function App() {
     }
 
     if (scene.nextChapterId) {
-      runChapterTransition(() => {
+      runScreenTransition(() => {
         setGameState((currentState) => {
           const acquiredElements = uniqueElements([
             ...currentState.acquiredElements,
@@ -629,23 +665,33 @@ export default function App() {
 
     announceGainedElements(result.gainedElements);
 
+    if (scene.nextSceneId) {
+      runScreenTransition(() => {
+        setGameState((currentState) => {
+          const acquiredElements = uniqueElements([
+            ...currentState.acquiredElements,
+            ...result.gainedElements,
+          ]);
+          const nextScene = findScene(chapter, scene.nextSceneId ?? "");
+
+          return {
+            ...currentState,
+            currentSceneId: nextScene.id,
+            acquiredElements,
+            isMiniGameActive:
+              Boolean(nextScene.miniGameType) &&
+              nextScene.miniGameType !== "none",
+          };
+        });
+      });
+      return;
+    }
+
     setGameState((currentState) => {
       const acquiredElements = uniqueElements([
         ...currentState.acquiredElements,
         ...result.gainedElements,
       ]);
-
-      if (scene.nextSceneId) {
-        const nextScene = findScene(chapter, scene.nextSceneId);
-
-        return {
-          ...currentState,
-          currentSceneId: nextScene.id,
-          acquiredElements,
-          isMiniGameActive:
-            Boolean(nextScene.miniGameType) && nextScene.miniGameType !== "none",
-        };
-      }
 
       return {
         ...currentState,
@@ -722,11 +768,12 @@ export default function App() {
   }
 
   function handleNewGame() {
-    clearChapterTransitionTimeouts();
+    clearScreenTransitionTimeouts();
     clearChoiceOverlayDelayTimeout();
     clearGainedElementToastDelayTimeout();
     clearPostToastNavigationTimeout();
     setIsChapterTransitionActive(false);
+    setIsOpeningTransitionActive(false);
     setIsPaperZoomOpen(false);
     setIsChoiceOverlayDelayed(false);
     setIsProgressionPending(false);
@@ -738,7 +785,12 @@ export default function App() {
   }
 
   if (!hasOpenedGame) {
-    return <OpeningScreen onStart={() => setHasOpenedGame(true)} />;
+    return (
+      <OpeningScreen
+        isTransitionActive={isOpeningTransitionActive}
+        onStart={handleStartGame}
+      />
+    );
   }
 
   return (
