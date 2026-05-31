@@ -43,7 +43,7 @@ export default function DialogueBox({
       <p>{scene.dialogueText}</p>
       {isNextLocked ? (
         <small className="dialogue-lock-hint">
-          벽보를 눌러 내용을 확인해보자.
+          모든 벽보를 눌러 내용을 확인해보자.
         </small>
       ) : null}
 

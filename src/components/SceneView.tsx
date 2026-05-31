@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import type { CSSProperties, ReactNode } from "react";
 import type { Scene } from "../types/game";
 
-const NOTICE_POSTER_SCENE_ID = "chapter0-scene15";
+const NOTICE_POSTER_SCENE_ID = "chapter0-scene14";
 
 type SceneViewProps = {
   scene: Scene;
@@ -35,13 +35,19 @@ function shouldPlayCharacterEntrance(
   );
 }
 
-function getSpeakerSide(speakerName: string) {
+function getSpeakerSide(scene: Scene) {
+  const { speakerName } = scene;
+
   if (!speakerName || speakerName === "해설") {
     return null;
   }
 
   if (speakerName.includes("다윈")) {
     return "right";
+  }
+
+  if (scene.id.startsWith("chapter0-")) {
+    return speakerName === "나" ? "left" : null;
   }
 
   return "left";
@@ -71,7 +77,7 @@ export default function SceneView({
         backgroundImage: `linear-gradient(180deg, rgba(249, 239, 204, 0.16), rgba(54, 96, 94, 0.18)), url("${scene.backgroundImage}")`,
       }
     : {};
-  const speakerSide = getSpeakerSide(scene.speakerName);
+  const speakerSide = getSpeakerSide(scene);
 
   useEffect(() => {
     const nextEnteringCharacters = {

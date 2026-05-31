@@ -21,10 +21,9 @@ type ChapterConfig = {
 const chapterConfigs: ChapterConfig[] = [
   {
     id: "chapter0",
-    title: "CH.0 런던 - 조수 모집 공고",
-    location: "런던",
+    title: "CH. 0 : 런던의 길거리",
+    location: "런던의 길거리",
     backgroundImages: [
-      "/assets/backgrounds/chapters/ch0-scene1.png",
       "/assets/backgrounds/chapters/ch0-scene1.png",
       "/assets/backgrounds/chapters/ch0-scene1.png",
       "/assets/backgrounds/chapters/ch0-scene1.png",
@@ -40,6 +39,23 @@ const chapterConfigs: ChapterConfig[] = [
       "/assets/backgrounds/chapters/ch0-rain-notice.png",
       "/assets/backgrounds/chapters/ch0-rain-notice.png",
       "/assets/backgrounds/chapters/ch0-scene2.png",
+      "/assets/backgrounds/chapters/ch0-scene2.png",
+      "/assets/backgrounds/chapters/ch0-scene2.png",
+      "/assets/backgrounds/chapters/ch0-scene2.png",
+      "/assets/backgrounds/chapters/ch0-scene2.png",
+      "/assets/backgrounds/chapters/ch0-scene2.png",
+      "/assets/backgrounds/chapters/ch0-scene3.png",
+      "/assets/backgrounds/chapters/ch0-scene3.png",
+      "/assets/backgrounds/chapters/ch0-scene3.png",
+      "/assets/backgrounds/chapters/ch0-scene3.png",
+      "/assets/backgrounds/chapters/ch0-scene3.png",
+      "/assets/backgrounds/chapters/ch0-scene3.png",
+      "/assets/backgrounds/chapters/ch0-scene3.png",
+      "/assets/backgrounds/chapters/ch0-scene3.png",
+      "/assets/backgrounds/chapters/ch0-scene3.png",
+      "/assets/backgrounds/chapters/ch0-scene3.png",
+      "/assets/backgrounds/chapters/ch0-scene3.png",
+      "/assets/backgrounds/chapters/ch0-scene3.png",
       "/assets/backgrounds/chapters/ch0-scene3.png",
       "/assets/backgrounds/chapters/ch0-scene3.png",
       "/assets/backgrounds/chapters/ch0-scene3.png",
@@ -47,82 +63,58 @@ const chapterConfigs: ChapterConfig[] = [
       "/assets/backgrounds/chapters/ch0-scene3.png",
       "/assets/backgrounds/chapters/ch0-scene3.png",
       "/assets/backgrounds/chapters/ch0-scene4.png",
-      "/assets/backgrounds/chapters/ch0-scene5.png",
     ],
     sceneContent: [
-      {
-        speakerName: "해설",
-        dialogueText: "평화로운 하루다....",
-      },
-      {
-        speakerName: "해설",
-        dialogueText: "지난 한달 간 많은 일이 있었다.",
-      },
-      {
-        speakerName: "해설",
-        dialogueText: "분명 내일이 생명과학 시험이었고.",
-      },
-      {
-        speakerName: "해설",
-        dialogueText:
-          "20분만 자고 일어나서 공부하려 했더니 이곳에 떨어졌다.",
-      },
-      {
-        speakerName: "해설",
-        dialogueText:
-          "시간이 지나면 어련히 꿈에서 깨겠지 했는데 벌써 이곳 시간으로 한달이 지났다.",
-      },
-      {
-        speakerName: "해설",
-        dialogueText:
-          "돌아갈 수 없는 걸까. 시험 걱정 없이 여기서 사는 것도 좋은 것 같기도 하고...",
-      },
-      {
-        speakerName: "해설",
-        dialogueText: "그런건 다 좋은데...",
-      },
-      {
-        speakerName: "해설",
-        dialogueText: "평범한 남고생이었던 내가...",
-      },
+      { speakerName: "나", dialogueText: "\"평화로운 하루다....\"" },
+      { speakerName: "나", dialogueText: "'지난 한달 간 많은 일이 있었다'" },
       {
         speakerName: "나",
-        dialogueText: "정신차려보니 여자아이가 되어있었다...!",
+        dialogueText:
+          "'분명 내일이 생명과학 시험이어서 20분만 자고 일어나서 공부하려 했더니... 이곳에 떨어졌다.'",
+      },
+      { speakerName: "나", dialogueText: "'벌써 이곳 시간으로 한달이 지났다'" },
+      {
+        speakerName: "나",
+        dialogueText: "'뭔가 잘못되고 있다. 돌아갈 수 없는 걸까.'",
       },
       {
         speakerName: "나",
         dialogueText:
-          "이 여자아이의 삶을 이어서 사는 것 같다. 옛날이라 그런가? 부모님이 간섭이 심해서 삶이 너무 재미가 없다.",
+          "'시험 걱정 없이 여기서 사는 것도 좋은 것 같기도 하고... 그런건 다 좋은데...'",
       },
+      { speakerName: "나", dialogueText: "'평범한 남고생이었던 내가'" },
       {
         speakerName: "나",
-        dialogueText: "게다가 부모님께선 슬슬 결혼할 나이가 아니냐고 하신다.",
-      },
-      {
-        speakerName: "나",
-        dialogueText:
-          "어차피 이곳에서의 삶이 계속되는 거라면 돈많은 남자 한번 꼬셔봐? 남자는 내가 잘 아니까...",
+        dialogueText: "'정신차려보니 여자아이가 되어있었다...!'",
       },
       {
         speakerName: "나",
         dialogueText:
-          "어? 갑자기 빗방울이 떨어진다. 평소랑 다르게 좀 심하게 오는데...",
+          "'이 여자아이의 삶을 이어서 사는 것 같다. 옛날이라 그런가? 부모님이 간섭이 심해서 삶이 너무 재미가 없다.'",
       },
       {
         speakerName: "나",
-        dialogueText: "급하게 천막 밑으로 뛰어왔다. 비는 언제 그칠까?",
+        dialogueText: "'게다가 부모님께선 슬슬 결혼할 나이가 아니냐고 하신다.'",
       },
       {
         speakerName: "나",
-        dialogueText: "심심한대로 이 벽보들이나 읽어볼까?",
+        dialogueText:
+          "'어차피 이곳에서의 삶이 계속되는 거라면 돈많은 남자 한번 꼬셔봐? 남자는 내가 잘 아니까...'",
       },
       {
         speakerName: "나",
-        dialogueText: "다 읽고 나니 비가 그쳤다.",
+        dialogueText:
+          "'어? 갑자기 빗방울이 떨어진다. 평소랑 다르게 좀 심하게 오는데...'",
       },
       {
         speakerName: "나",
-        dialogueText: "보아하니 항해 조수를 구하는 것 같은데... 이거나 지원해볼까?",
+        dialogueText: "'급하게 천막 밑으로 뛰어왔다. 비는 언제 그칠까?'",
+      },
+      { speakerName: "나", dialogueText: "'심심한대로 이 벽보들이나 읽어볼까?'" },
+      { speakerName: "나", dialogueText: "'읽다보니 비가 그쳤다.'" },
+      {
+        speakerName: "나",
+        dialogueText: "'보아하니 항해 조수를 구하는 것 같은데... 이거나 지원해볼까?'",
       },
       {
         speakerName: "",
@@ -131,41 +123,94 @@ const chapterConfigs: ChapterConfig[] = [
           {
             id: "support_beagle_voyage",
             label: "지원하기",
-            nextSceneId: "chapter0-scene19",
+            nextSceneId: "chapter0-scene18",
           },
           {
             id: "decline_beagle_voyage",
-            label: "지원하지 않기",
+            label: "지원 안하고 그냥저냥한 인생을 살다가 노잼으로 죽음을 맞이하기",
             endingId: "bad_no_voyage",
           },
         ],
       },
       {
         speakerName: "나",
-        dialogueText: "그래. 이왕 이렇게 된거 재미있게 살아보자.",
+        dialogueText:
+          "'그래. 이왕 이렇게 된거 재미있게 살아보자. 그리고 미래에서 고등학교까지 다녔다고. 여기 사람들보다 똑똑할거야.'",
       },
       {
         speakerName: "나",
         dialogueText:
-          "그리고 미래에서 고등학교까지 다녔으니 분명 이곳의 사람들보다 똑똑할거야.",
+          "'배에는 잘생긴 남자들도 많지 않을까? 근데 내가 왜 잘생긴 남자를 원하지...? 진짜 여자가 된건가...?!'",
+      },
+      {
+        speakerName: "해설",
+        dialogueText:
+          "'어쨌든 지원하기로 결정하게 된다. 이후 연락을 받고, 마침내 한달 후인 비글호 승선 날이 다가온다.'",
       },
       {
         speakerName: "나",
         dialogueText:
-          "배에는 잘생긴 남자들도 많지 않을까? 근데 내가 왜 잘생긴 남자를 원하고있지...?",
+          "'드디어 승선이구나. 엄마한테 얘기도 안했는데... 뭐 진짜 엄마는 아니니까 괜찮겠지'",
+      },
+      { speakerName: "", dialogueText: "'뚜벅뚜벅...'" },
+      {
+        speakerName: "해설",
+        dialogueText: "'주인공과 신원 미상의 인물이 부딪힌다'",
+      },
+      { speakerName: "나", dialogueText: "'아 뭐야!'" },
+      {
+        speakerName: "해설",
+        dialogueText: "'부딪힌 자리에서 꿈쩍도 않고 신원 미상의 인물이 서있다.'",
+      },
+      {
+        speakerName: "나",
+        dialogueText: "'저기요! 사과도 안해요? 가만히 뭐하는...'",
+      },
+      {
+        speakerName: "???",
+        dialogueText: "'내내 놀다가 전날 공부 시작하면 될거라고 생각했습니까.'",
+      },
+      { speakerName: "나", dialogueText: "'??!!'" },
+      {
+        speakerName: "???",
+        dialogueText: "'당신을 위해서 복습을 할 수 있는 시간을 마련했습니다'",
+      },
+      {
+        speakerName: "나",
+        dialogueText: "'그게 무슨 소리야. 당신은 누구...'",
+      },
+      {
+        speakerName: "???",
+        dialogueText:
+          "'그 남자를 성공적으로 이끌지 못하면 어차피 당신의 시험도 가망이 없다고 판단, 그냥 이곳에 남겨두겠습니다.'",
+      },
+      {
+        speakerName: "???",
+        dialogueText: "'돌아가고싶다면 복습 충실히 하시기 바랍니다.'",
+      },
+      {
+        speakerName: "해설",
+        dialogueText: "'신원 미상의 남자가 배 안으로 뛰어들어간다.'",
+      },
+      { speakerName: "나", dialogueText: "'아니 당신...!!!'" },
+      {
+        speakerName: "해설",
+        dialogueText:
+          "'나는 남자를 따라 배로 뛰어 들어간다. 배 안으로 들어가자, 남자는 흔적도 없이 사라진다.'",
+      },
+      { speakerName: "나", dialogueText: "'?!'" },
+      {
+        speakerName: "방송",
+        dialogueText: "'전 인원 지금 바로 탑승하시기 바랍니다. 이제 출발합니다!'",
+      },
+      {
+        speakerName: "나",
+        dialogueText: "'그 사람은 뭐였지...? 복습하라고...?'",
       },
       {
         speakerName: "해설",
         dialogueText:
-          "어쨌든 지원하기로 결정하게 된다. 이후 연락을 받고, 마침내 한달 후인 비글호 승선 날이 다가온다.",
-      },
-      {
-        speakerName: "해설",
-        dialogueText: "비글호가 출항한다. 긴 항해와 낯선 관찰의 시간이 시작된다.",
-      },
-      {
-        speakerName: "해설",
-        dialogueText: "비글호는 리우데자네이루를 향해 긴 항해를 이어간다.",
+          "'많은 의문을 남긴 채, 선원이 닻을 올리며 배가 움직이기 시작한다.'",
       },
     ],
   },

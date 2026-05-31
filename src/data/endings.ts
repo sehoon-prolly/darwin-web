@@ -3,9 +3,9 @@ import type { Ending } from "../types/game";
 export const endings: Record<string, Ending> = {
   bad_no_voyage: {
     id: "bad_no_voyage",
-    title: "항해 시작 전 종료",
+    title: "그저그런 인생",
     description:
-      "당신은 비글호에 타지 않았다. 다윈은 혼자 고민했고, 게임은 시작되지 않았다.",
+      "당신은 지원을 안하고 그저그런 삶을 살다가 죽었습니다. 이유는 모르지만 현생으로 돌아가지도 못하고 말이죠...",
   },
   ending_failed_publication: {
     id: "ending_failed_publication",

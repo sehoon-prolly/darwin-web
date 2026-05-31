@@ -23,7 +23,7 @@ const CHOICE_OVERLAY_AFTER_TOAST_DELAY_MS = 300;
 const CHOICE_OVERLAY_DELAY_MS =
   ELEMENT_TOAST_DURATION_MS + CHOICE_OVERLAY_AFTER_TOAST_DELAY_MS;
 const POST_TOAST_NAVIGATION_DELAY_MS = CHOICE_OVERLAY_DELAY_MS;
-const NOTICE_POSTER_SCENE_ID = "chapter0-scene15";
+const NOTICE_POSTER_SCENE_ID = "chapter0-scene14";
 const REQUIRED_NOTICE_POSTER_IDS = [
   "top-left",
   "top-right",
@@ -59,7 +59,7 @@ function findScene(chapter: Chapter, sceneId: string): Scene {
   return chapter.scenes.find((scene) => scene.id === sceneId) ?? getFirstScene(chapter);
 }
 
-function getSpeakerCharacterSide(speakerName: string) {
+function getSpeakerCharacterSide(speakerName: string, chapterId: string) {
   if (!speakerName || speakerName === "해설") {
     return null;
   }
@@ -68,7 +68,22 @@ function getSpeakerCharacterSide(speakerName: string) {
     return "right";
   }
 
+  if (chapterId === "chapter0") {
+    return speakerName === "나" ? "left" : null;
+  }
+
   return "left";
+}
+
+function hasSpeakerAppearedOnSide(
+  chapterScenes: Scene[],
+  chapterId: string,
+  side: "left" | "right",
+) {
+  return chapterScenes.some(
+    (chapterScene) =>
+      getSpeakerCharacterSide(chapterScene.speakerName, chapterId) === side,
+  );
 }
 
 function getAppearedCharacterSides(chapter: Chapter, currentSceneId: string) {
@@ -79,14 +94,14 @@ function getAppearedCharacterSides(chapter: Chapter, currentSceneId: string) {
     0,
     currentSceneIndex >= 0 ? currentSceneIndex + 1 : 1,
   );
+  const leftCharacterHasAppeared =
+    chapter.id === "chapter0"
+      ? currentSceneIndex >= 7
+      : hasSpeakerAppearedOnSide(scenesSoFar, chapter.id, "left");
 
   return {
-    left: scenesSoFar.some(
-      (chapterScene) => getSpeakerCharacterSide(chapterScene.speakerName) === "left",
-    ),
-    right: scenesSoFar.some(
-      (chapterScene) => getSpeakerCharacterSide(chapterScene.speakerName) === "right",
-    ),
+    left: leftCharacterHasAppeared,
+    right: hasSpeakerAppearedOnSide(scenesSoFar, chapter.id, "right"),
   };
 }
 
