@@ -58,6 +58,7 @@ export type Ending = {
   id: string;
   title: string;
   description: string;
+  backgroundImage?: string;
 };
 
 export type GameState = {

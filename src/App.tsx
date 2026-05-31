@@ -25,10 +25,10 @@ const CHOICE_OVERLAY_DELAY_MS =
 const POST_TOAST_NAVIGATION_DELAY_MS = CHOICE_OVERLAY_DELAY_MS;
 const NOTICE_POSTER_SCENE_ID = "chapter0-scene2";
 const NOTICE_POSTER_ZOOM_IMAGES: Record<string, string> = {
-  "top-left": "/assets/backgrounds/notices/ch0-notice-top-left.png",
-  "top-right": "/assets/backgrounds/notices/ch0-notice-top-right.png",
-  "bottom-left": "/assets/backgrounds/notices/ch0-notice-bottom-left.png",
-  "bottom-right": "/assets/backgrounds/notices/ch0-notice-bottom-right.png",
+  "top-left": "/assets/backgrounds/paper-zoomin.png",
+  "top-right": "/assets/backgrounds/paper-zoomin.png",
+  "bottom-left": "/assets/backgrounds/paper-zoomin.png",
+  "bottom-right": "/assets/backgrounds/paper-zoomin.png",
 };
 
 const initialState: GameState = {
@@ -137,6 +137,9 @@ export default function App() {
   const selectedNoticePosterZoomImage = selectedNoticePosterId
     ? NOTICE_POSTER_ZOOM_IMAGES[selectedNoticePosterId]
     : null;
+  const displayedScene = ending?.backgroundImage
+    ? { ...scene, backgroundImage: ending.backgroundImage }
+    : scene;
 
   useEffect(() => {
     saveGameState(gameState);
@@ -718,10 +721,10 @@ export default function App() {
     <GameLayout
       chapter={chapter}
       onNewGame={handleNewGame}
-      backgroundImage={scene.backgroundImage}
+      backgroundImage={displayedScene.backgroundImage}
       sceneView={
         <SceneView
-          scene={scene}
+          scene={displayedScene}
           visibleCharacterSides={visibleCharacterSides}
           onNoticePosterClick={(posterId) => {
             if (posterId === "bottom-left") {
