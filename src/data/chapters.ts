@@ -25,8 +25,26 @@ const chapterConfigs: ChapterConfig[] = [
     location: "런던",
     backgroundImages: [
       "/assets/backgrounds/chapters/ch0-scene1.png",
+      "/assets/backgrounds/chapters/ch0-scene1.png",
+      "/assets/backgrounds/chapters/ch0-scene1.png",
+      "/assets/backgrounds/chapters/ch0-scene1.png",
+      "/assets/backgrounds/chapters/ch0-scene1.png",
+      "/assets/backgrounds/chapters/ch0-scene1.png",
+      "/assets/backgrounds/chapters/ch0-scene1.png",
+      "/assets/backgrounds/chapters/ch0-scene1.png",
+      "/assets/backgrounds/chapters/ch0-scene1.png",
+      "/assets/backgrounds/chapters/ch0-scene1.png",
+      "/assets/backgrounds/chapters/ch0-scene1.png",
+      "/assets/backgrounds/chapters/ch0-scene1.png",
+      "/assets/backgrounds/chapters/ch0-rain-notice.png",
+      "/assets/backgrounds/chapters/ch0-rain-notice.png",
+      "/assets/backgrounds/chapters/ch0-rain-notice.png",
       "/assets/backgrounds/chapters/ch0-scene2.png",
-      "/assets/backgrounds/chapters/ch0-scene2.png",
+      "/assets/backgrounds/chapters/ch0-scene3.png",
+      "/assets/backgrounds/chapters/ch0-scene3.png",
+      "/assets/backgrounds/chapters/ch0-scene3.png",
+      "/assets/backgrounds/chapters/ch0-scene3.png",
+      "/assets/backgrounds/chapters/ch0-scene3.png",
       "/assets/backgrounds/chapters/ch0-scene3.png",
       "/assets/backgrounds/chapters/ch0-scene4.png",
       "/assets/backgrounds/chapters/ch0-scene5.png",
@@ -34,17 +52,77 @@ const chapterConfigs: ChapterConfig[] = [
     sceneContent: [
       {
         speakerName: "해설",
-        dialogueText:
-          "런던의 어느 거리, 항구로 향하는 길목에서 낯선 공고가 눈에 들어왔다.",
+        dialogueText: "평화로운 하루다....",
       },
       {
         speakerName: "해설",
-        dialogueText: "게시판에 붙은 공고들 중 하나가 이상하게 눈에 들어온다.",
+        dialogueText: "지난 한달 간 많은 일이 있었다.",
+      },
+      {
+        speakerName: "해설",
+        dialogueText: "분명 내일이 생명과학 시험이었고.",
       },
       {
         speakerName: "해설",
         dialogueText:
-          "공고에는 비글호 항해에 동행할 조수를 찾는다는 내용이 적혀 있다.",
+          "20분만 자고 일어나서 공부하려 했더니 이곳에 떨어졌다.",
+      },
+      {
+        speakerName: "해설",
+        dialogueText:
+          "시간이 지나면 어련히 꿈에서 깨겠지 했는데 벌써 이곳 시간으로 한달이 지났다.",
+      },
+      {
+        speakerName: "해설",
+        dialogueText:
+          "돌아갈 수 없는 걸까. 시험 걱정 없이 여기서 사는 것도 좋은 것 같기도 하고...",
+      },
+      {
+        speakerName: "해설",
+        dialogueText: "그런건 다 좋은데...",
+      },
+      {
+        speakerName: "해설",
+        dialogueText: "평범한 남고생이었던 내가...",
+      },
+      {
+        speakerName: "나",
+        dialogueText: "정신차려보니 여자아이가 되어있었다...!",
+      },
+      {
+        speakerName: "나",
+        dialogueText:
+          "이 여자아이의 삶을 이어서 사는 것 같다. 옛날이라 그런가? 부모님이 간섭이 심해서 삶이 너무 재미가 없다.",
+      },
+      {
+        speakerName: "나",
+        dialogueText: "게다가 부모님께선 슬슬 결혼할 나이가 아니냐고 하신다.",
+      },
+      {
+        speakerName: "나",
+        dialogueText:
+          "어차피 이곳에서의 삶이 계속되는 거라면 돈많은 남자 한번 꼬셔봐? 남자는 내가 잘 아니까...",
+      },
+      {
+        speakerName: "나",
+        dialogueText:
+          "어? 갑자기 빗방울이 떨어진다. 평소랑 다르게 좀 심하게 오는데...",
+      },
+      {
+        speakerName: "나",
+        dialogueText: "급하게 천막 밑으로 뛰어왔다. 비는 언제 그칠까?",
+      },
+      {
+        speakerName: "나",
+        dialogueText: "심심한대로 이 벽보들이나 읽어볼까?",
+      },
+      {
+        speakerName: "나",
+        dialogueText: "다 읽고 나니 비가 그쳤다.",
+      },
+      {
+        speakerName: "나",
+        dialogueText: "보아하니 항해 조수를 구하는 것 같은데... 이거나 지원해볼까?",
       },
       {
         speakerName: "",
@@ -52,15 +130,34 @@ const chapterConfigs: ChapterConfig[] = [
         choices: [
           {
             id: "support_beagle_voyage",
-            label: "비글호 탑승 지원",
-            nextSceneId: "chapter0-scene5",
+            label: "지원하기",
+            nextSceneId: "chapter0-scene19",
           },
           {
             id: "decline_beagle_voyage",
-            label: "탑승 지원 X",
+            label: "지원하지 않기",
             endingId: "bad_no_voyage",
           },
         ],
+      },
+      {
+        speakerName: "나",
+        dialogueText: "그래. 이왕 이렇게 된거 재미있게 살아보자.",
+      },
+      {
+        speakerName: "나",
+        dialogueText:
+          "그리고 미래에서 고등학교까지 다녔으니 분명 이곳의 사람들보다 똑똑할거야.",
+      },
+      {
+        speakerName: "나",
+        dialogueText:
+          "배에는 잘생긴 남자들도 많지 않을까? 근데 내가 왜 잘생긴 남자를 원하고있지...?",
+      },
+      {
+        speakerName: "해설",
+        dialogueText:
+          "어쨌든 지원하기로 결정하게 된다. 이후 연락을 받고, 마침내 한달 후인 비글호 승선 날이 다가온다.",
       },
       {
         speakerName: "해설",

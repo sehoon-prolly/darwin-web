@@ -23,7 +23,13 @@ const CHOICE_OVERLAY_AFTER_TOAST_DELAY_MS = 300;
 const CHOICE_OVERLAY_DELAY_MS =
   ELEMENT_TOAST_DURATION_MS + CHOICE_OVERLAY_AFTER_TOAST_DELAY_MS;
 const POST_TOAST_NAVIGATION_DELAY_MS = CHOICE_OVERLAY_DELAY_MS;
-const NOTICE_POSTER_SCENE_ID = "chapter0-scene2";
+const NOTICE_POSTER_SCENE_ID = "chapter0-scene15";
+const REQUIRED_NOTICE_POSTER_IDS = [
+  "top-left",
+  "top-right",
+  "bottom-left",
+  "bottom-right",
+];
 const NOTICE_POSTER_ZOOM_IMAGES: Record<string, string> = {
   "top-left": "/assets/backgrounds/paper-zoomin.png",
   "top-right": "/assets/backgrounds/paper-zoomin.png",
@@ -96,7 +102,7 @@ export default function App() {
   const [selectedNoticePosterId, setSelectedNoticePosterId] = useState<
     string | null
   >(null);
-  const [hasReadRequiredPoster, setHasReadRequiredPoster] = useState(false);
+  const [readNoticePosterIds, setReadNoticePosterIds] = useState<string[]>([]);
   const [isProgressionPending, setIsProgressionPending] = useState(false);
   const chapterTransitionTimeouts = useRef<number[]>([]);
   const choiceOverlayDelayTimeout = useRef<number | null>(null);
@@ -133,7 +139,10 @@ export default function App() {
       !isProgressionPending,
   );
   const isNoticeSceneLocked =
-    scene.id === NOTICE_POSTER_SCENE_ID && !hasReadRequiredPoster;
+    scene.id === NOTICE_POSTER_SCENE_ID &&
+    !REQUIRED_NOTICE_POSTER_IDS.every((posterId) =>
+      readNoticePosterIds.includes(posterId),
+    );
   const selectedNoticePosterZoomImage = selectedNoticePosterId
     ? NOTICE_POSTER_ZOOM_IMAGES[selectedNoticePosterId]
     : null;
@@ -158,7 +167,7 @@ export default function App() {
     setIsPaperZoomOpen(false);
     setSelectedNoticePosterId(null);
     if (gameState.currentSceneId !== NOTICE_POSTER_SCENE_ID) {
-      setHasReadRequiredPoster(false);
+      setReadNoticePosterIds([]);
     }
   }, [gameState.currentSceneId]);
 
@@ -706,7 +715,7 @@ export default function App() {
     setIsPaperZoomOpen(false);
     setIsChoiceOverlayDelayed(false);
     setIsProgressionPending(false);
-    setHasReadRequiredPoster(false);
+    setReadNoticePosterIds([]);
     clearGameState();
     setGameState(initialState);
     setHasOpenedGame(false);
@@ -727,9 +736,11 @@ export default function App() {
           scene={displayedScene}
           visibleCharacterSides={visibleCharacterSides}
           onNoticePosterClick={(posterId) => {
-            if (posterId === "bottom-left") {
-              setHasReadRequiredPoster(true);
-            }
+            setReadNoticePosterIds((currentPosterIds) =>
+              currentPosterIds.includes(posterId)
+                ? currentPosterIds
+                : [...currentPosterIds, posterId],
+            );
 
             setSelectedNoticePosterId(posterId);
             setIsPaperZoomOpen(true);

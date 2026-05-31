@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import type { CSSProperties, ReactNode } from "react";
 import type { Scene } from "../types/game";
 
-const NOTICE_POSTER_SCENE_ID = "chapter0-scene2";
+const NOTICE_POSTER_SCENE_ID = "chapter0-scene15";
 
 type SceneViewProps = {
   scene: Scene;
