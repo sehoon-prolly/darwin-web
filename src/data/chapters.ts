@@ -919,7 +919,7 @@ const chapterConfigs: ChapterConfig[] = [
             id: "fuegian_conditions_matter",
             label: "문화 안에서 나온 모습일 수도 있겠네요.",
             gainedElements: ["balanced_view_of_evolution"],
-            nextSceneId: "chapter4-scene16",
+            nextSceneId: "chapter4-scene14",
           },
         ],
       },
@@ -927,7 +927,7 @@ const chapterConfigs: ChapterConfig[] = [
         speakerName: "다윈",
         dialogueText:
           "\"그렇겠죠. 아마도 열등한 문명이다보니 아직 도덕같은 관념이 발달하지 못한 것 같아요.\"",
-        nextSceneId: "chapter4-scene16",
+        nextSceneId: "chapter4-scene15",
       },
       {
         speakerName: "나",
@@ -944,18 +944,18 @@ const chapterConfigs: ChapterConfig[] = [
         speakerName: "나",
         dialogueText:
           "\"우리가 여기서 있던 기간동안 그런 흔적도 발견한 적 없고, 오히려 제가 혼자 다녔을 때도 아무 문제가 없었어요. 물론 우리가 없는 시간동안 식인을 할 수도 있지만, 편견이 믿게 한 소문이 아닐까요?\"",
-        nextSceneId: "chapter4-scene16",
-      },
-      {
-        speakerName: "해설",
-        dialogueText: "잠시 생각에 잠긴 다윈은 아무 말 없이 바다 쪽을 바라본다.",
-        nextSceneId: "chapter4-scene16",
+        nextSceneId: "chapter4-scene15",
       },
       {
         speakerName: "다윈",
         dialogueText:
           "\"그렇죠. 그들도 그들의 문화 안에서의 모습일 수 있죠. 하지만 그들이 식인을 했다는 사실, 그것이 야만적인 행위라는 사실은 변하지 않는 것 같네요.\"",
-        nextSceneId: "chapter4-scene16",
+        nextSceneId: "chapter4-scene15",
+      },
+      {
+        speakerName: "다윈",
+        dialogueText:
+          "\"어쨌든 무사했으니 다행이네요. 밤이 늦었으니까 들어가서 좀 쉴까요?\"",
       },
       {
         speakerName: "해설",
@@ -972,45 +972,132 @@ const chapterConfigs: ChapterConfig[] = [
     title: "CH.5 항해 중 독서 - 맬서스의 인구론",
     location: "비글호",
     backgroundImages: [
-      "/assets/backgrounds/chapters/ch5-scene1.png",
-      "/assets/backgrounds/chapters/ch5-scene2.png",
-      "/assets/backgrounds/chapters/ch5-scene3.png",
+      ...repeatImage("/assets/backgrounds/chapters/ch5-scene1.png", 5),
+      ...repeatImage("/assets/backgrounds/chapters/ch5-scene2.png", 14),
+      ...repeatImage("/assets/backgrounds/chapters/ch5-scene3.png", 7),
     ],
     sceneContent: [
       {
-        speakerName: "해설",
+        speakerName: "나",
         dialogueText:
-          "티에라델푸에고를 떠난 비글호는 다시 바다 위로 나아간다.",
+          "'다윈이 과학적인 발견을 할 수 있도록 도와야된다는 건 알았어...'",
+      },
+      {
+        speakerName: "나",
+        dialogueText: "'아 공부 좀 더 열심히 해놓을걸... 지식이 정확하지가 않아.'",
+      },
+      {
+        speakerName: "나",
+        dialogueText:
+          "'게다가 다윈이라는 사람이 생각보다 열의가 높거나 자발적으로 자료를 찾고 분석하는 사람은 아닌 것 같기도 하고...'",
+      },
+      {
+        speakerName: "나",
+        dialogueText: "'일단 다윈이라는 사람이 어떤 사람인지 좀 더 알아보자.'",
       },
       {
         speakerName: "해설",
         dialogueText:
-          "갑판 위의 바람 속에서 다윈은 생물과 인간 사회를 함께 떠올리기 시작한다.",
+          "갈라파고스로 향하는 중, 시간이 남아 잠시 다윈과 대화를 하러 간다.",
+      },
+      { speakerName: "나", dialogueText: "(문을 노크한다.)" },
+      { speakerName: "다윈", dialogueText: "\"네~ 들어오세요.\"" },
+      { speakerName: "나", dialogueText: "\"안녕하세요. 뭐하고계세요?\"" },
+      { speakerName: "다윈", dialogueText: "\"잠시 책을 좀 읽고있었어요.\"" },
+      { speakerName: "나", dialogueText: "\"뱃멀미가 날텐데 어떻게 책을 읽으세요?\"" },
+      {
+        speakerName: "다윈",
+        dialogueText:
+          "\"처음에는 멀미로 고생했는데, 오랫동안 배에서 생활하니 멀미가 있는 시간도 좀 줄더라고요. 틈이 나서 집에서 가져온 책을 보고있어요.\"",
+      },
+      { speakerName: "나", dialogueText: "\"무슨 책이에요?\"" },
+      {
+        speakerName: "다윈",
+        dialogueText:
+          "\"맬서스라는 사람이 쓴 '인구론'이라는 책이에요. 워낙 유명했던 책이라 읽어보고 싶었는데, 이제야 여유가 좀 생기네요.\"",
+      },
+      {
+        speakerName: "나",
+        dialogueText: "'맬서스는 경제시간에 들어본 학자야. 근데 수업 내용이 잘 기억이 안나...'",
+      },
+      { speakerName: "나", dialogueText: "\"어떤 내용이에요?\"" },
+      {
+        speakerName: "다윈",
+        dialogueText:
+          "\"여러 내용이 있지만, 가장 흥미로운 내용은 인구와 식량에 대한 통찰인 것 같아요.\"",
       },
       {
         speakerName: "다윈",
         dialogueText:
-          "자원이 한정되어 있다면, 생물 세계의 변화도 경쟁과 연결될 수 있을까?",
+          "\"이 책에 따르면, 식량은 산술급수적으로 증가하는데, 인구는 기하급수적으로 증가하기 때문에 인구가 증가하면 식량에 대한 수요감정이 폭발적으로 증가하게 되요.\"",
+      },
+      {
+        speakerName: "다윈",
+        dialogueText:
+          "\"그러니까 결국 도시와 나라가 커질수록 사람들은 한정된 자원을 가지고 더 많은 경쟁을 하게 되는 것이죠.\"",
         choices: [
           {
-            id: "malthus_limited_resources",
-            label: "자원이 한정되어 있다면 생존 경쟁이 발생할 수 있습니다.",
-            gainedElements: ["competition_structure"],
-            nextChapterId: "chapter6",
-          },
-          {
-            id: "malthus_equal_conditions",
-            label: "모든 개체는 동일한 조건에서 살아남습니다.",
+            id: "malthus_equal_distribution",
+            label: "\"그냥 모두한테 평등하게 식량을 나눠주면 안될까요?\"",
             gainedElements: ["incomplete_natural_selection"],
-            nextChapterId: "chapter6",
+            nextSceneId: "chapter5-scene19",
           },
           {
-            id: "malthus_justify_domination",
-            label: "강한 자가 약한 자를 지배하는 것은 언제나 정당합니다.",
+            id: "malthus_social_competition",
+            label: "\"사회가 돌아가는 방식에 대한 고찰이네요.\"",
+            gainedElements: ["competition_structure"],
+            nextSceneId: "chapter5-scene22",
+          },
+          {
+            id: "malthus_nature_domination",
+            label: "\"자연에서도 강한 동물이 약한 동물을 잡아먹으니까요.\"",
             gainedElements: ["social_darwinism_misunderstanding"],
-            nextChapterId: "chapter6",
+            nextSceneId: "chapter5-scene24",
           },
         ],
+      },
+      {
+        speakerName: "나",
+        dialogueText: "\"그냥 모두한테 평등하게 식량을 나눠주면 안될까요?\"",
+        nextSceneId: "chapter5-scene20",
+      },
+      {
+        speakerName: "다윈",
+        dialogueText:
+          "\"그건 너무 이상적인 이야기인 것 같아요. 하지만 흥미로운 생각이네요\"",
+        nextSceneId: "chapter5-scene21",
+      },
+      {
+        speakerName: "나",
+        dialogueText:
+          "'나도 모르게 공산주의적인 이야기를 한 것 같은데..? 하지만 이 시대에서는 별로 상관없겠지?'",
+        nextChapterId: "chapter6",
+      },
+      {
+        speakerName: "나",
+        dialogueText: "\"사회가 돌아가는 방식에 대한 고찰이네요.\"",
+        nextSceneId: "chapter5-scene23",
+      },
+      {
+        speakerName: "다윈",
+        dialogueText:
+          "\"그렇죠. 경쟁이라는 요소를 사회의 본질로 해석하는 게 인상깊어요. 어쩌면 자연의 일반 법칙... 일지도 모르죠.\"",
+        nextChapterId: "chapter6",
+      },
+      {
+        speakerName: "나",
+        dialogueText: "\"자연에서도 강한 동물이 약한 동물을 잡아먹으니까요.\"",
+        nextSceneId: "chapter5-scene25",
+      },
+      {
+        speakerName: "다윈",
+        dialogueText: "\"그것도 그러네요.\"",
+        nextSceneId: "chapter5-scene26",
+      },
+      {
+        speakerName: "나",
+        dialogueText: "'생각보다 다윈씨는 귀가 얇은 것 같다.'",
+        nextChapterId: "chapter6",
       },
     ],
   },
