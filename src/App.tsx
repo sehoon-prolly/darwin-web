@@ -31,10 +31,10 @@ const REQUIRED_NOTICE_POSTER_IDS = [
   "bottom-right",
 ];
 const NOTICE_POSTER_ZOOM_IMAGES: Record<string, string> = {
-  "top-left": "/assets/backgrounds/paper-zoomin.png",
-  "top-right": "/assets/backgrounds/paper-zoomin.png",
-  "bottom-left": "/assets/backgrounds/paper-zoomin.png",
-  "bottom-right": "/assets/backgrounds/paper-zoomin.png",
+  "top-left": "/assets/backgrounds/notices/ch0-notice-top-left.png",
+  "top-right": "/assets/backgrounds/notices/ch0-notice-top-right.png",
+  "bottom-left": "/assets/backgrounds/notices/ch0-notice-bottom-left.png",
+  "bottom-right": "/assets/backgrounds/notices/ch0-notice-bottom-right.png",
 };
 
 const initialState: GameState = {
@@ -606,6 +606,9 @@ export default function App() {
   }
 
   function handleMiniGameComplete(result: MiniGameResult) {
+    const nextMiniGameSceneId = result.success
+      ? scene.miniGameSuccessSceneId ?? scene.nextSceneId
+      : scene.miniGameFailureSceneId ?? scene.nextSceneId;
     const shouldWaitForToast = Boolean(
       result.gainedElements.length && scene.nextChapterId,
     );
@@ -676,8 +679,8 @@ export default function App() {
 
     announceGainedElements(result.gainedElements);
 
-    if (scene.nextSceneId) {
-      const nextScene = findScene(chapter, scene.nextSceneId ?? "");
+    if (nextMiniGameSceneId) {
+      const nextScene = findScene(chapter, nextMiniGameSceneId);
 
       runBackgroundTransitionIfNeeded(nextScene, () => {
         setGameState((currentState) => {

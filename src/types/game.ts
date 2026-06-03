@@ -43,6 +43,8 @@ export type Scene = {
   rightCharacterImage?: string;
   choices?: Choice[];
   miniGameType?: MiniGameType;
+  miniGameSuccessSceneId?: string;
+  miniGameFailureSceneId?: string;
   nextSceneId?: string;
   nextChapterId?: string;
 };
