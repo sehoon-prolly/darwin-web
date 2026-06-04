@@ -18,7 +18,10 @@ export default function DialogueBox({
   onNext,
 }: DialogueBoxProps) {
   const hasChoices = Boolean(scene.choices?.length);
-  const canMoveNext = Boolean(scene.nextSceneId || scene.nextChapterId);
+  const hasMiniGame = Boolean(scene.miniGameType && scene.miniGameType !== "none");
+  const canMoveNext = Boolean(
+    scene.nextSceneId || scene.nextChapterId || hasMiniGame,
+  );
   const canClickToNext =
     !hasChoices && canMoveNext && !isMiniGameActive && !isNextLocked;
   const textCharacters = useMemo(

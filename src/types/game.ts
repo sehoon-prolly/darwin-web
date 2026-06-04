@@ -39,6 +39,7 @@ export type Scene = {
   speakerName: string;
   dialogueText: string;
   backgroundImage?: string;
+  memoryImages?: string[];
   leftCharacterImage?: string;
   rightCharacterImage?: string;
   choices?: Choice[];

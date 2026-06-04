@@ -121,6 +121,21 @@ export default function SceneView({
   return (
     <section className="scene-view" style={sceneStyle}>
       <div className="scene-region-label background-label">중앙 배경 이미지 영역</div>
+      {scene.memoryImages?.length ? (
+        <div className="memory-slideshow" aria-hidden="true">
+          {scene.memoryImages.map((memoryImage, index) => (
+            <div
+              className="memory-slide"
+              key={memoryImage}
+              style={{
+                animationDelay: `${index * 1800}ms`,
+                animationDuration: `${scene.memoryImages!.length * 1800}ms`,
+                backgroundImage: `url("${memoryImage}")`,
+              }}
+            />
+          ))}
+        </div>
+      ) : null}
       <div className="map-grid" />
       {scene.id === NOTICE_POSTER_SCENE_ID ? (
         <div className="notice-poster-hotspots" aria-label="벽보 클릭 영역">

@@ -59,6 +59,17 @@ function findScene(chapter: Chapter, sceneId: string): Scene {
   return chapter.scenes.find((scene) => scene.id === sceneId) ?? getFirstScene(chapter);
 }
 
+function sceneHasMiniGame(scene: Scene) {
+  return Boolean(scene.miniGameType && scene.miniGameType !== "none");
+}
+
+function normalizeLoadedGameState(state: GameState): GameState {
+  return {
+    ...state,
+    isMiniGameActive: false,
+  };
+}
+
 function getSpeakerCharacterSide(speakerName: string, chapterId: string) {
   if (!speakerName || speakerName === "해설") {
     return null;
@@ -126,7 +137,8 @@ export default function App() {
   const gainedElementToastDelayTimeout = useRef<number | null>(null);
   const postToastNavigationTimeout = useRef<number | null>(null);
   const [gameState, setGameState] = useState<GameState>(() => {
-    return loadGameState() ?? initialState;
+    const savedState = loadGameState();
+    return savedState ? normalizeLoadedGameState(savedState) : initialState;
   });
 
   const chapter = chapterMap[gameState.currentChapterId] ?? firstChapter;
@@ -141,9 +153,7 @@ export default function App() {
 
   const isFinalChapter = chapter.id === "chapter9";
   const shouldShowMiniGame =
-    gameState.isMiniGameActive &&
-    scene.miniGameType &&
-    scene.miniGameType !== "none";
+    gameState.isMiniGameActive && sceneHasMiniGame(scene);
   const isFinalManuscriptOpen = isFinalChapter && !ending;
   const shouldHideDialogueBox = Boolean(
     ending || shouldShowMiniGame || isFinalManuscriptOpen,
@@ -274,8 +284,7 @@ export default function App() {
             ...currentState,
             currentChapterId: nextChapter.id,
             currentSceneId: nextScene.id,
-            isMiniGameActive:
-              Boolean(nextScene.miniGameType) && nextScene.miniGameType !== "none",
+            isMiniGameActive: false,
             selectedFinalElements:
               nextChapter.id === "chapter9"
                 ? currentState.acquiredElements
@@ -294,8 +303,7 @@ export default function App() {
           return {
             ...currentState,
             currentSceneId: nextScene.id,
-            isMiniGameActive:
-              Boolean(nextScene.miniGameType) && nextScene.miniGameType !== "none",
+            isMiniGameActive: false,
           };
         });
       });
@@ -357,6 +365,14 @@ export default function App() {
   }
 
   function handleNext() {
+    if (sceneHasMiniGame(scene) && !gameState.isMiniGameActive) {
+      setGameState((currentState) => ({
+        ...currentState,
+        isMiniGameActive: true,
+      }));
+      return;
+    }
+
     moveTo(scene.nextSceneId, scene.nextChapterId);
   }
 
@@ -481,9 +497,7 @@ export default function App() {
                   nextChapter.id === "chapter9"
                     ? currentState.acquiredElements
                     : currentState.selectedFinalElements,
-                isMiniGameActive:
-                  Boolean(nextScene.miniGameType) &&
-                  nextScene.miniGameType !== "none",
+                isMiniGameActive: false,
               };
             });
             setIsProgressionPending(false);
@@ -499,9 +513,7 @@ export default function App() {
               return {
                 ...currentState,
                 currentSceneId: nextScene.id,
-                isMiniGameActive:
-                  Boolean(nextScene.miniGameType) &&
-                  nextScene.miniGameType !== "none",
+                isMiniGameActive: false,
               };
             });
             setIsProgressionPending(false);
@@ -538,8 +550,7 @@ export default function App() {
               nextChapter.id === "chapter9"
                 ? acquiredElements
                 : currentState.selectedFinalElements,
-            isMiniGameActive:
-              Boolean(nextScene.miniGameType) && nextScene.miniGameType !== "none",
+            isMiniGameActive: false,
           };
         });
       });
@@ -566,9 +577,7 @@ export default function App() {
               ...currentState.selectedChoices,
               choice.id,
             ]),
-            isMiniGameActive:
-              Boolean(nextScene.miniGameType) &&
-              nextScene.miniGameType !== "none",
+            isMiniGameActive: false,
           };
         });
       });
@@ -638,9 +647,7 @@ export default function App() {
                 nextChapter.id === "chapter9"
                   ? currentState.acquiredElements
                   : currentState.selectedFinalElements,
-              isMiniGameActive:
-                Boolean(nextScene.miniGameType) &&
-                nextScene.miniGameType !== "none",
+              isMiniGameActive: false,
             };
           });
           setIsProgressionPending(false);
@@ -669,8 +676,7 @@ export default function App() {
               nextChapter.id === "chapter9"
                 ? acquiredElements
                 : currentState.selectedFinalElements,
-            isMiniGameActive:
-              Boolean(nextScene.miniGameType) && nextScene.miniGameType !== "none",
+            isMiniGameActive: false,
           };
         });
       });
@@ -693,9 +699,7 @@ export default function App() {
             ...currentState,
             currentSceneId: nextScene.id,
             acquiredElements,
-            isMiniGameActive:
-              Boolean(nextScene.miniGameType) &&
-              nextScene.miniGameType !== "none",
+            isMiniGameActive: false,
           };
         });
       });

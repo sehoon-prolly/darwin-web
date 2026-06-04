@@ -16,6 +16,7 @@ type ChapterConfig = {
         Scene,
         | "speakerName"
         | "dialogueText"
+        | "memoryImages"
         | "choices"
         | "miniGameType"
         | "miniGameSuccessSceneId"
@@ -974,7 +975,7 @@ const chapterConfigs: ChapterConfig[] = [
     backgroundImages: [
       ...repeatImage("/assets/backgrounds/chapters/ch5-scene1.png", 5),
       ...repeatImage("/assets/backgrounds/chapters/ch5-scene2.png", 14),
-      ...repeatImage("/assets/backgrounds/chapters/ch5-scene3.png", 7),
+      ...repeatImage("/assets/backgrounds/chapters/ch5-scene3.png", 9),
     ],
     sceneContent: [
       {
@@ -1071,7 +1072,7 @@ const chapterConfigs: ChapterConfig[] = [
         speakerName: "나",
         dialogueText:
           "'나도 모르게 공산주의적인 이야기를 한 것 같은데..? 하지만 이 시대에서는 별로 상관없겠지?'",
-        nextChapterId: "chapter6",
+        nextSceneId: "chapter5-scene27",
       },
       {
         speakerName: "나",
@@ -1082,7 +1083,7 @@ const chapterConfigs: ChapterConfig[] = [
         speakerName: "다윈",
         dialogueText:
           "\"그렇죠. 경쟁이라는 요소를 사회의 본질로 해석하는 게 인상깊어요. 어쩌면 자연의 일반 법칙... 일지도 모르죠.\"",
-        nextChapterId: "chapter6",
+        nextSceneId: "chapter5-scene27",
       },
       {
         speakerName: "나",
@@ -1097,18 +1098,293 @@ const chapterConfigs: ChapterConfig[] = [
       {
         speakerName: "나",
         dialogueText: "'생각보다 다윈씨는 귀가 얇은 것 같다.'",
+        nextSceneId: "chapter5-scene27",
+      },
+      {
+        speakerName: "나",
+        dialogueText: "\"어쨌든 저도 나가볼게요. 푹 쉬세요.\"",
+        nextSceneId: "chapter5-scene28",
+      },
+      {
+        speakerName: "다윈",
+        dialogueText: "\"네 나중에 봐요!\"",
         nextChapterId: "chapter6",
       },
     ],
   },
   {
     id: "chapter6",
-    title: "CH.6 오스트레일리아로 향하는 배 - 죄수를 잡아라",
-    location: "오스트레일리아 / 비글호",
+    title: "CH.6 갈라파고스 - 분류가 먼저다",
+    location: "갈라파고스 제도",
     backgroundImages: [
-      "/assets/backgrounds/chapters/ch6-scene1.png",
-      "/assets/backgrounds/chapters/ch6-scene2.png",
-      "/assets/backgrounds/chapters/ch6-scene3.png",
+      ...repeatImage("/assets/backgrounds/chapters/ch6-scene1.png", 8),
+      ...repeatImage("/assets/backgrounds/chapters/ch6-scene2.png", 21),
+    ],
+    sceneContent: [
+      {
+        speakerName: "해설",
+        dialogueText: "어느덧 배는 갈라파고스 제도에 도착한다.",
+      },
+      {
+        speakerName: "다윈",
+        dialogueText: "\"이곳에서부턴 저를 많이 도와주셔야 할 것 같아요.\"",
+      },
+      { speakerName: "나", dialogueText: "\"네?\"" },
+      {
+        speakerName: "다윈",
+        dialogueText:
+          "\"이곳은 다양한 생태계가 공존하는 곳이라고 이전 섬에서 들었어요. 아마 많은 표본들을 얻을 수 있을 거에요.\"",
+      },
+      { speakerName: "다윈", dialogueText: "\"운동은 좀 해요?\"" },
+      {
+        speakerName: "나",
+        dialogueText: "\"당연하죠. 저는 남자 중에서도 힘이 센 편이라고요.\"",
+      },
+      { speakerName: "다윈", dialogueText: "\"네?\"" },
+      { speakerName: "나", dialogueText: "\"뭐든 시켜만 주세요!\"" },
+      {
+        speakerName: "해설",
+        dialogueText:
+          "이후 오랜 시간동안, 갈라파고스의 여러 섬을 옮겨다니며 다윈과 함께 여기저기를 다니며 새와 동물들을 관찰한다.",
+      },
+      {
+        speakerName: "나",
+        dialogueText:
+          "'왜이렇게 힘든가 했더니 지금 나는 여자였어... 나도 모르게 남자라고 생각했네...'",
+      },
+      { speakerName: "나", dialogueText: "\"헉... 헉...\"" },
+      {
+        speakerName: "다윈",
+        dialogueText: "\"괜찮아요? 자신 있다길래...\"",
+      },
+      {
+        speakerName: "나",
+        dialogueText: "\"괜찮아요... 그런데 뭘 그리시는거예요?\"",
+      },
+      {
+        speakerName: "다윈",
+        dialogueText:
+          "\"아, 섬마다 새들이나 식물들의 모양이 다 다르더라고요. 특히 새들은 부리 모양이 다 다른데, 이런 특징들을 기록하고 있어요.\"",
+      },
+      { speakerName: "나", dialogueText: "'!!'" },
+      {
+        speakerName: "나",
+        dialogueText:
+          "'어디선가 봤던 것 같아. 다윈의 진화론이라고 하면 갈라파고스 새 부리에 따라서... 뭔가를 분류했다고 했는데...?'",
+      },
+      {
+        speakerName: "나",
+        dialogueText: "\"혹시 그 그림들 한번만 볼 수 있을까요?\"",
+      },
+      { speakerName: "다윈", dialogueText: "\"네? 뭐 그래요.\"" },
+      {
+        speakerName: "해설",
+        dialogueText: "다윈이 그린 새 표본의 부리와 섬의 먹이를 연결해보자.",
+        miniGameType: "beakFoodMatching",
+        miniGameSuccessSceneId: "chapter6-scene20",
+        miniGameFailureSceneId: "chapter6-scene26",
+      },
+      {
+        speakerName: "나",
+        dialogueText:
+          "'맞아. 부리와 섬의 열매들이 관련이 있다는 가설에 따라서 분류했다고 했지'",
+        nextSceneId: "chapter6-scene21",
+      },
+      {
+        speakerName: "나",
+        dialogueText:
+          "\"섬에서 나는 열매와 새들의 부리 모양에 어떤 관계가 있는 건 아닐까요?\"",
+        nextSceneId: "chapter6-scene22",
+      },
+      {
+        speakerName: "다윈",
+        dialogueText: "\"무슨 말이죠??\"",
+        nextSceneId: "chapter6-scene23",
+      },
+      {
+        speakerName: "나",
+        dialogueText:
+          "\"예를 들면 섬에서 주로 자라는 열매가 껍질이 두꺼우면 부리가 큰 새들이 주로 서식한다던지... 하는 식으로요!\"",
+        nextSceneId: "chapter6-scene24",
+      },
+      {
+        speakerName: "다윈",
+        dialogueText:
+          "\"오... 흥미로운 관찰이네요. 그냥 기록을 할 생각만 해봤지 환경과 생물을 엮어서 분류할 생각은 하지 못했어요.\"",
+        nextSceneId: "chapter6-scene25",
+      },
+      {
+        speakerName: "해설",
+        dialogueText:
+          "'이후 다윈은 계속 생각에 잠긴 듯한 표정으로 남은 섬을 탐사하고 배로 돌아간다.'",
+        nextChapterId: "chapter7",
+      },
+      {
+        speakerName: "나",
+        dialogueText: "'아... 새랑 뭐랑 관련이 있다고 했는데!!! 기억이 안나...!!!'",
+        nextSceneId: "chapter6-scene27",
+      },
+      {
+        speakerName: "나",
+        dialogueText: "\"그림 잘 그리시네요... ㅎㅎ...\"",
+        nextSceneId: "chapter6-scene28",
+      },
+      {
+        speakerName: "다윈",
+        dialogueText: "\"네?? 뭐... 감사합니다 ㅎㅎ....\"",
+        nextSceneId: "chapter6-scene29",
+      },
+      {
+        speakerName: "해설",
+        dialogueText: "이후 두 사람은 남은 섬을 탐사하고 배로 돌아간다.",
+        nextChapterId: "chapter7",
+      },
+    ],
+  },
+  {
+    id: "chapter7",
+    title: "CH.7 갈라파고스 - 성선택이라는 추가 단서",
+    location: "갈라파고스 인근 해상",
+    backgroundImages: [
+      "/assets/backgrounds/chapters/ch7-scene1.png",
+      ...repeatImage("/assets/backgrounds/chapters/ch7-deck.png", 20),
+    ],
+    sceneContent: [
+      {
+        speakerName: "해설",
+        dialogueText:
+          "며칠간의 고된 갈라파고스 탐사가 끝나고, 배는 다음 섬으로 출항할 준비를 한다.",
+      },
+      {
+        speakerName: "다윈",
+        dialogueText: "\"힘들었을텐데 고생했어요. 힘들었죠?\"",
+      },
+      {
+        speakerName: "나",
+        dialogueText:
+          "\"ㅎㅎ... 그래도 재미있었어요. 신기한 환경도 많이 볼 수 있었고요.\"",
+      },
+      {
+        speakerName: "다윈",
+        dialogueText: "\"어떤 장면들이 기억에 남아요?\"",
+      },
+      {
+        speakerName: "나",
+        dialogueText:
+          "\"음... 군함조들이나 푸른발얼간이새...? 그리고 바다 이구아나도 생각이 나요!\"",
+        memoryImages: [
+          "/assets/backgrounds/chapters/ch7-memory-frigatebird.png",
+          "/assets/backgrounds/chapters/ch7-memory-blue-footed-booby.png",
+          "/assets/backgrounds/chapters/ch7-memory-marine-iguana.png",
+        ],
+      },
+      {
+        speakerName: "나",
+        dialogueText:
+          "\"원래 살던 세상에서는 못보는 특이하게 생긴 생물들이었어요. 특히 푸른발얼간이새는 색이 엄청 화려하더라고요,\"",
+      },
+      {
+        speakerName: "다윈",
+        dialogueText: "\"맞아요. 그 새는 정말 신기했어요.\"",
+      },
+      {
+        speakerName: "나",
+        dialogueText: "\"근데 그런 새들은 살아남기 참 힘들었을 것 같아요.\"",
+      },
+      { speakerName: "다윈", dialogueText: "\"왜요?\"" },
+      {
+        speakerName: "나",
+        dialogueText:
+          "\"발이 그렇게 화려하면 포식자들이 발견하기가 좋잖아요. 자연에서 보기 어려운 화려한 색깔이니까요.\"",
+      },
+      {
+        speakerName: "다윈",
+        dialogueText:
+          "\"음... 생존에 필요한 방향으로 원하는 대로 자랄 수는 없으니까요........\"",
+      },
+      {
+        speakerName: "해설",
+        dialogueText: "잠시 다윈이 말이 없어지고 생각에 잠긴 표정을 짓는다.",
+        choices: [
+          {
+            id: "sexual_selection_success",
+            label: "\"그런데 사실 기만같은거... 아닐까요?\"",
+            gainedElements: ["sexual_selection_concept"],
+            nextSceneId: "chapter7-scene13",
+          },
+          {
+            id: "sexual_selection_pretty_only",
+            label: "\"어쨌든 그냥 예쁜 색이어서 신기했어요\"",
+            gainedElements: ["observation_disconnect"],
+            nextSceneId: "chapter7-scene20",
+          },
+          {
+            id: "sexual_selection_hungry",
+            label: "\"배고픈데 저녁은 언제 먹을 수 있을까요?\"",
+            gainedElements: ["incomplete_evolution_understanding"],
+            nextSceneId: "chapter7-scene21",
+          },
+        ],
+      },
+      {
+        speakerName: "나",
+        dialogueText: "\"그런데 사실 기만같은거... 아닐까요?\"",
+        nextSceneId: "chapter7-scene14",
+      },
+      {
+        speakerName: "다윈",
+        dialogueText: "\"그게 무슨 말이죠?\"",
+        nextSceneId: "chapter7-scene15",
+      },
+      {
+        speakerName: "나",
+        dialogueText:
+          "\"사람들도 돈 많은 사람들이 예술가들을 후원하곤 하잖아요. 본인은 그정도의 낭비를 해도 살아가는데 지장이 없다는 식으로요.\"",
+        nextSceneId: "chapter7-scene16",
+      },
+      {
+        speakerName: "나",
+        dialogueText:
+          "\"어쩌면 생물들도 '나는 이렇게 불리한 환경에서도 잘 살아'라고, 자기 능력을 보여주면서 주변 친구들을 기만하는 건 아닐까 해서요\"",
+        nextSceneId: "chapter7-scene17",
+      },
+      {
+        speakerName: "해설",
+        dialogueText: "다윈이 기가 막히다는 듯 크게 웃는다.",
+        nextSceneId: "chapter7-scene18",
+      },
+      {
+        speakerName: "나",
+        dialogueText: "\"왜요!! 그냥 제 상상력이었어요...\"",
+        nextSceneId: "chapter7-scene19",
+      },
+      {
+        speakerName: "다윈",
+        dialogueText:
+          "\"알아요 ㅋㅋㅋ 하지만 혹시 모르죠. 그런 상상력들이 저한테도 꽤 도움이 되곤 하고요.\"",
+        nextChapterId: "chapter8",
+      },
+      {
+        speakerName: "다윈",
+        dialogueText: "\"그러게요. 저도 신기한 경험이었어요.\"",
+        nextChapterId: "chapter8",
+      },
+      {
+        speakerName: "다윈",
+        dialogueText:
+          "\"그러게요. 저도 배가 고프네요. 언제 주는지 물어보고 올게요.\"",
+        nextChapterId: "chapter8",
+      },
+    ],
+  },
+  {
+    id: "chapter8",
+    title: "CH.8 오스트레일리아 - 죄수를 잡아라",
+    location: "오스트레일리아",
+    backgroundImages: [
+      "/assets/backgrounds/chapters/ch8-scene1.png",
+      "/assets/backgrounds/chapters/ch8-scene2.png",
+      "/assets/backgrounds/chapters/ch8-scene3.png",
     ],
     sceneContent: [
       {
@@ -1126,105 +1402,6 @@ const chapterConfigs: ChapterConfig[] = [
         dialogueText:
           "탈주를 시도하는 죄수들을 찾아내어라. 생존을 위한 경쟁이 어떤 모습인지 직접 눈으로 확인해보자.",
         miniGameType: "prisonerClick",
-      },
-    ],
-  },
-  {
-    id: "chapter7",
-    title: "CH.7 갈라파고스 - 분류가 먼저다",
-    location: "갈라파고스 제도",
-    backgroundImages: [
-      "/assets/backgrounds/chapters/ch7-scene1.png",
-      "/assets/backgrounds/chapters/ch7-scene2.png",
-      "/assets/backgrounds/chapters/ch7-scene3.png",
-      "/assets/backgrounds/chapters/ch7-scene4.png",
-    ],
-    sceneContent: [
-      {
-        speakerName: "해설",
-        dialogueText:
-          "비글호는 마침내 갈라파고스 제도에 닿았다. 섬마다 비슷하면서도 어딘가 다른 새 표본들이 모였다.",
-      },
-      {
-        speakerName: "다윈",
-        dialogueText:
-          "이 새들은 꽤 비슷해 보이는군. 굳이 섬별로 나누어 기록해야 할까?",
-        choices: [
-          {
-            id: "classification_is_needed",
-            label: "분류가 필요합니다.",
-            gainedElements: ["classification_need"],
-            nextSceneId: "chapter7-scene3",
-          },
-          {
-            id: "classification_is_not_needed",
-            label: "분류가 필요하지 않습니다.",
-            gainedElements: ["classification_failure"],
-            nextChapterId: "chapter8",
-          },
-        ],
-      },
-      {
-        speakerName: "다윈",
-        dialogueText: "그렇다면 무엇을 기준으로 분류해야 하지?",
-        choices: [
-          {
-            id: "classify_by_beak",
-            label: "부리 형태",
-            gainedElements: ["environment_adaptation_clue"],
-            nextSceneId: "chapter7-scene4",
-          },
-          {
-            id: "classify_by_wing",
-            label: "날개 모양",
-            gainedElements: ["incomplete_classification"],
-            nextChapterId: "chapter8",
-          },
-          {
-            id: "classify_by_body_size",
-            label: "몸집의 크기",
-            gainedElements: ["incomplete_classification"],
-            nextChapterId: "chapter8",
-          },
-        ],
-      },
-      {
-        speakerName: "해설",
-        dialogueText: "부리 형태와 먹이의 관계를 맞춰 표본의 차이를 설명해보자.",
-        miniGameType: "beakFoodMatching",
-      },
-    ],
-  },
-  {
-    id: "chapter8",
-    title: "CH.8 갈라파고스 - 성선택이라는 추가 단서",
-    location: "갈라파고스 제도",
-    backgroundImages: ["/assets/backgrounds/chapters/ch8-scene1.png"],
-    sceneContent: [
-      {
-        speakerName: "다윈",
-        dialogueText:
-          "생존에 꼭 유리해 보이지 않는 화려한 형질도 남아 있다. 이런 특징은 어떻게 설명할 수 있을까?",
-        choices: [
-          {
-            id: "sexual_selection_success",
-            label: "어떤 형질은 생존보다 짝짓기 성공에 영향을 줄 수 있습니다.",
-            gainedElements: ["sexual_selection_concept"],
-            nextChapterId: "chapter9",
-          },
-          {
-            id: "sexual_selection_only_survival",
-            label: "생존에 불리한 형질은 모두 사라져야 합니다.",
-            gainedElements: ["incomplete_evolution_understanding"],
-            nextChapterId: "chapter9",
-          },
-          {
-            id: "sexual_selection_exception",
-            label: "화려한 생물은 그냥 예외입니다.",
-            gainedElements: ["observation_disconnect"],
-            nextChapterId: "chapter9",
-          },
-        ],
       },
     ],
   },
@@ -1269,6 +1446,7 @@ function createScene(
     speakerName: sceneContent.speakerName ?? "",
     dialogueText: sceneContent.dialogueText ?? "",
     backgroundImage: chapterConfig.backgroundImages[sceneIndex],
+    ...(sceneContent.memoryImages ? { memoryImages: sceneContent.memoryImages } : {}),
     leftCharacterImage,
     rightCharacterImage,
     ...(sceneContent.choices ? { choices: sceneContent.choices } : {}),
