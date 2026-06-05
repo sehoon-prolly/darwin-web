@@ -1382,35 +1382,218 @@ const chapterConfigs: ChapterConfig[] = [
     title: "CH.8 오스트레일리아 - 죄수를 잡아라",
     location: "오스트레일리아",
     backgroundImages: [
-      "/assets/backgrounds/chapters/ch8-scene1.png",
-      "/assets/backgrounds/chapters/ch8-scene2.png",
+      ...repeatImage("/assets/backgrounds/chapters/ch8-scene1.png", 7),
+      ...repeatImage("/assets/backgrounds/chapters/ch8-scene2.png", 23),
       "/assets/backgrounds/chapters/ch8-scene3.png",
+      "/assets/backgrounds/chapters/ch8-scene4.png",
     ],
     sceneContent: [
       {
         speakerName: "해설",
+        dialogueText: "배는 어느 덧 오스트레일리아에 도착한다.",
+      },
+      {
+        speakerName: "다윈",
+        dialogueText: "\"이제 오스트레일리아에 도착했나보네요.\"",
+      },
+      {
+        speakerName: "다윈",
+        dialogueText: "\"슬슬 이 항해도 끝이 보이는 것 같아요.\"",
+      },
+      {
+        speakerName: "나",
         dialogueText:
-          "비글호는 오스트레일리아에 기항했다. 영국은 이곳을 죄수 유배지로 삼아 개척하고 있었다. 광활한 땅과 한정된 자원, 그리고 치열한 생존 경쟁이 펼쳐지는 곳.",
+          "\"맞아요. 처음에는 오랜 항해라서 걱정도 했는데, 끝날 때가 되니 좀 긴장이 풀리는 것 같아요.\"",
+      },
+      {
+        speakerName: "해설",
+        dialogueText: "배는 항구에 정박하고, 두 사람은 내릴 준비를 한다.",
+      },
+      { speakerName: "선원", dialogueText: "\"큰일이야! 전 인원 집합!!\"" },
+      {
+        speakerName: "해설",
+        dialogueText: "순식간에 주변이 어수선해진다.",
+      },
+      { speakerName: "나", dialogueText: "\"무슨 일일까요?\"" },
+      {
+        speakerName: "다윈",
+        dialogueText:
+          "\"저도 잘 모르겠어요. 누군가한테 물어봐야할 것 같은데... 어 선장님!\"",
+      },
+      {
+        speakerName: "피츠로이",
+        dialogueText: "\"어 그래 자네들이구만. 무슨 일이지?\"",
+      },
+      {
+        speakerName: "다윈",
+        dialogueText: "\"분위기가 어수선하던데 무슨 일이죠?\"",
+      },
+      {
+        speakerName: "피츠로이",
+        dialogueText:
+          "\"이 항해를 시작할 때 영국의 죄수들을 이송하는 목적도 있었다는 걸 알고있나?\"",
+      },
+      { speakerName: "나", dialogueText: "\"네? 죄수들이요?\"" },
+      {
+        speakerName: "피츠로이",
+        dialogueText:
+          "\"군인들이 잘 통제하고 있었으니 우리들은 잘 못봤겠지만, 죄수들을 열등한 지역에 이주시키는 것도 이 항해의 목적이었다네.\"",
+      },
+      { speakerName: "다윈", dialogueText: "\"그렇군요. 그런데요?\"" },
+      {
+        speakerName: "피츠로이",
+        dialogueText:
+          "\"오스트레일리아에 정박할 즈음에 미리 준비해뒀던 놈들 중 한 두놈이 탈출을 한 모양이야. 위험할 수도 있으니 자네들은 꼭 군인들과 함께 다니도록 하게\"",
+      },
+      { speakerName: "다윈", dialogueText: "\"선장님은요?\"" },
+      {
+        speakerName: "피츠로이",
+        dialogueText:
+          "\"놈들의 관리가 본국에서 내린 주요한 명령이야. 나도 찾으러 다녀야겠지.\"",
+      },
+      { speakerName: "나", dialogueText: "\"그럼 같이 찾으러 다녀요!\"" },
+      {
+        speakerName: "피츠로이",
+        dialogueText: "\"위험할 수도 있어. 자네들은 대기하도록 하게\"",
       },
       {
         speakerName: "다윈",
         dialogueText:
-          "유배된 죄수들이 탈주를 시도하고 있다. 한정된 자원을 두고 벌어지는 경쟁과 투쟁 — 이것이 자연 세계에서 일어나는 일과 과연 다를까?",
+          "\"하지만 죄수들을 찾지 못하면 항해도 어려워질 텐데요. 선장님과 함께 찾으러 다니겠습니다.\"",
+      },
+      {
+        speakerName: "해설",
+        dialogueText: "나와 다윈, 피츠로이 선장 사이에 옥신각신한다.",
+      },
+      {
+        speakerName: "피츠로이",
+        dialogueText:
+          "\"저번에도 느꼈지만 자네들 고집도 보통이 아니군. 대신 반드시 내 주변에서 떨어지지 말게.\"",
+      },
+      {
+        speakerName: "피츠로이",
+        dialogueText: "\"자 한번 찾아보지\"",
       },
       {
         speakerName: "해설",
         dialogueText:
           "탈주를 시도하는 죄수들을 찾아내어라. 생존을 위한 경쟁이 어떤 모습인지 직접 눈으로 확인해보자.",
         miniGameType: "prisonerClick",
+        miniGameSuccessSceneId: "chapter8-scene26",
+        miniGameFailureSceneId: "chapter8-scene27",
+      },
+      {
+        speakerName: "피츠로이",
+        dialogueText:
+          "\"다행히 놈들을 다 찾았군. 자네들이 도움이 되었어. 고맙네.\"",
+        nextSceneId: "chapter8-scene30",
+      },
+      {
+        speakerName: "피츠로이",
+        dialogueText:
+          "\"아무리 찾아도 보이질 않는구만... 일단 배에 돌아가 기다리도록 하지.\"",
+      },
+      {
+        speakerName: "선원",
+        dialogueText:
+          "\"선장님! 군인들이 놈들을 다 찾아 붙잡았다고 합니다!\"",
+      },
+      {
+        speakerName: "피츠로이",
+        dialogueText: "\"그것 참 다행이군! 자네들도 수고했네.\"",
+        nextSceneId: "chapter8-scene30",
+      },
+      {
+        speakerName: "해설",
+        dialogueText: "사태가 진정되고, 다윈과 나는 섬을 성공적으로 관찰한다.",
+      },
+      {
+        speakerName: "해설",
+        dialogueText: "비글호는 오스트레일리아를 떠난다.",
+      },
+      {
+        speakerName: "해설",
+        dialogueText: "항로는 마침내 영국을 향한다.",
       },
     ],
   },
   {
     id: "chapter9",
     title: "CH.9 최종 장 - 다윈의 원고를 완성하라",
-    location: "다윈의 서재",
-    backgroundImages: ["/assets/backgrounds/chapters/ch9-scene1.png"],
+    location: "영국 / 다윈의 서재",
+    backgroundImages: [
+      ...repeatImage("/assets/backgrounds/chapters/ch9-return.png", 9),
+      ...repeatImage("/assets/backgrounds/chapters/ch9-scene1.png", 13),
+    ],
     sceneContent: [
+      {
+        speakerName: "해설",
+        dialogueText: "어느덧 배는 영국의 해안에 접근한다.",
+      },
+      {
+        speakerName: "다윈",
+        dialogueText: "\"후... 이제 진짜 집이네요.\"",
+      },
+      {
+        speakerName: "나",
+        dialogueText:
+          "\"맞아요. 재미도 있었지만 역시 엄청 피곤하네요 ㅎㅎ...\"",
+      },
+      {
+        speakerName: "다윈",
+        dialogueText: "\"집에서 좀 쉬어요. 저도 하루는 푹 자려고요.\"",
+      },
+      {
+        speakerName: "다윈",
+        dialogueText:
+          "\"그리고 한 삼일 뒤에 내 연구실로 잠시 올래요? 지금까지의 자료나 기록을 좀 정리해야할 것 같아요.\"",
+      },
+      {
+        speakerName: "나",
+        dialogueText: "\"좋아요. 저도 좀 쉬다가 삼일 뒤에 찾아갈게요.\"",
+      },
+      {
+        speakerName: "나",
+        dialogueText:
+          "'어쨌든 끝났구나. 그런데 항해는 끝났는데도 아무것도 바뀌지 않고 있어.'",
+      },
+      {
+        speakerName: "나",
+        dialogueText:
+          "'그냥 이렇게 살아야 된다는 거야...? 실제로 다 겪었는데 더 복습할게 남았다고...?'",
+      },
+      {
+        speakerName: "나",
+        dialogueText:
+          "'그냥 이렇게 살자. 나도 모르겠다... 어차피 이곳에서 알게된 사람들도 많고...'",
+      },
+      {
+        speakerName: "해설",
+        dialogueText: "집에 가서 삼일 간 쉬고, 다윈의 연구실에 방문한다.",
+      },
+      { speakerName: "나", dialogueText: "(문을 노크한다.)" },
+      { speakerName: "다윈", dialogueText: "\"네~\"" },
+      { speakerName: "나", dialogueText: "\"잘 쉬었어요?\"" },
+      { speakerName: "다윈", dialogueText: "\"그럼요. 잘 쉬었죠.\"" },
+      { speakerName: "나", dialogueText: "\"뭐하고있었어요?\"" },
+      {
+        speakerName: "다윈",
+        dialogueText:
+          "\"그간의 자료들을 정리하고 나름대로 해석하고 있었어요.\"",
+      },
+      { speakerName: "나", dialogueText: "\"어떤 해석이요?\"" },
+      {
+        speakerName: "다윈",
+        dialogueText:
+          "\"항해를 하면서 대화했던 내용들에서 아이디어를 좀 얻어서, 나름대로 이론...?을 좀 생각 중이거든요.\"",
+      },
+      {
+        speakerName: "다윈",
+        dialogueText:
+          "\"그런데 워낙 자료가 많다보니 어떤 자료들을 쓸지, 버릴지 고민이 많이 되네요.\"",
+      },
+      { speakerName: "나", dialogueText: "\"제가 한번 봐도 될까요?\"" },
+      { speakerName: "다윈", dialogueText: "\"당연하죠.\"" },
       {
         speakerName: "해설",
         dialogueText: "지금까지 모은 단서 중 최종 원고에 포함할 요소를 선택하자.",

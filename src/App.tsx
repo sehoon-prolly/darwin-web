@@ -154,7 +154,10 @@ export default function App() {
   const isFinalChapter = chapter.id === "chapter9";
   const shouldShowMiniGame =
     gameState.isMiniGameActive && sceneHasMiniGame(scene);
-  const isFinalManuscriptOpen = isFinalChapter && !ending;
+  const isFinalManuscriptScene = Boolean(
+    isFinalChapter && !scene.nextSceneId && !scene.nextChapterId,
+  );
+  const isFinalManuscriptOpen = isFinalManuscriptScene && !ending;
   const shouldHideDialogueBox = Boolean(
     ending || shouldShowMiniGame || isFinalManuscriptOpen,
   );
@@ -248,7 +251,7 @@ export default function App() {
       );
     }
 
-    if (isFinalChapter) {
+    if (isFinalManuscriptOpen) {
       return (
         <FinalManuscriptPanel
           acquiredElements={gameState.acquiredElements}
@@ -266,7 +269,7 @@ export default function App() {
     ending,
     gameState.acquiredElements,
     gameState.selectedFinalElements,
-    isFinalChapter,
+    isFinalManuscriptOpen,
     scene.id,
     scene.choices,
     scene.miniGameType,

@@ -117,7 +117,7 @@ export default function PrisonerClickGame({ onComplete }: MiniGameProps) {
     hasCompleted.current = true;
     onComplete({
       success: result,
-      gainedElements: result ? ["competition_structure"] : ["incomplete_natural_selection"],
+      gainedElements: result ? ["imperialism_shadow"] : ["social_context_missing"],
     });
   }, [onComplete, result]);
 
