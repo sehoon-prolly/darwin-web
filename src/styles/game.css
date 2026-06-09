@@ -46,6 +46,45 @@ button:not(:disabled) {
   cursor: pointer;
 }
 
+.splash-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: 48px 10vw;
+  background: #000;
+  transition: opacity 0.7s ease;
+}
+
+.splash-screen.is-screen-fading {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.splash-content {
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+
+.splash-content.is-visible {
+  opacity: 1;
+}
+
+.splash-text {
+  margin: 0 0 1.6em;
+  color: rgba(255, 248, 230, 0.78);
+  font-size: clamp(14px, 1.6vw, 20px);
+  font-weight: 500;
+  line-height: 1.9;
+  text-align: center;
+  word-break: keep-all;
+}
+
+.splash-text:last-child {
+  margin-bottom: 0;
+}
+
 .opening-screen {
   position: relative;
   min-height: 100vh;

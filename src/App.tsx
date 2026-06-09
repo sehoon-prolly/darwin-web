@@ -7,6 +7,7 @@ import ChoiceButton from "./components/ChoiceButton";
 import MiniGameRenderer from "./components/MiniGameRenderer";
 import FinalManuscriptPanel from "./components/FinalManuscriptPanel";
 import OpeningScreen from "./components/OpeningScreen";
+import SplashScreen from "./components/SplashScreen";
 import { chapterMap, chapters } from "./data/chapters";
 import { gameElements } from "./data/elements";
 import { endings } from "./data/endings";
@@ -117,6 +118,7 @@ function getAppearedCharacterSides(chapter: Chapter, currentSceneId: string) {
 
 export default function App() {
   const [hasOpenedGame, setHasOpenedGame] = useState(false);
+  const [isShowingSplash, setIsShowingSplash] = useState(false);
   const [isOpeningTransitionActive, setIsOpeningTransitionActive] =
     useState(false);
   const [gainedElementToast, setGainedElementToast] = useState<{
@@ -781,19 +783,28 @@ export default function App() {
     clearGameState();
     setGameState(initialState);
     setHasOpenedGame(false);
+    setIsShowingSplash(false);
     setSelectedNoticePosterId(null);
   }
 
-  if (!hasOpenedGame) {
+  if (!hasOpenedGame && !isShowingSplash) {
     return (
       <OpeningScreen
         isTransitionActive={isOpeningTransitionActive}
-        onStart={handleStartGame}
+        onStart={() => setIsShowingSplash(true)}
       />
     );
   }
 
   return (
+    <>
+      {isShowingSplash && (
+        <SplashScreen
+          onDone={handleStartGame}
+          onGone={() => setIsShowingSplash(false)}
+        />
+      )}
+      {!hasOpenedGame ? null : (
     <GameLayout
       chapter={chapter}
       onNewGame={handleNewGame}
@@ -870,5 +881,7 @@ export default function App() {
         ) : null
       }
     />
+      )}
+    </>
   );
 }
