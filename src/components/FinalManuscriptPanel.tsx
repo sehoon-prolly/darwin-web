@@ -3,10 +3,9 @@ import type { ElementCategory } from "../types/game";
 
 const categoryLabels: Record<ElementCategory, string> = {
   science: "과학",
-  human: "인간",
+  race: "인종",
   empire: "제국",
   sexualSelection: "성선택",
-  negative: "주의",
 };
 
 type FinalManuscriptPanelProps = {
@@ -39,22 +38,21 @@ export default function FinalManuscriptPanel({
           <h2>다윈의 원고를 완성하라</h2>
         </div>
         <div className="final-manuscript-meter" aria-live="polite">
-          <span>획득 {acquired.length}</span>
-          <span>원고 포함 {selectedKnownCount}</span>
+          <span>원고 포함 : {selectedKnownCount}개</span>
         </div>
         <div className="final-panel-actions">
           <button type="button" onClick={onSelectAll}>
             모두 선택
           </button>
           <button type="button" onClick={onClearSelection}>
-            선택 해제
+            전체 해제
           </button>
         </div>
       </div>
 
       {acquired.length === 0 ? (
         <p className="final-empty">
-          획득한 요소가 없습니다. DebugPanel에서 테스트 요소를 추가하거나 처음부터 다시 진행해 보세요.
+          획득한 요소가 없습니다. 처음부터 다시 진행해 보세요.
         </p>
       ) : (
         <div className="final-element-grid">

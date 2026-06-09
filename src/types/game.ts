@@ -1,9 +1,8 @@
 export type ElementCategory =
   | "science"
-  | "human"
+  | "race"
   | "empire"
-  | "sexualSelection"
-  | "negative";
+  | "sexualSelection";
 
 export type GameElement = {
   id: string;

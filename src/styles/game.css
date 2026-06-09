@@ -46,6 +46,36 @@ button:not(:disabled) {
   cursor: pointer;
 }
 
+.ending-reveal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+}
+
+.ending-reveal-toast {
+  max-width: min(720px, 82vw);
+  padding: 20px 36px;
+  border: 3px solid rgba(255, 255, 255, 0.58);
+  border-radius: 16px;
+  color: #fff8e6;
+  background: linear-gradient(180deg, rgba(18, 18, 18, 0.78), rgba(35, 31, 29, 0.7));
+  box-shadow:
+    0 18px 38px rgba(0, 0, 0, 0.34),
+    0 0 28px rgba(255, 255, 255, 0.2);
+  font-size: clamp(22px, 2.8vw, 40px);
+  font-weight: 950;
+  text-align: center;
+  animation: element-toast-pop 1200ms ease both;
+}
+
+.ending-panel-reveal {
+  animation: element-toast-pop 800ms ease both;
+}
+
 .splash-screen {
   position: fixed;
   inset: 0;
@@ -982,22 +1012,20 @@ button:not(:disabled) {
 }
 
 .final-element-card {
-  border: 2px solid rgba(37, 51, 48, 0.24);
-  background: rgba(255, 247, 222, 0.95);
-  color: #2e2d25;
+  border: 2px solid rgba(255, 255, 255, 0.16);
+  background: rgba(22, 22, 22, 0.72);
+  color: #fff8e6;
 }
 
-.element-card.category-science  { border-left-color: #52b8b3; }
-.element-card.category-human    { border-left-color: #8ec16a; }
-.element-card.category-empire   { border-left-color: #5b8fbf; }
+.element-card.category-science        { border-left-color: #52b8b3; }
+.element-card.category-race           { border-left-color: #a87ab8; }
+.element-card.category-empire         { border-left-color: #5b8fbf; }
 .element-card.category-sexualSelection { border-left-color: #e0a83e; }
-.element-card.category-negative { border-left-color: #c95e6a; }
 
-.final-element-card.category-science  { border-left-color: var(--teal); }
-.final-element-card.category-human    { border-left-color: var(--leaf); }
-.final-element-card.category-empire   { border-left-color: var(--blue); }
+.final-element-card.category-science        { border-left-color: var(--teal); }
+.final-element-card.category-race           { border-left-color: #a87ab8; }
+.final-element-card.category-empire         { border-left-color: var(--blue); }
 .final-element-card.category-sexualSelection { border-left-color: var(--gold); }
-.final-element-card.category-negative { border-left-color: var(--berry); }
 
 .mini-game-card,
 .final-panel,
@@ -1026,8 +1054,8 @@ button:not(:disabled) {
   display: flex;
   align-items: start;
   justify-content: space-between;
-  gap: 14px;
-  margin-bottom: 14px;
+  gap: 10px;
+  margin-bottom: 10px;
 }
 
 .final-panel-heading {
@@ -1049,7 +1077,7 @@ button:not(:disabled) {
 .ending-panel h2 {
   margin: 0;
   color: #fff8e6;
-  font-size: clamp(20px, 2vw, 28px);
+  font-size: clamp(16px, 1.7vw, 22px);
 }
 
 .mini-game-heading button,
@@ -2030,7 +2058,7 @@ button:not(:disabled) {
 }
 
 .final-panel {
-  padding: 18px;
+  padding: 12px 14px;
 }
 
 .final-panel-actions {
@@ -2072,15 +2100,15 @@ button:not(:disabled) {
 .final-element-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
-  margin-bottom: 14px;
+  gap: 6px;
+  margin-bottom: 10px;
 }
 
 .final-element-card {
   display: grid;
-  grid-template-columns: 24px 1fr;
-  gap: 8px;
-  padding: 9px 10px;
+  grid-template-columns: 20px 1fr;
+  gap: 6px;
+  padding: 7px 8px;
   transition:
     border-color 150ms ease,
     box-shadow 150ms ease,
@@ -2090,8 +2118,8 @@ button:not(:disabled) {
 
 .final-element-card.is-selected {
   border-color: rgba(255, 226, 135, 0.7);
-  background: rgba(255, 249, 225, 0.98);
-  box-shadow: 0 0 18px rgba(255, 255, 255, 0.18);
+  background: rgba(40, 36, 28, 0.92);
+  box-shadow: 0 0 14px rgba(255, 226, 135, 0.22);
 }
 
 .final-element-card input {
@@ -2110,7 +2138,7 @@ button:not(:disabled) {
 
 .final-element-card small {
   margin-top: 3px;
-  color: #5c4a35;
+  color: rgba(255, 248, 230, 0.58);
   font-size: 11px;
   line-height: 1.34;
 }
@@ -2131,8 +2159,8 @@ button:not(:disabled) {
   background: var(--teal);
 }
 
-.category-pill-human {
-  background: var(--leaf);
+.category-pill-race {
+  background: #7b4d8c;
 }
 
 .category-pill-empire {
@@ -2144,8 +2172,8 @@ button:not(:disabled) {
   background: var(--gold);
 }
 
-.category-pill-negative {
-  background: var(--berry);
+.category-pill-race {
+  background: #7b4d8c;
 }
 
 .complete-manuscript-button {

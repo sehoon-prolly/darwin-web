@@ -133,6 +133,11 @@ export default function App() {
   >(null);
   const [readNoticePosterIds, setReadNoticePosterIds] = useState<string[]>([]);
   const [isProgressionPending, setIsProgressionPending] = useState(false);
+  const [endingReveal, setEndingReveal] = useState<{
+    phase: "black" | "toast" | "panel";
+    endingId: string;
+  } | null>(null);
+  const endingRevealTimeouts = useRef<number[]>([]);
   const screenTransitionTimeouts = useRef<number[]>([]);
   const choiceOverlayDelayTimeout = useRef<number | null>(null);
   const gainedElementToastDelayTimeout = useRef<number | null>(null);
@@ -179,9 +184,7 @@ export default function App() {
   const selectedNoticePosterZoomImage = selectedNoticePosterId
     ? NOTICE_POSTER_ZOOM_IMAGES[selectedNoticePosterId]
     : null;
-  const displayedScene = ending?.backgroundImage
-    ? { ...scene, backgroundImage: ending.backgroundImage }
-    : scene;
+  const displayedScene = scene;
 
   useEffect(() => {
     saveGameState(gameState);
@@ -758,15 +761,26 @@ export default function App() {
   }
 
   function handleSubmitFinalManuscript() {
-    setGameState((currentState) => {
-      const finalEnding = judgeEnding(currentState.selectedFinalElements);
+    endingRevealTimeouts.current.forEach(clearTimeout);
 
-      return {
-        ...currentState,
-        currentEnding: finalEnding.id,
-        isMiniGameActive: false,
-      };
-    });
+    const finalEnding = judgeEnding(gameState.selectedFinalElements);
+
+    setGameState((currentState) => ({
+      ...currentState,
+      currentEnding: finalEnding.id,
+      isMiniGameActive: false,
+    }));
+    setEndingReveal({ phase: "black", endingId: finalEnding.id });
+
+    const t1 = window.setTimeout(() => {
+      setEndingReveal((prev) => (prev ? { ...prev, phase: "toast" } : null));
+    }, 800);
+
+    const t2 = window.setTimeout(() => {
+      setEndingReveal((prev) => (prev ? { ...prev, phase: "panel" } : null));
+    }, 3300);
+
+    endingRevealTimeouts.current = [t1, t2];
   }
 
   function handleNewGame() {
@@ -774,6 +788,9 @@ export default function App() {
     clearChoiceOverlayDelayTimeout();
     clearGainedElementToastDelayTimeout();
     clearPostToastNavigationTimeout();
+    endingRevealTimeouts.current.forEach(clearTimeout);
+    endingRevealTimeouts.current = [];
+    setEndingReveal(null);
     setIsChapterTransitionActive(false);
     setIsOpeningTransitionActive(false);
     setIsPaperZoomOpen(false);
@@ -881,6 +898,25 @@ export default function App() {
         ) : null
       }
     />
+      )}
+      {endingReveal && (
+        <div className="ending-reveal-overlay">
+          {endingReveal.phase === "toast" && endings[endingReveal.endingId] && (
+            <div className="ending-reveal-toast">
+              엔딩 : {endings[endingReveal.endingId].title}
+            </div>
+          )}
+          {endingReveal.phase === "panel" && endings[endingReveal.endingId] && (
+            <section className="ending-panel ending-panel-reveal">
+              <p>Ending</p>
+              <h2>{endings[endingReveal.endingId].title}</h2>
+              <strong>{endings[endingReveal.endingId].description}</strong>
+              <button type="button" onClick={handleNewGame}>
+                처음부터 다시 하기
+              </button>
+            </section>
+          )}
+        </div>
       )}
     </>
   );

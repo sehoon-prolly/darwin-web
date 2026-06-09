@@ -7,10 +7,9 @@ type ElementInventoryProps = {
 
 const categoryLabels: Record<string, string> = {
   science: "과학",
-  human: "인간",
+  race: "인종",
   empire: "제국",
   sexualSelection: "성선택",
-  negative: "주의",
 };
 
 export default function ElementInventory({

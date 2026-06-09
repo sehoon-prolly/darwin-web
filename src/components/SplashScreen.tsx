@@ -34,7 +34,7 @@ export default function SplashScreen({ onDone, onGone }: SplashScreenProps) {
           분명히 실제 기록과는 다름을 밝힙니다.
         </p>
         <p className="splash-text">
-          '비글호 항해기' 도서와 각종 자료를 통해 실제 기록과 비교하며 읽으며
+          '비글호 항해기' 도서와 각종 자료를 통해 실제 기록과 비교하며 플레이하여
           색다른, 깊이있는 재미를 느껴보시기 바랍니다.
         </p>
       </div>
