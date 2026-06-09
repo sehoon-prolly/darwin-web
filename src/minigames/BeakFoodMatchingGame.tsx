@@ -353,6 +353,7 @@ export default function BeakFoodMatchingGame({ onComplete }: MiniGameProps) {
           className="connection-lines"
           viewBox={`0 0 ${GRID_COLS} ${GRID_ROWS}`}
           preserveAspectRatio="none"
+          overflow="visible"
           aria-hidden="true"
         >
           <defs>

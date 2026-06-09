@@ -7,7 +7,6 @@ type GameLayoutProps = {
   sceneView: ReactNode;
   dialogueBox: ReactNode;
   inventory: ReactNode;
-  debugPanel: ReactNode;
   elementToast?: ReactNode;
   choiceOverlay?: ReactNode;
   isChoiceOverlayOpen?: boolean;
@@ -23,7 +22,6 @@ export default function GameLayout({
   sceneView,
   dialogueBox,
   inventory,
-  debugPanel,
   elementToast,
   choiceOverlay,
   isChoiceOverlayOpen = false,
@@ -51,7 +49,6 @@ export default function GameLayout({
         {sceneView}
         {dialogueBox}
         {inventory}
-        {debugPanel}
         {elementToast}
         {choiceOverlay}
         {paperZoomOverlay}

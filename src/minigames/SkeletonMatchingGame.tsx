@@ -1,80 +1,131 @@
 import { useMemo, useState } from "react";
 import type { MiniGameProps } from "../types/game";
 
-type Animal = {
-  id: string;
-  label: string;
-  note: string;
-};
-
-type BoneFeature = {
+type Fossil = {
   id: string;
   label: string;
   description: string;
-  correctAnimalId: string;
+  imageSrc: string;
 };
 
-const animals: Animal[] = [
-  { id: "whale", label: "고래 지느러미", note: "바다에서 헤엄치는 데 사용" },
-  { id: "bat", label: "박쥐 날개", note: "하늘을 나는 데 사용" },
-  { id: "human", label: "인간 팔", note: "도구를 쥐고 사용하는 데 사용" },
+type HumanBone = {
+  id: string;
+  label: string;
+  description: string;
+  boneClass: string;
+  correctFossilId: string;
+};
+
+const fossils: Fossil[] = [
+  {
+    id: "skull",
+    label: "거대 나무늘보 두개골",
+    description: "눈구멍이 넓고 독특한 턱뼈 구조를 지닌 두개골입니다.",
+    imageSrc: "/assets/fossils/fossil-sloth-skull.png",
+  },
+  {
+    id: "ribcage",
+    label: "거대 나무늘보 흉곽",
+    description: "여러 쌍의 갈비뼈가 흉골과 척추뼈를 둥글게 감쌉니다.",
+    imageSrc: "/assets/fossils/fossil-sloth-ribcage.png",
+  },
+  {
+    id: "arm",
+    label: "토크소돈 팔",
+    description: "어깨에서 내려오는 긴 팔뼈와 손가락뼈가 보입니다.",
+    imageSrc: "/assets/fossils/fossil-toxodon-arm.png",
+  },
+  {
+    id: "leg",
+    label: "마크라우케니아 다리",
+    description: "긴 넓적다리뼈와 이어지는 두 종아리뼈가 보입니다.",
+    imageSrc: "/assets/fossils/fossil-macrauchenia-leg.png",
+  },
 ];
 
-const boneFeatures: BoneFeature[] = [
+const humanBones: HumanBone[] = [
   {
-    id: "flat",
-    label: "납작한 지골형",
-    description: "상완골·요골·척골 구조가 넓게 퍼지고 손가락뼈가 줄어들어 납작해진 형태",
-    correctAnimalId: "whale",
+    id: "human-skull",
+    label: "인간 두개골",
+    description: "사람의 두개골 부위",
+    boneClass: "bone-skull",
+    correctFossilId: "skull",
   },
   {
-    id: "elongated",
-    label: "신장된 지골형",
-    description: "상완골·요골·척골 구조에서 손가락뼈만 극도로 길어지고 사이에 막이 형성된 형태",
-    correctAnimalId: "bat",
+    id: "human-ribcage",
+    label: "인간 흉곽",
+    description: "사람의 흉곽·등뼈 부위",
+    boneClass: "bone-ribcage",
+    correctFossilId: "ribcage",
   },
   {
-    id: "preserved",
-    label: "원형 보존형",
-    description: "공통 조상의 상완골·요골·척골과 5지 구조가 가장 원형에 가깝게 유지된 형태",
-    correctAnimalId: "human",
+    id: "human-arm",
+    label: "인간 팔",
+    description: "사람의 팔 골격 구조",
+    boneClass: "bone-arm",
+    correctFossilId: "arm",
+  },
+  {
+    id: "human-leg",
+    label: "인간 다리",
+    description: "사람의 다리 골격 구조",
+    boneClass: "bone-leg",
+    correctFossilId: "leg",
   },
 ];
+
+function shuffle<T>(arr: T[]): T[] {
+  const result = [...arr];
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
+}
 
 export default function SkeletonMatchingGame({ onComplete }: MiniGameProps) {
-  const [selectedAnimalId, setSelectedAnimalId] = useState<string | null>(null);
+  const [shuffledFossils] = useState(() => shuffle(fossils));
+  const [shuffledBones] = useState(() => shuffle(humanBones));
+  const [selectedFossilId, setSelectedFossilId] = useState<string | null>(null);
   const [matches, setMatches] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState(false);
 
-  const matchedAnimalByFeature = useMemo(() => {
+  const allMatched = fossils.every((f) => Boolean(matches[f.id]));
+
+  const matchedBoneLabel = useMemo(() => {
     return Object.fromEntries(
-      boneFeatures.map((feature) => [
-        feature.id,
-        animals.find((a) => a.id === matches[feature.id])?.label ?? "미연결",
+      fossils.map((fossil) => [
+        fossil.id,
+        humanBones.find((b) => b.id === matches[fossil.id])?.label ?? null,
       ]),
     );
   }, [matches]);
 
-  const allMatched = boneFeatures.every((f) => Boolean(matches[f.id]));
+  const handleFossilClick = (fossilId: string) => {
+    if (submitted) return;
+    setSelectedFossilId((current) => (current === fossilId ? null : fossilId));
+  };
 
-  const handleFeatureClick = (featureId: string) => {
-    if (!selectedAnimalId || submitted) return;
+  const handleBoneClick = (boneId: string) => {
+    if (!selectedFossilId || submitted) return;
 
     setMatches((current) => {
       const next = { ...current };
       for (const key of Object.keys(next)) {
-        if (next[key] === selectedAnimalId) delete next[key];
+        if (next[key] === boneId) delete next[key];
       }
-      next[featureId] = selectedAnimalId;
+      next[selectedFossilId] = boneId;
       return next;
     });
-    setSelectedAnimalId(null);
+    setSelectedFossilId(null);
   };
 
   const handleSubmit = () => {
-    const success = boneFeatures.every(
-      (f) => matches[f.id] === f.correctAnimalId,
-    );
+    const success = fossils.every((fossil) => {
+      const bone = humanBones.find((b) => b.id === matches[fossil.id]);
+      return bone?.correctFossilId === fossil.id;
+    });
+
     setSubmitted(true);
     onComplete({
       success,
@@ -86,62 +137,88 @@ export default function SkeletonMatchingGame({ onComplete }: MiniGameProps) {
 
   const handleReset = () => {
     setMatches({});
-    setSelectedAnimalId(null);
+    setSelectedFossilId(null);
     setSubmitted(false);
   };
 
   return (
-    <section className="mini-game-card skeleton-game">
-      <div className="mini-game-heading">
-        <div>
+    <section className="mini-game-card fossil-game">
+      <div className="fossil-game-header">
+        <div className="fossil-game-title">
           <p>Mini Game</p>
           <h2>골격 연결</h2>
         </div>
-        <button type="button" onClick={handleReset}>
+        <button
+          className="fossil-reset-button"
+          type="button"
+          onClick={handleReset}
+        >
           다시 연결
         </button>
       </div>
 
-      <div className="beak-game-board">
-        <div className="match-column">
-          <h3>현대 동물</h3>
-          {animals.map((animal) => (
-            <button
-              className={`match-card animal-card ${
-                selectedAnimalId === animal.id ? "selected" : ""
-              }`}
-              key={animal.id}
-              type="button"
-              onClick={() => !submitted && setSelectedAnimalId(animal.id)}
-            >
-              <strong>{animal.label}</strong>
-              <span>{animal.note}</span>
-            </button>
-          ))}
+      <div className="fossil-game-board">
+        <div className="fossil-column">
+          <h3 className="fossil-column-heading">동물 화석</h3>
+          {shuffledFossils.map((fossil) => {
+            const isSelected = selectedFossilId === fossil.id;
+            const isMatched = Boolean(matches[fossil.id]);
+            const connectedLabel = matchedBoneLabel[fossil.id];
+            return (
+              <button
+                className={`fossil-card ${isSelected ? "is-selected" : ""} ${isMatched ? "is-matched" : ""}`}
+                key={fossil.id}
+                type="button"
+                disabled={submitted}
+                onClick={() => handleFossilClick(fossil.id)}
+              >
+                <img
+                  className="fossil-card-img"
+                  src={fossil.imageSrc}
+                  alt={fossil.label}
+                />
+                <div className="fossil-card-text">
+                  <strong>{fossil.label}</strong>
+                  <span>{fossil.description}</span>
+                  {connectedLabel && (
+                    <em className="fossil-match-badge">→ {connectedLabel}</em>
+                  )}
+                </div>
+              </button>
+            );
+          })}
         </div>
 
-        <div className="match-column feature-column">
-          <h3>뼈 구조 특성</h3>
-          {boneFeatures.map((feature) => (
-            <button
-              className="match-card feature-card"
-              key={feature.id}
-              type="button"
-              onClick={() => handleFeatureClick(feature.id)}
-            >
-              <strong>{feature.label}</strong>
-              <span>{feature.description}</span>
-              <em>{matchedAnimalByFeature[feature.id]}</em>
-            </button>
-          ))}
+        <div className="fossil-column">
+          <h3 className="fossil-column-heading">인간 골격</h3>
+          {shuffledBones.map((bone) => {
+            const isConnected = Object.values(matches).includes(bone.id);
+            return (
+              <button
+                className={`fossil-card human-bone-card ${isConnected ? "is-matched" : ""} ${
+                  selectedFossilId && !isConnected ? "is-targetable" : ""
+                }`}
+                key={bone.id}
+                type="button"
+                disabled={submitted}
+                onClick={() => handleBoneClick(bone.id)}
+              >
+                <div className={`fossil-card-img human-bone-img ${bone.boneClass}`} />
+                <div className="fossil-card-text">
+                  <strong>{bone.label}</strong>
+                  <span>{bone.description}</span>
+                </div>
+              </button>
+            );
+          })}
         </div>
       </div>
 
       <div className="mini-game-footer">
         <p>
-          {selectedAnimalId
-            ? "선택한 동물을 연결할 뼈 구조를 누르세요."
-            : "동물 카드를 누른 뒤 어울리는 뼈 구조를 선택하세요."}
+          {selectedFossilId
+            ? "연결할 인간 골격을 오른쪽에서 선택하세요."
+            : "서로 비슷한 뼈 구조를 가진 화석과 인간 골격을 연결해보세요."}
         </p>
         <button
           className="submit-match-button"

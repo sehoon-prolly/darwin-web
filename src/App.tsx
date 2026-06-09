@@ -5,7 +5,6 @@ import DialogueBox from "./components/DialogueBox";
 import ElementInventory from "./components/ElementInventory";
 import ChoiceButton from "./components/ChoiceButton";
 import MiniGameRenderer from "./components/MiniGameRenderer";
-import DebugPanel from "./components/DebugPanel";
 import FinalManuscriptPanel from "./components/FinalManuscriptPanel";
 import OpeningScreen from "./components/OpeningScreen";
 import { chapterMap, chapters } from "./data/chapters";
@@ -768,33 +767,6 @@ export default function App() {
     });
   }
 
-  function handleAddDebugElement(elementId: string) {
-    announceGainedElements([elementId]);
-
-    setGameState((currentState) => {
-      const acquiredElements = uniqueElements([
-        ...currentState.acquiredElements,
-        elementId,
-      ]);
-
-      return {
-        ...currentState,
-        acquiredElements,
-        selectedFinalElements: isFinalChapter
-          ? uniqueElements([...currentState.selectedFinalElements, elementId])
-          : currentState.selectedFinalElements,
-      };
-    });
-  }
-
-  function handleClearElements() {
-    setGameState((currentState) => ({
-      ...currentState,
-      acquiredElements: [],
-      selectedFinalElements: [],
-    }));
-  }
-
   function handleNewGame() {
     clearScreenTransitionTimeouts();
     clearChoiceOverlayDelayTimeout();
@@ -889,12 +861,6 @@ export default function App() {
             <img src={selectedNoticePosterZoomImage} alt="확대된 벽보" />
           </button>
         ) : null
-      }
-      debugPanel={
-        <DebugPanel
-          onAddElement={handleAddDebugElement}
-          onClearElements={handleClearElements}
-        />
       }
       elementToast={
         gainedElementToast ? (

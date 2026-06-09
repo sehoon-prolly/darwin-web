@@ -69,12 +69,15 @@ button:not(:disabled) {
 
 .opening-content h1 {
   margin: 0;
+  max-width: min(86vw, 860px);
   color: #fff6dc;
-  font-size: clamp(52px, 7vw, 104px);
+  font-size: clamp(18px, 2.6vw, 38px);
   font-weight: 950;
+  text-align: center;
   text-shadow:
     0 5px 20px rgba(0, 0, 0, 0.48),
     0 0 2px rgba(0, 0, 0, 0.7);
+  line-height: 1.6;
 }
 
 .opening-content button {
@@ -139,7 +142,6 @@ button:not(:disabled) {
 .game-frame.is-paper-zoom-open > .scene-view,
 .game-frame.is-paper-zoom-open > .dialogue-box,
 .game-frame.is-paper-zoom-open > .element-inventory,
-.game-frame.is-paper-zoom-open > .debug-panel,
 .game-frame.is-paper-zoom-open > .element-toast {
   filter: blur(6px);
 }
@@ -148,7 +150,6 @@ button:not(:disabled) {
 .game-frame.is-choice-overlay-open > .scene-view,
 .game-frame.is-choice-overlay-open > .dialogue-box,
 .game-frame.is-choice-overlay-open > .element-inventory,
-.game-frame.is-choice-overlay-open > .debug-panel,
 .game-frame.is-choice-overlay-open > .element-toast {
   filter: blur(5px);
 }
@@ -826,7 +827,7 @@ button:not(:disabled) {
   gap: 10px;
   min-height: 0;
   padding: 14px 12px;
-  border-left: 3px solid rgba(25, 24, 23, 0.34);
+  border-left: 3px solid rgba(255, 247, 220, 0.18);
   background:
     linear-gradient(180deg, rgba(18, 18, 18, 0.92), rgba(45, 38, 34, 0.9)),
     repeating-linear-gradient(90deg, transparent 0 16px, rgba(255, 255, 255, 0.05) 16px 17px);
@@ -881,9 +882,9 @@ button:not(:disabled) {
 .empty-inventory {
   margin: 0;
   padding: 14px;
-  border: 2px dashed rgba(255, 247, 220, 0.38);
+  border: 2px dashed rgba(255, 247, 220, 0.28);
   border-radius: 12px;
-  color: rgba(255, 249, 223, 0.76);
+  color: rgba(255, 249, 223, 0.62);
   font-size: 13px;
   line-height: 1.45;
 }
@@ -893,66 +894,71 @@ button:not(:disabled) {
   overflow: auto;
   display: flex;
   flex-direction: column;
-  gap: 9px;
+  gap: 8px;
   padding-right: 2px;
 }
 
 .element-card,
 .final-element-card {
-  border: 2px solid rgba(37, 51, 48, 0.24);
-  border-left-width: 7px;
   border-radius: 8px;
-  background: rgba(255, 247, 222, 0.95);
-  color: #2e2d25;
+  border-left-width: 5px;
 }
 
 .element-card {
   padding: 9px 10px;
+  border: 1.5px solid rgba(255, 247, 220, 0.18);
+  border-left-width: 5px;
+  background: linear-gradient(135deg, rgba(28, 28, 28, 0.82), rgba(42, 35, 32, 0.76));
+  color: #fff8e6;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(2px);
 }
 
 .element-card span {
   display: inline-flex;
   margin-bottom: 5px;
-  padding: 2px 8px;
+  padding: 2px 9px;
   border-radius: 999px;
-  color: #fffdf0;
-  background: #426761;
+  color: #fff8e8;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.22);
   font-size: 10px;
   font-weight: 950;
+  letter-spacing: 0.03em;
 }
 
 .element-card strong {
   display: block;
-  font-size: 14px;
+  font-size: 13px;
+  font-weight: 950;
   word-break: keep-all;
+  color: #fff8e6;
 }
 
 .element-card p {
-  margin: 5px 0 0;
-  color: #5c4a35;
+  margin: 4px 0 0;
+  color: rgba(255, 248, 226, 0.68);
   font-size: 11px;
-  line-height: 1.35;
+  line-height: 1.4;
 }
 
-.category-science {
-  border-left-color: var(--teal);
+.final-element-card {
+  border: 2px solid rgba(37, 51, 48, 0.24);
+  background: rgba(255, 247, 222, 0.95);
+  color: #2e2d25;
 }
 
-.category-human {
-  border-left-color: var(--leaf);
-}
+.element-card.category-science  { border-left-color: #52b8b3; }
+.element-card.category-human    { border-left-color: #8ec16a; }
+.element-card.category-empire   { border-left-color: #5b8fbf; }
+.element-card.category-sexualSelection { border-left-color: #e0a83e; }
+.element-card.category-negative { border-left-color: #c95e6a; }
 
-.category-empire {
-  border-left-color: var(--blue);
-}
-
-.category-sexualSelection {
-  border-left-color: var(--gold);
-}
-
-.category-negative {
-  border-left-color: var(--berry);
-}
+.final-element-card.category-science  { border-left-color: var(--teal); }
+.final-element-card.category-human    { border-left-color: var(--leaf); }
+.final-element-card.category-empire   { border-left-color: var(--blue); }
+.final-element-card.category-sexualSelection { border-left-color: var(--gold); }
+.final-element-card.category-negative { border-left-color: var(--berry); }
 
 .mini-game-card,
 .final-panel,
@@ -973,7 +979,7 @@ button:not(:disabled) {
 }
 
 .mini-game-card {
-  padding: 18px;
+  padding: 14px 16px;
 }
 
 .mini-game-heading,
@@ -1018,64 +1024,6 @@ button:not(:disabled) {
   font-weight: 900;
 }
 
-.beak-game-board {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-}
-
-.match-column {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.match-column h3 {
-  margin: 0;
-  color: #fff8e6;
-  font-size: 15px;
-}
-
-.match-card {
-  min-height: 72px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
-  gap: 4px;
-  padding: 10px 12px;
-  border: 2px solid rgba(255, 255, 255, 0.34);
-  border-radius: 12px;
-  color: #fff8e6;
-  background: rgba(20, 20, 20, 0.42);
-  text-align: left;
-}
-
-.match-card strong {
-  font-size: 15px;
-}
-
-.match-card span,
-.match-card em {
-  color: rgba(255, 248, 230, 0.78);
-  font-size: 12px;
-  font-style: normal;
-  font-weight: 800;
-}
-
-.beak-card.selected {
-  border-color: rgba(255, 226, 135, 0.86);
-  background: rgba(255, 226, 135, 0.2);
-  box-shadow: 0 0 0 4px rgba(255, 226, 135, 0.16);
-}
-
-.food-card em {
-  margin-top: 2px;
-  padding: 3px 8px;
-  border-radius: 999px;
-  color: #fff8df;
-  background: #3d6867;
-}
 
 .flow-game {
   width: min(92vw, 680px);
@@ -1461,19 +1409,6 @@ button:not(:disabled) {
   }
 }
 
-.animal-card.selected {
-  border-color: rgba(255, 226, 135, 0.86);
-  background: rgba(255, 226, 135, 0.2);
-  box-shadow: 0 0 0 4px rgba(255, 226, 135, 0.16);
-}
-
-.feature-card em {
-  margin-top: 2px;
-  padding: 3px 8px;
-  border-radius: 999px;
-  color: #fff8df;
-  background: #3d6867;
-}
 
 .click-game-desc {
   margin: 0 0 12px;
@@ -1559,7 +1494,7 @@ button:not(:disabled) {
 
 .logic-game {
   width: min(94vw, 860px);
-  padding: 18px;
+  padding: 12px 16px;
   border: 0;
   border-radius: 14px;
   color: #fff8e6;
@@ -1577,7 +1512,7 @@ button:not(:disabled) {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  margin-bottom: 14px;
+  margin-bottom: 10px;
 }
 
 .logic-game-heading p,
@@ -1594,7 +1529,7 @@ button:not(:disabled) {
 
 .logic-game-heading h2 {
   color: #fff8e6;
-  font-size: clamp(22px, 2.4vw, 34px);
+  font-size: clamp(18px, 2vw, 26px);
   font-weight: 950;
 }
 
@@ -1616,11 +1551,11 @@ button:not(:disabled) {
 
 .logic-rule-card {
   display: grid;
-  grid-template-columns: 74px 1fr;
-  gap: 12px;
+  grid-template-columns: 62px 1fr;
+  gap: 10px;
   align-items: center;
-  margin-bottom: 12px;
-  padding: 13px 15px;
+  margin-bottom: 8px;
+  padding: 8px 12px;
   border: 2px solid rgba(255, 248, 230, 0.62);
   border-radius: 10px;
   background: rgba(255, 248, 230, 0.12);
@@ -1629,7 +1564,7 @@ button:not(:disabled) {
 .logic-rule-card strong {
   display: grid;
   place-items: center;
-  min-height: 42px;
+  min-height: 34px;
   border-radius: 8px;
   color: #2e271b;
   background: rgba(255, 248, 230, 0.9);
@@ -1639,26 +1574,26 @@ button:not(:disabled) {
 .logic-rule-card p {
   margin: 0;
   color: rgba(255, 248, 230, 0.92);
-  font-size: clamp(14px, 1.35vw, 17px);
+  font-size: clamp(12px, 1.2vw, 15px);
   font-weight: 800;
-  line-height: 1.55;
+  line-height: 1.45;
   word-break: keep-all;
 }
 
 .logic-statement-list {
   display: grid;
-  gap: 8px;
-  margin-bottom: 14px;
+  gap: 6px;
+  margin-bottom: 10px;
 }
 
 .logic-statement-card {
   display: grid;
-  grid-template-columns: 54px 1fr;
-  gap: 12px;
+  grid-template-columns: 44px 1fr;
+  gap: 10px;
   align-items: center;
   width: 100%;
-  min-height: 68px;
-  padding: 9px 12px;
+  min-height: 56px;
+  padding: 7px 12px;
   border: 2px solid rgba(255, 248, 230, 0.28);
   border-radius: 10px;
   color: inherit;
@@ -1694,15 +1629,15 @@ button:not(:disabled) {
 }
 
 .logic-speaker {
-  width: 44px;
-  height: 44px;
+  width: 38px;
+  height: 38px;
   display: grid;
   place-items: center;
   border: 2px solid rgba(255, 248, 230, 0.82);
   border-radius: 50%;
   color: #fff8e6;
   background: rgba(0, 0, 0, 0.32);
-  font-size: 22px;
+  font-size: 18px;
   font-weight: 950;
 }
 
@@ -1717,7 +1652,7 @@ button:not(:disabled) {
 .logic-statement-card p {
   margin: 0;
   color: #fff8e6;
-  font-size: clamp(16px, 1.55vw, 21px);
+  font-size: clamp(13px, 1.3vw, 17px);
   font-weight: 900;
   line-height: 1.34;
   word-break: keep-all;
@@ -2265,54 +2200,184 @@ button:not(:disabled) {
   justify-self: center;
 }
 
-.debug-panel {
-  position: absolute;
-  z-index: 10;
-  top: 70px;
-  left: 12px;
-  width: 226px;
-  border: 2px solid rgba(255, 250, 225, 0.58);
-  border-radius: 12px;
-  color: #fff8df;
-  background: rgba(30, 48, 48, 0.9);
-  box-shadow: 0 10px 22px rgba(16, 24, 23, 0.25);
+/* ── Fossil Matching Game ─────────────────────────────── */
+
+.fossil-game {
+  width: min(94%, 760px);
 }
 
-.debug-panel summary {
-  padding: 8px 10px;
+.fossil-game-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.fossil-game-title {
+  display: grid;
+  gap: 2px;
+}
+
+.fossil-game-title p {
+  margin: 0;
+  color: rgba(255, 248, 226, 0.72);
   font-size: 12px;
   font-weight: 950;
-  cursor: pointer;
+  letter-spacing: 0.06em;
 }
 
-.debug-panel p {
+.fossil-game-title h2 {
   margin: 0;
-  padding: 0 10px 8px;
-  color: rgba(255, 248, 223, 0.72);
-  font-size: 11px;
-  line-height: 1.35;
+  color: #fff8e6;
+  font-size: clamp(16px, 1.8vw, 22px);
+  font-weight: 950;
 }
 
-.debug-actions {
+.fossil-reset-button {
+  padding: 6px 14px;
+  border: 2px solid rgba(255, 247, 220, 0.56);
+  border-radius: 999px;
+  color: #fff8e6;
+  background: rgba(255, 255, 255, 0.07);
+  font-size: 12px;
+  font-weight: 950;
+  white-space: nowrap;
+  transition: background 130ms ease, filter 130ms ease;
+}
+
+.fossil-reset-button:hover {
+  background: rgba(255, 255, 255, 0.13);
+}
+
+.fossil-game-desc {
+  margin: 0 0 12px;
+  color: rgba(255, 248, 226, 0.72);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.fossil-game-board {
   display: grid;
-  gap: 6px;
-  padding: 0 10px 10px;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 8px;
 }
 
-.debug-actions button {
-  min-height: 28px;
-  padding: 4px 8px;
-  border: 1px solid rgba(255, 248, 223, 0.54);
-  border-radius: 8px;
-  color: #fff8df;
-  background: rgba(72, 112, 105, 0.86);
-  font-size: 11px;
-  font-weight: 800;
+.fossil-column {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.fossil-column-heading {
+  margin: 0 0 2px;
+  padding-bottom: 5px;
+  border-bottom: 1.5px solid rgba(255, 247, 220, 0.22);
+  color: rgba(255, 248, 226, 0.88);
+  font-size: 12px;
+  font-weight: 950;
+  letter-spacing: 0.04em;
+}
+
+.fossil-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border: 2px solid rgba(255, 247, 220, 0.22);
+  border-radius: 10px;
+  color: #fff8e6;
+  background: rgba(22, 22, 22, 0.64);
   text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 140ms ease,
+    background 140ms ease,
+    box-shadow 140ms ease;
 }
 
-.debug-actions .danger-button {
-  background: rgba(139, 60, 65, 0.9);
+.fossil-card:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.fossil-card.is-selected {
+  border-color: rgba(255, 224, 120, 0.9);
+  background: rgba(255, 224, 120, 0.12);
+  box-shadow: 0 0 0 3px rgba(255, 224, 120, 0.18);
+}
+
+.fossil-card.is-matched {
+  border-color: rgba(90, 210, 160, 0.7);
+  background: rgba(90, 210, 160, 0.08);
+}
+
+.fossil-card.is-targetable {
+  border-color: rgba(255, 247, 220, 0.5);
+  box-shadow: 0 0 12px rgba(255, 247, 220, 0.1);
+  animation: fossil-target-pulse 900ms ease infinite;
+}
+
+@keyframes fossil-target-pulse {
+  0%, 100% { box-shadow: 0 0 8px rgba(255, 247, 220, 0.1); }
+  50%       { box-shadow: 0 0 18px rgba(255, 247, 220, 0.24); }
+}
+
+.fossil-card-img {
+  width: 58px;
+  height: 58px;
+  border-radius: 6px;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: #1a1a1a;
+}
+
+.human-bone-img {
+  background-image: url("/assets/fossils/human-skeleton.png");
+  background-size: 400% auto;
+  background-repeat: no-repeat;
+  background-color: #111;
+}
+
+.bone-skull   { background-position: 0%      center; }
+.bone-ribcage { background-position: 33.33%  center; }
+.bone-leg     { background-position: 66.67%  center; }
+.bone-arm     { background-position: 100%    center; }
+
+.fossil-card-text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.fossil-card-text strong {
+  font-size: clamp(11px, 1.1vw, 13px);
+  font-weight: 950;
+  word-break: keep-all;
+  line-height: 1.3;
+}
+
+.fossil-card-text span {
+  color: rgba(255, 248, 226, 0.62);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.35;
+  word-break: keep-all;
+}
+
+.fossil-match-badge {
+  display: inline-block;
+  margin-top: 3px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(90, 210, 160, 0.22);
+  border: 1px solid rgba(90, 210, 160, 0.5);
+  color: #8ef5cf;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 950;
 }
 
 @media (max-width: 900px) {
@@ -2344,7 +2409,6 @@ button:not(:disabled) {
   }
 
   .choice-list,
-  .beak-game-board,
   .final-element-grid {
     grid-template-columns: 1fr;
   }
