@@ -162,11 +162,13 @@ export default function App() {
     ending || shouldShowMiniGame || isFinalManuscriptOpen,
   );
   const [isChoiceOverlayDelayed, setIsChoiceOverlayDelayed] = useState(false);
+  const [isWaitingForChoiceConfirm, setIsWaitingForChoiceConfirm] = useState(false);
   const hasChoiceOverlay = Boolean(
     scene.choices?.length &&
       !ending &&
       !isChoiceOverlayDelayed &&
-      !isProgressionPending,
+      !isProgressionPending &&
+      !isWaitingForChoiceConfirm,
   );
   const isNoticeSceneLocked =
     scene.id === NOTICE_POSTER_SCENE_ID &&
@@ -200,6 +202,10 @@ export default function App() {
       setReadNoticePosterIds([]);
     }
   }, [gameState.currentSceneId]);
+
+  useEffect(() => {
+    setIsWaitingForChoiceConfirm(Boolean(scene.choices?.length));
+  }, [scene.id]);
 
   useEffect(() => {
     if (!gainedElementToast) {
@@ -844,7 +850,9 @@ export default function App() {
             scene={scene}
             isMiniGameActive={Boolean(shouldShowMiniGame)}
             isNextLocked={isNoticeSceneLocked}
+            isWaitingForChoiceConfirm={isWaitingForChoiceConfirm}
             onNext={handleNext}
+            onConfirmChoiceReady={() => setIsWaitingForChoiceConfirm(false)}
           />
         )
       }

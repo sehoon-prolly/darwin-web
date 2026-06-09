@@ -243,7 +243,7 @@ const chapterConfigs: ChapterConfig[] = [
       {
         speakerName: "다윈",
         dialogueText:
-          "\"저는 에라스무스 다윈이라고 해요. 혹시 조수 지원을 하신 분인가요?\"",
+          "\"저는 찰스 로버트 다윈이라고 해요. 혹시 조수 지원을 하신 분인가요?\"",
       },
       {
         speakerName: "나",

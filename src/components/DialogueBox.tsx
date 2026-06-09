@@ -8,14 +8,18 @@ type DialogueBoxProps = {
   scene: Scene;
   isMiniGameActive: boolean;
   isNextLocked?: boolean;
+  isWaitingForChoiceConfirm?: boolean;
   onNext: () => void;
+  onConfirmChoiceReady?: () => void;
 };
 
 export default function DialogueBox({
   scene,
   isMiniGameActive,
   isNextLocked = false,
+  isWaitingForChoiceConfirm = false,
   onNext,
+  onConfirmChoiceReady,
 }: DialogueBoxProps) {
   const hasChoices = Boolean(scene.choices?.length);
   const hasMiniGame = Boolean(scene.miniGameType && scene.miniGameType !== "none");
@@ -24,6 +28,7 @@ export default function DialogueBox({
   );
   const canClickToNext =
     !hasChoices && canMoveNext && !isMiniGameActive && !isNextLocked;
+  const canConfirmChoices = hasChoices && isWaitingForChoiceConfirm;
   const textCharacters = useMemo(
     () => Array.from(scene.dialogueText),
     [scene.dialogueText],
@@ -39,7 +44,7 @@ export default function DialogueBox({
       : 0;
   const displayedText = textCharacters.slice(0, visibleCharacterCount).join("");
   const isTyping = visibleCharacterCount < textCharacters.length;
-  const canInteractWithDialogue = isTyping || canClickToNext;
+  const canInteractWithDialogue = isTyping || canClickToNext || canConfirmChoices;
 
   const clearTypingInterval = () => {
     if (typingIntervalRef.current === null) {
@@ -94,6 +99,11 @@ export default function DialogueBox({
 
     if (canClickToNext) {
       onNext();
+      return;
+    }
+
+    if (canConfirmChoices) {
+      onConfirmChoiceReady?.();
     }
   };
 
@@ -112,6 +122,11 @@ export default function DialogueBox({
 
       if (canClickToNext) {
         onNext();
+        return;
+      }
+
+      if (canConfirmChoices) {
+        onConfirmChoiceReady?.();
       }
     }
   };
