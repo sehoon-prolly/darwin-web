@@ -414,7 +414,7 @@ export default function App() {
   function showGainedElementToast(labels: string[]) {
     setGainedElementToast({
       id: Date.now(),
-      text: `획득 요소 : ${labels.join(", ")}를 획득했습니다.`,
+      text: `획득요소 : ${labels.join(", ")}`,
     });
     delayChoiceOverlay();
   }

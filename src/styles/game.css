@@ -1232,7 +1232,6 @@ button:not(:disabled) {
   stroke-linejoin: round;
   stroke-width: 0.62;
   opacity: 0.92;
-  animation: connection-line-draw 180ms ease both;
 }
 
 .connection-line-end {
@@ -1905,93 +1904,25 @@ button:not(:disabled) {
   z-index: 2;
   left: 50%;
   bottom: 10%;
-  width: min(82px, 72%);
-  height: min(104px, 98%);
+  width: min(90px, 76%);
+  height: min(110px, 100%);
   transform: translateX(-50%);
   pointer-events: none;
   animation: whack-rise 160ms steps(3, end) both;
-  filter:
-    drop-shadow(3px 3px 0 rgba(0, 0, 0, 0.28))
-    drop-shadow(0 0 8px rgba(255, 255, 255, 0.1));
+  filter: drop-shadow(2px 4px 4px rgba(0, 0, 0, 0.5));
 }
 
-.whack-head {
-  position: absolute;
-  left: 50%;
-  top: 3%;
-  width: 58%;
-  aspect-ratio: 1;
-  border: 3px solid #1b1512;
-  border-radius: 42% 42% 46% 46%;
-  background: #6a4435;
-  transform: translateX(-50%);
-}
-
-.whack-head::before {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: -11%;
-  width: 78%;
-  height: 26%;
-  border: 3px solid #1b1512;
-  border-bottom: 0;
-  border-radius: 12px 12px 4px 4px;
-  background: #24211d;
-  transform: translateX(-50%);
-}
-
-.whack-eye {
-  position: absolute;
-  top: 42%;
-  width: 10%;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background: #111;
-}
-
-.whack-eye.left {
-  left: 31%;
-}
-
-.whack-eye.right {
-  right: 31%;
-}
-
-.whack-body {
-  position: absolute;
-  left: 50%;
-  bottom: 2%;
-  width: 74%;
-  height: 48%;
-  border: 3px solid #1b1512;
-  border-radius: 13px 13px 8px 8px;
-  background:
-    repeating-linear-gradient(0deg, #202020 0 9px, #f4ead5 9px 17px);
-  transform: translateX(-50%);
-}
-
-.whack-character.distractor .whack-head {
-  background: #d4a982;
-}
-
-.whack-character.distractor .whack-head::before {
-  width: 94%;
-  height: 20%;
-  border-radius: 50%;
-  background: #f3efe1;
-}
-
-.whack-character.distractor .whack-body {
-  background:
-    linear-gradient(90deg, transparent 0 42%, #b82e2c 42% 58%, transparent 58%),
-    linear-gradient(180deg, #f3efe1, #d9c8a6);
+.whack-character-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: bottom;
 }
 
 .whack-hole.has-popup:hover .whack-character {
   filter:
     brightness(1.12)
-    drop-shadow(3px 3px 0 rgba(0, 0, 0, 0.28))
+    drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.5))
     drop-shadow(0 0 12px rgba(255, 242, 180, 0.36));
 }
 

@@ -215,11 +215,11 @@ export default function PrisonerClickGame({ onComplete }: MiniGameProps) {
             <span className="whack-hole-shadow" />
             {popup ? (
               <span className={`whack-character ${popup.type}`}>
-                <span className="whack-head">
-                  <span className="whack-eye left" />
-                  <span className="whack-eye right" />
-                </span>
-                <span className="whack-body" />
+                <img
+                  className="whack-character-img"
+                  src={popup.type === "target" ? "/assets/characters/prisoner.png" : "/assets/characters/native.png"}
+                  alt={popup.type === "target" ? "죄수" : "원주민"}
+                />
               </span>
             ) : null}
           </button>

@@ -30,6 +30,10 @@ export default function SplashScreen({ onDone, onGone }: SplashScreenProps) {
           학습적 요소와 나름의 재미를 동시에 챙기려고 하였습니다.
         </p>
         <p className="splash-text">
+          각종 내용과 요소들에 대해 기록을 반영하긴 하였으나,
+          분명히 실제 기록과는 다름을 밝힙니다.
+        </p>
+        <p className="splash-text">
           '비글호 항해기' 도서와 각종 자료를 통해 실제 기록과 비교하며 읽으며
           색다른, 깊이있는 재미를 느껴보시기 바랍니다.
         </p>

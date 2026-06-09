@@ -356,15 +356,6 @@ export default function BeakFoodMatchingGame({ onComplete }: MiniGameProps) {
           overflow="visible"
           aria-hidden="true"
         >
-          <defs>
-            <filter id="connection-glow" x="-40%" y="-40%" width="180%" height="180%">
-              <feGaussianBlur stdDeviation="0.08" result="blur" />
-              <feMerge>
-                <feMergeNode in="blur" />
-                <feMergeNode in="SourceGraphic" />
-              </feMerge>
-            </filter>
-          </defs>
           {Object.entries(paths).map(([beakId, path]) => {
             if (path.cells.length < 2) return null;
             const points = path.cells
@@ -380,7 +371,6 @@ export default function BeakFoodMatchingGame({ onComplete }: MiniGameProps) {
                 points={points}
                 fill="none"
                 stroke={getPathColor(beakId)}
-                filter="url(#connection-glow)"
               />
             );
           })}
