@@ -228,13 +228,6 @@ export default function PrisonerClickGame({ onComplete }: MiniGameProps) {
 
       <div className="mini-game-footer whack-footer">
         <p>줄무늬 죄수 캐릭터만 클릭하세요. 다른 인물을 누르면 목숨이 줄어듭니다.</p>
-        <button
-          className="submit-match-button whack-reset-button"
-          type="button"
-          onClick={handleRestart}
-        >
-          다시 시작
-        </button>
       </div>
     </section>
   );
