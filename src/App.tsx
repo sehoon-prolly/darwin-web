@@ -11,6 +11,7 @@ import SplashScreen from "./components/SplashScreen";
 import { chapterMap, chapters } from "./data/chapters";
 import { gameElements } from "./data/elements";
 import { endings } from "./data/endings";
+import { endingDialogue } from "./data/endingDialogue";
 import type { Chapter, Choice, GameState, MiniGameResult, Scene } from "./types/game";
 import { clearGameState, loadGameState, saveGameState } from "./utils/storage";
 import { judgeEnding } from "./utils/endingJudge";
@@ -134,8 +135,10 @@ export default function App() {
   const [readNoticePosterIds, setReadNoticePosterIds] = useState<string[]>([]);
   const [isProgressionPending, setIsProgressionPending] = useState(false);
   const [endingReveal, setEndingReveal] = useState<{
-    phase: "black" | "toast" | "panel";
+    phase: "black" | "toast" | "dialogue" | "panel";
     endingId: string;
+    dialogueIndex: number;
+    isPostScene: boolean;
   } | null>(null);
   const endingRevealTimeouts = useRef<number[]>([]);
   const screenTransitionTimeouts = useRef<number[]>([]);
@@ -770,17 +773,46 @@ export default function App() {
       currentEnding: finalEnding.id,
       isMiniGameActive: false,
     }));
-    setEndingReveal({ phase: "black", endingId: finalEnding.id });
+    setEndingReveal({ phase: "black", endingId: finalEnding.id, dialogueIndex: 0, isPostScene: false });
 
     const t1 = window.setTimeout(() => {
       setEndingReveal((prev) => (prev ? { ...prev, phase: "toast" } : null));
     }, 800);
 
     const t2 = window.setTimeout(() => {
-      setEndingReveal((prev) => (prev ? { ...prev, phase: "panel" } : null));
+      setEndingReveal((prev) => (prev ? { ...prev, phase: "dialogue" } : null));
     }, 3300);
 
     endingRevealTimeouts.current = [t1, t2];
+  }
+
+  function handleEndingDialogueAdvance() {
+    if (!endingReveal || endingReveal.phase !== "dialogue") return;
+
+    const script = endingDialogue[endingReveal.endingId];
+    if (!script) {
+      setEndingReveal((prev) => (prev ? { ...prev, phase: "panel" } : null));
+      return;
+    }
+
+    const currentLines = endingReveal.isPostScene
+      ? (script.postScene ?? [])
+      : script.preScene;
+    const nextIndex = endingReveal.dialogueIndex + 1;
+
+    if (nextIndex >= currentLines.length) {
+      if (!endingReveal.isPostScene && script.postScene?.length) {
+        setEndingReveal((prev) =>
+          prev ? { ...prev, isPostScene: true, dialogueIndex: 0 } : null,
+        );
+      } else {
+        setEndingReveal((prev) => (prev ? { ...prev, phase: "panel" } : null));
+      }
+    } else {
+      setEndingReveal((prev) =>
+        prev ? { ...prev, dialogueIndex: nextIndex } : null,
+      );
+    }
   }
 
   function handleNewGame() {
@@ -901,11 +933,33 @@ export default function App() {
       )}
       {endingReveal && (
         <div className="ending-reveal-overlay">
+          <div
+            className={`ending-scene-bg ${endingReveal.isPostScene ? "is-visible" : ""}`}
+          />
           {endingReveal.phase === "toast" && endings[endingReveal.endingId] && (
             <div className="ending-reveal-toast">
               엔딩 : {endings[endingReveal.endingId].title}
             </div>
           )}
+          {endingReveal.phase === "dialogue" && (() => {
+            const script = endingDialogue[endingReveal.endingId];
+            const lines = endingReveal.isPostScene
+              ? (script?.postScene ?? [])
+              : (script?.preScene ?? []);
+            const line = lines[endingReveal.dialogueIndex];
+            if (!line) return null;
+            return (
+              <button
+                className="ending-dialogue-box"
+                type="button"
+                onClick={handleEndingDialogueAdvance}
+              >
+                <span className="ending-dialogue-speaker">[{line.speaker}]</span>
+                <p className="ending-dialogue-text">{line.text}</p>
+                <span className="ending-dialogue-caret">▼</span>
+              </button>
+            );
+          })()}
           {endingReveal.phase === "panel" && endings[endingReveal.endingId] && (
             <section className="ending-panel ending-panel-reveal">
               <p>Ending</p>
