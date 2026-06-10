@@ -69,11 +69,11 @@ button:not(:disabled) {
   font-size: clamp(22px, 2.8vw, 40px);
   font-weight: 950;
   text-align: center;
-  animation: element-toast-pop 1200ms ease both;
+  animation: ending-toast-appear 600ms ease both;
 }
 
 .ending-panel-reveal {
-  animation: element-toast-pop 800ms ease both;
+  animation: ending-panel-appear 700ms ease both;
 }
 
 .ending-scene-bg {
@@ -132,6 +132,17 @@ button:not(:disabled) {
 @keyframes caret-blink {
   0%, 100% { opacity: 0.3; }
   50% { opacity: 1; }
+}
+
+@keyframes ending-toast-appear {
+  0% { opacity: 0; transform: scale(0.9); }
+  60% { opacity: 1; transform: scale(1.03); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes ending-panel-appear {
+  0% { opacity: 0; transform: scale(0.94); }
+  100% { opacity: 1; transform: scale(1); }
 }
 
 .splash-screen {

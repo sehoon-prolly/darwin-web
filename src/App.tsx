@@ -226,20 +226,6 @@ export default function App() {
     return () => window.clearTimeout(timeoutId);
   }, [gainedElementToast]);
 
-  useEffect(() => {
-    if (!isFinalChapter || gameState.selectedFinalElements.length > 0) {
-      return;
-    }
-
-    setGameState((currentState) => ({
-      ...currentState,
-      selectedFinalElements: currentState.acquiredElements,
-    }));
-  }, [
-    isFinalChapter,
-    gameState.selectedFinalElements.length,
-    gameState.acquiredElements,
-  ]);
 
   const sceneOverlay = useMemo(() => {
     if (ending) {
@@ -781,7 +767,7 @@ export default function App() {
 
     const t2 = window.setTimeout(() => {
       setEndingReveal((prev) => (prev ? { ...prev, phase: "dialogue" } : null));
-    }, 3300);
+    }, 4500);
 
     endingRevealTimeouts.current = [t1, t2];
   }
