@@ -46,11 +46,7 @@ function getSpeakerSide(scene: Scene) {
     return "right";
   }
 
-  if (scene.id.startsWith("chapter0-")) {
-    return speakerName === "나" ? "left" : null;
-  }
-
-  return "left";
+  return speakerName === "나" ? "left" : null;
 }
 
 export default function SceneView({
