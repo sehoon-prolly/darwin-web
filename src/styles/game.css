@@ -820,15 +820,15 @@ button:not(:disabled) {
   background: linear-gradient(180deg, rgba(18, 18, 18, 0.76), rgba(38, 34, 32, 0.66));
   box-shadow: 0 4px 10px rgba(63, 40, 25, 0.25);
   backdrop-filter: blur(3px);
-  font-size: 15px;
+  font-size: 18px;
   font-weight: 900;
   text-align: center;
 }
 
 .dialogue-box p {
   margin: 0;
-  font-size: clamp(14px, 1.14vw, 18px);
-  line-height: 1.48;
+  font-size: clamp(19px, 1.8vw, 28px);
+  line-height: 1.5;
   font-weight: 700;
   word-break: keep-all;
 }
