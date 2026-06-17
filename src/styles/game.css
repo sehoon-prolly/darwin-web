@@ -2000,12 +2000,12 @@ button:not(:disabled) {
   position: absolute;
   z-index: 2;
   left: 50%;
-  bottom: 10%;
-  width: min(90px, 76%);
-  height: min(110px, 100%);
+  bottom: 8%;
+  width: min(112px, 88%);
+  height: min(160px, 148%);
   transform: translateX(-50%);
   pointer-events: none;
-  animation: whack-rise 160ms steps(3, end) both;
+  animation: whack-rise 180ms steps(4, end) both;
   filter: drop-shadow(2px 4px 4px rgba(0, 0, 0, 0.5));
 }
 
@@ -2034,7 +2034,7 @@ button:not(:disabled) {
 @keyframes whack-rise {
   from {
     opacity: 0;
-    transform: translate(-50%, 54%);
+    transform: translate(-50%, 72%);
   }
 
   to {
